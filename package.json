@@ -32,9 +32,5 @@
     "lint-staged": "^15.2.10",
     "prettier": "^3.1.0",
     "typescript": "^5"
-  },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx,json,scss,css,html,md}": "prettier --write",
-    "*.{js,jsx,ts,tsx}": "eslint --fix"
   }
 }
