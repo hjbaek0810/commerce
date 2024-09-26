@@ -34,13 +34,7 @@
     "typescript": "^5"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "eslint --cache --fix",
-      "prettier --cache --write",
-      "git add ."
-    ],
-    "*.{md,json}": [
-      "prettier --cache --write"
-    ]
+    "*.{js,jsx,ts,tsx,json,scss,css,html,md}": "prettier --write",
+    "*.{js,jsx,ts,tsx}": "eslint --fix"
   }
 }
