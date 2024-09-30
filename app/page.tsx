@@ -1,3 +1,7 @@
+'use client';
+
+import { useRef } from 'react';
+
 import Image from 'next/image';
 
 import Button from '@components/Button';
@@ -5,6 +9,23 @@ import Button from '@components/Button';
 import styles from './page.module.css';
 
 const Home = () => {
+  // Example
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleClick = () => {
+    if (inputRef.current === null || inputRef.current.value === '') {
+      return alert('name을 입력해주세요.');
+    }
+
+    fetch('/api/product', {
+      method: 'POST',
+      body: JSON.stringify({ name: inputRef.current.value }),
+    })
+      .then(res => res.json())
+      .then(data => alert(data.message));
+  };
+
   return (
     <div className={styles.page}>
       <main className={styles.main}>
@@ -22,7 +43,8 @@ const Home = () => {
           </li>
           <li>Save and see your changes instantly.</li>
           <li>
-            <Button />
+            <input type="text" ref={inputRef} placeholder="name" />
+            <button onClick={handleClick}>Add Jacket</button>
           </li>
         </ol>
 
