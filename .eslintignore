@@ -5,3 +5,6 @@ babel.config.json
 dist
 public
 node_modules
+tailwind.config.js
+postcss.config.js
+*.mjs
