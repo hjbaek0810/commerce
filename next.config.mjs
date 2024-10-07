@@ -1,8 +1,19 @@
 /** @type {import('next').NextConfig} */
+
+import { createVanillaExtractPlugin } from '@vanilla-extract/next-plugin';
+
+const withVanillaExtract = createVanillaExtractPlugin();
+
 const nextConfig = {
   images: {
-    domains: ['https://picsum.photos/'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'picsum.photos',
+        pathname: '**',
+      },
+    ],
   },
 };
 
-export default nextConfig;
+export default withVanillaExtract(nextConfig);
