@@ -12,10 +12,8 @@ import { usePathname } from 'next/navigation';
 
 import * as css from './header.css';
 
-import type { MenuListType } from '@components/Layout';
-
 type HeaderPropsType = {
-  list: Array<Pick<MenuListType, 'label' | 'path'>>;
+  list: Array<{ path: string; label: string }>;
 };
 
 const Header = ({ list }: HeaderPropsType) => {
