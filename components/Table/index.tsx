@@ -1,11 +1,17 @@
 import type { PropsWithChildren } from 'react';
 
+import clsx from 'clsx';
+
 import * as css from './table.css';
 
-// 필요 시 colspan, rowspan 추가
-
 type TableThPropsType = {
+  className?: string;
   scope?: 'col' | 'row'; // ++ colgroup | rowgroup
+};
+
+type TableTdPropsType = Pick<TableThPropsType, 'className'> & {
+  rowSpan?: number;
+  colSpan?: number;
 };
 
 const TableRoot = ({ children }: PropsWithChildren) => {
@@ -20,8 +26,12 @@ const TableHeader = ({ children }: PropsWithChildren) => (
   <thead className={css.header}>{children}</thead>
 );
 
-const TableTh = ({ scope, children }: PropsWithChildren<TableThPropsType>) => (
-  <th scope={scope} className={css.th}>
+const TableTh = ({
+  scope,
+  className,
+  children,
+}: PropsWithChildren<TableThPropsType>) => (
+  <th scope={scope} className={clsx(css.th, className)}>
     {children}
   </th>
 );
@@ -30,8 +40,15 @@ const TableBody = ({ children }: PropsWithChildren) => (
   <tbody className={css.body}>{children}</tbody>
 );
 
-const TableTd = ({ children }: PropsWithChildren) => (
-  <td className={css.td}>{children}</td>
+const TableTd = ({
+  rowSpan,
+  colSpan,
+  className,
+  children,
+}: PropsWithChildren<TableTdPropsType>) => (
+  <td rowSpan={rowSpan} colSpan={colSpan} className={clsx(css.td, className)}>
+    {children}
+  </td>
 );
 
 const TableTr = ({ children }: PropsWithChildren) => (
