@@ -20,6 +20,8 @@
     "baseUrl": ".",
     "paths": {
       "@components/*": ["components/*"],
+      "@styles/*": ["styles/*"],
+      "@utils/*": ["utils/*"],
       "@api/*": ["app/api/*"]
     }
   },

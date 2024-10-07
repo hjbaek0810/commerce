@@ -1,4 +1,5 @@
-import './globals.css';
+import Layout from '@components/Layout';
+import '@styles/global.css';
 
 import type { Metadata } from 'next';
 
