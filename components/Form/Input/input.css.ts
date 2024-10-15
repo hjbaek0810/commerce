@@ -7,14 +7,24 @@ import { tokens } from '@styles/token.css';
 
 import type { RecipeVariants } from '@vanilla-extract/recipes';
 
-export const inputWrapper = style({
-  width: '100%',
-  position: 'relative',
-  display: 'flex',
-  alignItems: 'center',
-  gap: tokens.spacing['spacing-004'],
-  border: '1px solid #d9d4cd',
-  transition: 'all 100ms cubic-bezier(0.4, 0, 0.2, 1)',
+export const inputWrapper = recipe({
+  base: [
+    {
+      width: '100%',
+      position: 'relative',
+      display: 'flex',
+      alignItems: 'center',
+      gap: tokens.spacing['spacing-004'],
+      border: '1px solid #d9d4cd',
+      transition: 'all 100ms cubic-bezier(0.4, 0, 0.2, 1)',
+    },
+  ],
+  variants: {
+    hidden: {
+      true: { display: 'none' },
+      false: {},
+    },
+  },
 });
 
 export const input = recipe({

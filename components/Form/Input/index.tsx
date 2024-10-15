@@ -11,9 +11,19 @@ export type InputPropsType = InputHTMLAttributes<HTMLInputElement> &
   InputVariants;
 
 const Input = forwardRef<HTMLInputElement, InputPropsType>(
-  ({ error, type = 'text', autoComplete = 'off', name, ...restProps }, ref) => {
+  (
+    {
+      error,
+      type = 'text',
+      autoComplete = 'off',
+      name,
+      hidden = false,
+      ...restProps
+    },
+    ref,
+  ) => {
     return (
-      <div className={css.inputWrapper}>
+      <div className={css.inputWrapper({ hidden })}>
         <input
           {...restProps}
           id={name}
@@ -22,6 +32,7 @@ const Input = forwardRef<HTMLInputElement, InputPropsType>(
           type={type}
           autoComplete={autoComplete}
           ref={ref}
+          hidden={hidden}
         />
         {error && (
           <FontAwesomeIcon
