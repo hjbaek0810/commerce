@@ -30,6 +30,7 @@
     "mongoose": "^8.7.0",
     "next": "14.2.14",
     "next-sitemap": "^4.2.3",
+    "postcss-reporter": "^7.1.0",
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.53.0"
