@@ -1,5 +1,7 @@
 import '@styles/global.css';
 
+import * as css from './layout.css';
+
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -14,7 +16,9 @@ const RootLayout = ({
 }>) => {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <div className={css.layout}>{children}</div>
+      </body>
     </html>
   );
 };

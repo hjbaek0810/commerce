@@ -3,6 +3,8 @@ import { useFieldArray, useForm } from 'react-hook-form';
 
 import type { CreateCategory } from '@api/category/type';
 
+type CategoryUseFormType = { categories: CreateCategory[] };
+
 const defaultValues = {
   name: '',
   subCategory: [''],
@@ -11,7 +13,7 @@ const useCategory = () => {
   const [editable, setEditable] = useState<boolean>(false);
   const [category, setCategory] = useState<Array<CreateCategory>>();
 
-  const categoryForm = useForm({
+  const categoryForm = useForm<CategoryUseFormType>({
     values: {
       categories: category ?? [defaultValues],
     },
@@ -50,7 +52,9 @@ const useCategory = () => {
     });
   };
 
-  const handleSaveClick = () => {
+  const handleSaveSubmit = (data: CategoryUseFormType) => {
+    console.log(data);
+    console.log(categoryForm.getValues());
     setEditable(false);
   };
 
@@ -70,7 +74,7 @@ const useCategory = () => {
     handleCategoryDeleteClick,
     handleEditClick,
     handleCancelClick,
-    handleSaveClick,
+    handleSaveSubmit,
   };
 };
 

@@ -4,6 +4,18 @@ import { recipe } from '@vanilla-extract/recipes';
 import { ColorPalettes } from '@styles/palette';
 import { tokens } from '@styles/token.css';
 
+export const categoryForm = style({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: tokens.spacing['spacing-008'],
+});
+
+export const categoryButtonWrapper = style({
+  display: 'flex',
+  gap: tokens.spacing['spacing-004'],
+  justifyContent: 'flex-end',
+});
+
 export const subCategoryForm = style({
   display: 'flex',
   flexDirection: 'column',
@@ -19,6 +31,7 @@ export const subCategoryInputWrapper = style({
 
 export const removeButton = recipe({
   base: {
+    flexShrink: 0,
     width: tokens.sizing['sizing-024'],
     height: tokens.sizing['sizing-024'],
     backgroundColor: '#eae5dd',
@@ -87,6 +100,9 @@ export const categoryItemRemoveButtonWrapper = recipe({
 });
 
 export const categoryItemRemoveButton = style({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
   width: tokens.sizing['sizing-024'],
   height: tokens.sizing['sizing-024'],
   borderRadius: '50%',

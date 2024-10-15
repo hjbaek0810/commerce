@@ -3,6 +3,7 @@
 import { faPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+import Button from '@components/Button';
 import Rhf from '@components/Form';
 import { Table } from '@components/Table';
 
@@ -19,34 +20,29 @@ const AdminCategory = () => {
     handleCategoryDeleteClick,
     handleEditClick,
     handleCancelClick,
-    handleSaveClick,
+    handleSaveSubmit,
   } = useCategory();
 
   return (
-    <div>
-      <div>
-        {editable ? (
-          <>
-            <button type="button" onClick={handleCancelClick}>
-              Cancel
-            </button>
-            <button type="submit" onClick={handleSaveClick}>
-              Save
-            </button>
-          </>
-        ) : (
-          <button type="button" onClick={handleEditClick}>
+    <Rhf.Form {...categoryForm} onSubmit={handleSaveSubmit}>
+      <div className={css.categoryForm}>
+        <div className={css.categoryButtonWrapper}>
+          {editable ? (
+            <>
+              <Button color="secondary" onClick={handleCancelClick}>
+                Cancel
+              </Button>
+              <Button fill type="submit">
+                Save
+              </Button>
+            </>
+          ) : (
+            <Button fill onClick={handleEditClick}>
               Edit
-            </button>
-        )}
-      </div>
+            </Button>
+          )}
+        </div>
 
-      <Rhf.Form
-        {...categoryForm}
-        onSubmit={data => {
-          console.log('submit', data);
-        }}
-      >
         <Table>
           <Table.Body>
             {fields.map((item, index) => (
@@ -66,12 +62,9 @@ const AdminCategory = () => {
                     disabled={!editable}
                   />
                 </Table.Td>
-                <Table.Th scope="row">
-                  <Rhf.Label name="subCategory">하위 카테고리</Rhf.Label>
-                </Table.Th>
-                <Table.Td>
-                  <SubCategoryForm nestIndex={index} editable={editable} />
-                </Table.Td>
+
+                <SubCategoryForm nestIndex={index} editable={editable} />
+
                 <Table.Td
                   className={css.categoryItemRemoveButtonWrapper({
                     show: editable,
@@ -109,16 +102,8 @@ const AdminCategory = () => {
             )}
           </Table.Body>
         </Table>
-        <button
-          type="submit"
-          onClick={() => {
-            console.log(categoryForm.getValues());
-          }}
-        >
-          제출
-        </button>
-      </Rhf.Form>
-    </div>
+      </div>
+    </Rhf.Form>
   );
 };
 

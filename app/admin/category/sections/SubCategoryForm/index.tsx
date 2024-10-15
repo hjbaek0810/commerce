@@ -2,6 +2,7 @@ import { faPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Rhf from '@components/Form';
+import { Table } from '@components/Table';
 
 import useSubCategoryForm from './useSubCategoryForm';
 import * as css from '../../category.css';
@@ -19,31 +20,45 @@ const SubCategoryForm = ({ nestIndex, editable }: SubCategoryFormPropsType) => {
   } = useSubCategoryForm(nestIndex);
 
   return (
-    <div className={css.subCategoryForm}>
-      {fields.map((item, index) => (
-        <div key={item.id} className={css.subCategoryInputWrapper}>
-          <Rhf.Input
-            name={`categories.${nestIndex}.subCategory.${index}`}
-            disabled={!editable}
-          />
+    <>
+      <Table.Th scope="row">
+        <Rhf.Label name={`categories.${nestIndex}.subCategory.0`}>
+          하위 카테고리
+        </Rhf.Label>
+      </Table.Th>
+
+      <Table.Td>
+        <div className={css.subCategoryForm}>
+          {fields.map((item, index) => (
+            <div key={item.id} className={css.subCategoryInputWrapper}>
+              <Rhf.Input
+                name={`categories.${nestIndex}.subCategory.${index}`}
+                disabled={!editable}
+              />
+              <button
+                type="button"
+                className={css.removeButton({ show: editable })}
+                onClick={() => handleSubCategoryItemDeleteClick(index)}
+              >
+                <FontAwesomeIcon icon={faXmark} className={css.buttonIcon} />
+              </button>
+            </div>
+          ))}
+
+          {fields.length === 0 && (
+            <input id={`categories.${nestIndex}.subCategory.0`} hidden />
+          )}
+
           <button
             type="button"
-            className={css.removeButton({ show: editable })}
-            onClick={() => handleSubCategoryItemDeleteClick(index)}
+            className={css.subCategoryItemAddButton({ show: editable })}
+            onClick={handleSubCategoryItemAddClick}
           >
-            <FontAwesomeIcon icon={faXmark} className={css.buttonIcon} />
+            <FontAwesomeIcon icon={faPlus} className={css.buttonIcon} />
           </button>
         </div>
-      ))}
-
-      <button
-        type="button"
-        className={css.subCategoryItemAddButton({ show: editable })}
-        onClick={handleSubCategoryItemAddClick}
-      >
-        <FontAwesomeIcon icon={faPlus} className={css.buttonIcon} />
-      </button>
-    </div>
+      </Table.Td>
+    </>
   );
 };
 
