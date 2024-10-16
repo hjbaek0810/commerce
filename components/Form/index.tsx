@@ -11,6 +11,9 @@ import RHFErrorMessage from '@components/Form/ErrorMessage';
 import RHFInput from '@components/Form/Input/RHFInput';
 import RHFLabel from '@components/Form/Label/RHFLabel';
 
+import Select from './Select';
+import RHFSelect from './Select/RHFSelect';
+
 export type CommonRHFPropsType<T, U extends FieldValues> = {
   name?: FieldPath<U>;
   rules?: RegisterOptions<U>;
@@ -38,6 +41,8 @@ const Rhf = {
   Form,
   Label: RHFLabel,
   Input: RHFInput,
+  Select: RHFSelect,
+  SelectOption: Select.Option,
   ErrorMessage: RHFErrorMessage,
 };
 
