@@ -8,9 +8,10 @@ const CategorySchema = new Schema(
     name: {
       type: String,
       unique: true,
+      required: true,
     },
     subCategory: {
-      type: Array<string>,
+      type: [String],
     },
   },
   { timestamps: true },
