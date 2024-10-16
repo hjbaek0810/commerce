@@ -107,8 +107,13 @@ export const categoryItemRemoveButton = style({
   height: tokens.sizing['sizing-024'],
   borderRadius: '50%',
   backgroundColor: 'white',
+
   ':hover': {
     backgroundColor: ColorPalettes.Grey['90'],
+  },
+  ':disabled': {
+    opacity: '0.4',
+    pointerEvents: 'none',
   },
 });
 

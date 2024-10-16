@@ -3,7 +3,7 @@ import { useFieldArray, useForm } from 'react-hook-form';
 
 import type { CreateCategory } from '@api/category/type';
 
-type CategoryUseFormType = { categories: CreateCategory[] };
+export type CategoryUseFormType = { categories: CreateCategory[] };
 
 const defaultValues: CreateCategory = {
   _id: undefined,
