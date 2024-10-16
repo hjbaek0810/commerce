@@ -1,8 +1,14 @@
 import '@styles/global.css';
 
+import '@fortawesome/fontawesome-svg-core/styles.css';
+
 import * as css from './layout.css';
 
 import type { Metadata } from 'next';
+
+import { config } from '@fortawesome/fontawesome-svg-core';
+
+config.autoAddCss = false;
 
 export const metadata: Metadata = {
   title: 'Create Next App',
