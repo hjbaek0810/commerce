@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 
+import { fetchData } from '@api/utils/fetch';
+import { API } from '@api/utils/path';
+
 import type { CreateCategory } from '@api/category/type';
 
 export type CategoryUseFormType = { categories: CreateCategory[] };
@@ -26,21 +29,17 @@ const useCategory = () => {
   });
 
   const fetchCategory = useCallback(() => {
-    fetch('/api/category', {
-      method: 'GET',
-    })
-      .then(res => res.json() as Promise<Array<CreateCategory>>)
-      .then(data =>
-        setCategory(
-          data.map(({ _id, name, subCategory }) => {
-            return {
-              _id,
-              name,
-              subCategory,
-            };
-          }),
-        ),
-      );
+    fetchData<Array<CreateCategory>>(API.CATEGORY, 'GET').then(data =>
+      setCategory(
+        data.map(({ _id, name, subCategory }) => {
+          return {
+            _id,
+            name,
+            subCategory,
+          };
+        }),
+      ),
+    );
   }, []);
 
   useEffect(() => {
@@ -59,15 +58,12 @@ const useCategory = () => {
   };
 
   const handleSaveSubmit = (data: CategoryUseFormType) => {
-    fetch('/api/category', {
-      method: 'PUT',
-      body: JSON.stringify(data.categories),
-    })
-      .then(res => res.json() as Promise<Array<CreateCategory>>)
-      .then(() => {
-        setEditable(false);
-        fetchCategory();
-      });
+    fetchData<Array<CreateCategory>>(API.CATEGORY, 'PUT', {
+      data: data.categories,
+    }).then(() => {
+      setEditable(false);
+      fetchCategory();
+    });
   };
 
   const handleCategoryAddClick = () => {
