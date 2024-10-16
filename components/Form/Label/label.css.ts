@@ -8,6 +8,9 @@ import type { RecipeVariants } from '@vanilla-extract/recipes';
 
 export const label = recipe({
   base: {
+    display: 'flex',
+    minHeight: tokens.sizing['sizing-032'],
+    alignItems: 'center',
     fontWeight: 600,
     fontSize: tokens.fontSize['font-size-012'],
   },

@@ -23,12 +23,16 @@ export const th = style([
     width: '20%',
     textAlign: 'left',
     backgroundColor: '#eae5dd',
+    verticalAlign: 'top',
   },
 ]);
 
 export const body = style({});
 
 export const td = style([
+  {
+    verticalAlign: 'top',
+  },
   sprinkles({
     paddingX: 'spacing-012',
     paddingY: 'spacing-016',
