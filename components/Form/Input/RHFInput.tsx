@@ -4,9 +4,9 @@ import { get, useFormContext } from 'react-hook-form';
 
 import { isEmpty } from 'lodash-es';
 
+import { type CommonRHFPropsType, RHFRules } from '@components/Form';
 import Input from '@components/Form/Input';
 
-import type { CommonRHFPropsType } from '@components/Form';
 import type { InputPropsType } from '@components/Form/Input';
 
 type RHFInputPropsType<T extends FieldValues> = CommonRHFPropsType<
@@ -31,10 +31,7 @@ const RHFInput = <T extends FieldValues>({
 
   const error = get(errors, name);
 
-  const inputRegister = register(name, {
-    ...(required && { required: true }),
-    ...rules,
-  });
+  const inputRegister = register(name, RHFRules(rules, required));
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     inputRegister.onChange(event);

@@ -11,6 +11,7 @@ import RHFErrorMessage from '@components/Form/ErrorMessage';
 import RHFInput from '@components/Form/Input/RHFInput';
 import RHFLabel from '@components/Form/Label/RHFLabel';
 
+import { RHFRadio, RHFRadioGroup } from './Radio/RHFRadio';
 import Select from './Select';
 import RHFSelect from './Select/RHFSelect';
 
@@ -23,6 +24,14 @@ type RHFFormPropsType<T extends FieldValues> = UseFormReturn<T> & {
   id?: string;
   onSubmit: SubmitHandler<T>;
 };
+
+export const RHFRules = <T extends FieldValues>(
+  rules?: RegisterOptions<T>,
+  required?: boolean,
+) => ({
+  ...(required && { required: true }),
+  ...rules,
+});
 
 const Form = <T extends FieldValues>({
   id,
@@ -43,6 +52,8 @@ const Rhf = {
   Input: RHFInput,
   Select: RHFSelect,
   SelectOption: Select.Option,
+  Radio: RHFRadioGroup,
+  RadioOption: RHFRadio,
   ErrorMessage: RHFErrorMessage,
 };
 

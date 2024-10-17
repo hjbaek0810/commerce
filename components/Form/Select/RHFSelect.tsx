@@ -4,11 +4,11 @@ import { get, useFormContext } from 'react-hook-form';
 
 import { isEmpty } from 'lodash-es';
 
+import { type CommonRHFPropsType, RHFRules } from '@components/Form';
+
 import Select from '.';
 
 import type { SelectPropsType } from '.';
-import type { CommonRHFPropsType } from '@components/Form';
-
 
 type RHFSelectPropsType<T extends FieldValues> = CommonRHFPropsType<
   SelectPropsType,
@@ -32,10 +32,7 @@ const RHFSelect = <T extends FieldValues>({
 
   const error = get(errors, name);
 
-  const selectRegister = register(name, {
-    ...(required && { required: true }),
-    ...rules,
-  });
+  const selectRegister = register(name, RHFRules(rules, required));
 
   const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
     selectRegister.onChange(event);
