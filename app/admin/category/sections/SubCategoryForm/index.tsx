@@ -22,7 +22,7 @@ const SubCategoryForm = ({ nestIndex, editable }: SubCategoryFormPropsType) => {
   return (
     <>
       <Table.Th scope="row">
-        <Rhf.Label name={`categories.${nestIndex}.subCategory.0`}>
+        <Rhf.Label name={`categories.${nestIndex}.subCategory.0.name`}>
           하위 카테고리
         </Rhf.Label>
       </Table.Th>
@@ -32,7 +32,7 @@ const SubCategoryForm = ({ nestIndex, editable }: SubCategoryFormPropsType) => {
           {fields.map((item, index) => (
             <div key={item.id} className={css.subCategoryInputWrapper}>
               <Rhf.Input
-                name={`categories.${nestIndex}.subCategory.${index}`}
+                name={`categories.${nestIndex}.subCategory.${index}.name`}
                 disabled={!editable}
               />
               <button
@@ -46,7 +46,7 @@ const SubCategoryForm = ({ nestIndex, editable }: SubCategoryFormPropsType) => {
           ))}
 
           {fields.length === 0 && (
-            <input id={`categories.${nestIndex}.subCategory.0`} hidden />
+            <input id={`categories.${nestIndex}.subCategory.0.name`} hidden />
           )}
 
           <button

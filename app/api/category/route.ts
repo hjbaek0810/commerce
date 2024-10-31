@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import connectDB from '@api/config';
 import CategoryModel from '@api/models/category';
 
-import type { CreateCategory } from './type';
+import type { CreateCategory } from './types/dto';
 import type { AnyBulkWriteOperation } from 'mongoose';
 
 export async function GET() {

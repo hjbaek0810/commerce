@@ -17,6 +17,12 @@ export const inputWrapper = recipe({
       gap: tokens.spacing['spacing-004'],
       border: '1px solid #d9d4cd',
       transition: 'all 100ms cubic-bezier(0.4, 0, 0.2, 1)',
+
+      selectors: {
+        '&:has(input:disabled)': {
+          borderColor: 'transparent',
+        },
+      },
     },
   ],
   variants: {

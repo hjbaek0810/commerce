@@ -61,7 +61,10 @@ const AdminCategory = () => {
                     </Rhf.Label>
                   </Table.Th>
                   <Table.Td>
-                    <Rhf.Input name={`categories.${index}._id`} hidden />
+                    {item._id && (
+                      <Rhf.Input name={`categories.${index}._id`} hidden />
+                    )}
+
                     <Rhf.Input<CategoryUseFormType>
                       name={`categories.${index}.name`}
                       required={editable}
