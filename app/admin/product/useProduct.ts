@@ -1,17 +1,35 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
+import { useRouter } from 'next/navigation';
+
+import { fetchData } from '@api/utils/fetch';
+import { API } from '@api/utils/path';
+
+import type { CategoryVO, SubCategoryVO } from '@api/category/types/vo';
+
 export type ProductUseFormType = {
+  name: string;
   price: number;
   salePrice?: number;
-  // category
+  categoryName?: string;
+  categoryId?: string;
+  status: 'PENDING' | 'IN_PROGRESS' | 'STOPPED';
 };
 
 const useProduct = () => {
-  const productForm = useForm({
-    reValidateMode: 'onChange',
-  });
+  const router = useRouter();
   const [saleRate, setSaleRate] = useState<number>(0);
+  const [categories, setCategories] = useState<Array<CategoryVO>>();
+
+  const [subCategories, setSubCategories] = useState<Array<SubCategoryVO>>([]);
+
+  const productForm = useForm<ProductUseFormType>({
+    reValidateMode: 'onChange',
+    defaultValues: {
+      status: 'PENDING',
+    },
+  });
 
   const priceValue = useWatch({
     name: 'price',
@@ -23,10 +41,34 @@ const useProduct = () => {
     control: productForm.control,
   });
 
-  const category = useWatch({
-    name: 'category',
+  const selectedCategoryId = useWatch({
+    name: 'categoryId',
     control: productForm.control,
   });
+
+  useEffect(() => {
+    fetchData<Array<CategoryVO>>(API.CATEGORY, 'GET').then(data =>
+      setCategories(
+        data.map(({ _id, name, subCategory }) => {
+          return {
+            _id,
+            name,
+            subCategory,
+          };
+        }),
+      ),
+    );
+  }, []);
+
+  useEffect(() => {
+    if (!categories || !selectedCategoryId) return;
+
+    const category = categories.find(
+      category => category._id === selectedCategoryId,
+    );
+
+    setSubCategories(category?.subCategory ?? []);
+  }, [selectedCategoryId, categories]);
 
   const calculateSaleRate = useCallback(() => {
     if (
@@ -45,7 +87,17 @@ const useProduct = () => {
     calculateSaleRate();
   }, [calculateSaleRate]);
 
-  return { productForm, saleRate };
+  const handleCategoryRegisterButton = () => {
+    router.push('/admin/category');
+  };
+
+  return {
+    productForm,
+    saleRate,
+    categories,
+    subCategories,
+    handleCategoryRegisterButton,
+  };
 };
 
 export default useProduct;

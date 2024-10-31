@@ -15,3 +15,9 @@ export const calculatedSale = style({
   fontSize: tokens.fontSize['font-size-014'],
   fontWeight: 700,
 });
+
+export const subCategoryRadioGroup = style({
+  display: 'flex',
+  gap: tokens.spacing['spacing-008'],
+  height: tokens.sizing['sizing-032'],
+});

@@ -1,5 +1,7 @@
 'use client';
 
+import { isEmpty } from 'lodash-es';
+
 import Button from '@components/Button';
 import Rhf from '@components/Form';
 import { Table } from '@components/Table';
@@ -11,7 +13,13 @@ import useProduct from './useProduct';
 import type { ProductUseFormType } from './useProduct';
 
 const AdminProduct = () => {
-  const { productForm, saleRate } = useProduct();
+  const {
+    productForm,
+    saleRate,
+    categories,
+    subCategories,
+    handleCategoryRegisterButton,
+  } = useProduct();
 
   return (
     <>
@@ -32,7 +40,13 @@ const AdminProduct = () => {
                 <Rhf.Label name="quantity">수량</Rhf.Label>
               </Table.Th>
               <Table.Td>
-                <Rhf.Input type="number" name="quantity" />
+                <Rhf.Input
+                  type="number"
+                  name="quantity"
+                  rules={{
+                    min: 0,
+                  }}
+                />
               </Table.Td>
             </Table.Tr>
             <Table.Tr>
@@ -66,15 +80,34 @@ const AdminProduct = () => {
             </Table.Tr>
             <Table.Tr>
               <Table.Th scope="row">
-                <Rhf.Label name="category">카테고리</Rhf.Label>
+                <Rhf.Label name="categoryId">카테고리</Rhf.Label>
               </Table.Th>
-              <Table.Td colSpan={3}>
-                <Rhf.Select name="category">
-                  <Rhf.SelectOption value="a">A</Rhf.SelectOption>
-                  <Rhf.SelectOption value="b">B</Rhf.SelectOption>
-                </Rhf.Select>
-
-                {/* select box로 main 보여준 후 클릭하면 sub 는 라디오로 */}
+              <Table.Td>
+                {isEmpty(categories) ? (
+                  <Button onClick={handleCategoryRegisterButton}>
+                    카테고리 등록하기
+                  </Button>
+                ) : (
+                  <Rhf.Select name="categoryId">
+                    {categories?.map(({ _id, name }) => (
+                      <Rhf.SelectOption key={_id} value={_id}>
+                        {name}
+                      </Rhf.SelectOption>
+                    ))}
+                  </Rhf.Select>
+                )}
+              </Table.Td>
+              <Table.Td colSpan={2}>
+                <Rhf.Radio
+                  name="subCategory"
+                  className={css.subCategoryRadioGroup}
+                >
+                  {subCategories?.map(sub => (
+                    <Rhf.RadioOption key={sub._id} value={sub.name}>
+                      {sub.name}
+                    </Rhf.RadioOption>
+                  ))}
+                </Rhf.Radio>
               </Table.Td>
             </Table.Tr>
             <Table.Tr>
@@ -82,7 +115,15 @@ const AdminProduct = () => {
                 <Rhf.Label name="status">상품상태</Rhf.Label>
               </Table.Th>
               <Table.Td colSpan={3}>
-                {/* radio - 품절, 판매중, 판매대기 */}
+                <Rhf.Radio
+                  name="status"
+                  className={css.subCategoryRadioGroup}
+                  required
+                >
+                  <Rhf.RadioOption value="PENDING">대기</Rhf.RadioOption>
+                  <Rhf.RadioOption value="IN_PROGRESS">진행</Rhf.RadioOption>
+                  <Rhf.RadioOption value="STOPPED">정지</Rhf.RadioOption>
+                </Rhf.Radio>
               </Table.Td>
             </Table.Tr>
             <Table.Tr>
@@ -99,8 +140,7 @@ const AdminProduct = () => {
                 <Rhf.Label name="description">설명</Rhf.Label>
               </Table.Th>
               <Table.Td colSpan={3}>
-                {/* textarea */}
-                <Rhf.Input name="description" />
+                <Rhf.TextArea name="description" />
               </Table.Td>
             </Table.Tr>
           </Table.Body>
