@@ -14,6 +14,7 @@ import RHFLabel from '@components/Form/Label/RHFLabel';
 import { RHFRadio, RHFRadioGroup } from './Radio/RHFRadio';
 import Select from './Select';
 import RHFSelect from './Select/RHFSelect';
+import RHFTextArea from './TextArea/RHFTextArea';
 
 export type CommonRHFPropsType<T, U extends FieldValues> = {
   name?: FieldPath<U>;
@@ -54,6 +55,7 @@ const Rhf = {
   SelectOption: Select.Option,
   Radio: RHFRadioGroup,
   RadioOption: RHFRadio,
+  TextArea: RHFTextArea,
   ErrorMessage: RHFErrorMessage,
 };
 
