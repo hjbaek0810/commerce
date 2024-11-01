@@ -1,5 +1,7 @@
 import type { ButtonHTMLAttributes, PropsWithChildren } from 'react';
 
+import clsx from 'clsx';
+
 import * as css from './button.css';
 
 import type { ButtonVariants } from './button.css';
@@ -12,12 +14,13 @@ const Button = ({
   color = 'theme',
   fill = false,
   fullWidth = false,
+  className,
   children,
   ...restProps
 }: PropsWithChildren<ButtonPropsType>) => {
   return (
     <button
-      className={css.button({ size, color, fill, fullWidth })}
+      className={clsx(css.button({ size, color, fill, fullWidth }), className)}
       type={type}
       {...restProps}
     >
