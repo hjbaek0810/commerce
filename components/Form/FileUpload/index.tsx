@@ -1,7 +1,10 @@
 import type { ChangeEvent } from 'react';
 import { forwardRef } from 'react';
 
-import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
+import {
+  faExclamationCircle,
+  faXmark,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Button from '@components/Button';
@@ -27,6 +30,7 @@ const FileUpload = forwardRef(
       handleDragEnd,
       handleDragOver,
       handleDrop,
+      handleRemoveButtonClick,
     } = useFileUpload(ref);
 
     return (
@@ -62,12 +66,16 @@ const FileUpload = forwardRef(
             <p className={css.fileName({ attached: !!fileName })}>
               {fileName || 'No file attached'}
             </p>
-            <Button
-              fill
-              onClick={handleSelectFileClick}
-              className={css.uploadButton}
-            >
-              Upload
+            {fileName && (
+              <button
+                className={css.removeButton}
+                onClick={handleRemoveButtonClick}
+              >
+                <FontAwesomeIcon className={css.removeIcon} icon={faXmark} />
+              </button>
+            )}
+            <Button fill onClick={handleSelectFileClick}>
+              {fileName ? 'Replace' : 'Upload'}
             </Button>
           </>
         )}
