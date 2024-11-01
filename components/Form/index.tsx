@@ -11,6 +11,7 @@ import RHFErrorMessage from '@components/Form/ErrorMessage';
 import RHFInput from '@components/Form/Input/RHFInput';
 import RHFLabel from '@components/Form/Label/RHFLabel';
 
+import RHFFileUpload from './FileUpload/RHFFileUpload';
 import { RHFRadio, RHFRadioGroup } from './Radio/RHFRadio';
 import Select from './Select';
 import RHFSelect from './Select/RHFSelect';
@@ -56,6 +57,7 @@ const Rhf = {
   Radio: RHFRadioGroup,
   RadioOption: RHFRadio,
   TextArea: RHFTextArea,
+  FileUpload: RHFFileUpload,
   ErrorMessage: RHFErrorMessage,
 };
 
