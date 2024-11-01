@@ -13,7 +13,9 @@ const useFileUpload = (ref: ForwardedRef<unknown>) => {
   }, [fileRef]);
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setUploadedFile(event.target.files);
+    if (event.target.files && event.target.files.length > 0) {
+      setUploadedFile(event.target.files);
+    }
   };
 
   const handleSelectFileClick = () => {

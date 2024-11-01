@@ -27,6 +27,7 @@ export const fileWrapper = recipe({
 export const fileName = recipe({
   base: {
     fontSize: tokens.fontSize['font-size-014'],
+    marginRight: 'auto',
   },
   variants: {
     attached: {
@@ -46,6 +47,19 @@ export const errorIcon = style({
   fontSize: tokens.fontSize['font-size-016'],
 });
 
-export const uploadButton = style({
-  marginLeft: 'auto',
+export const removeButton = style({
+  width: tokens.sizing['sizing-024'],
+  height: tokens.sizing['sizing-024'],
+  backgroundColor: ColorPalettes.Grey['90'],
+  border: `0.1rem solid ${ColorPalettes.Grey['60']}`,
+  borderRadius: '50%',
+
+  ':hover': {
+    backgroundColor: ColorPalettes.Grey['95'],
+  },
+});
+
+export const removeIcon = style({
+  color: ColorPalettes.Grey['60'],
+  fontSize: tokens.sizing['sizing-016'],
 });
