@@ -53,6 +53,13 @@ const useFileUpload = (ref: ForwardedRef<unknown>) => {
     setUploadedFile(event.dataTransfer.files);
   };
 
+  const handleRemoveButtonClick = () => {
+    if (fileRef.current) {
+      fileRef.current.value = '';
+      setUploadedFile(null);
+    }
+  };
+
   return {
     fileRef,
     isDropActive,
@@ -63,6 +70,7 @@ const useFileUpload = (ref: ForwardedRef<unknown>) => {
     handleDragEnd,
     handleDragOver,
     handleDrop,
+    handleRemoveButtonClick,
   };
 };
 
