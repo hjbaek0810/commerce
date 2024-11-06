@@ -23,8 +23,10 @@
     "@vanilla-extract/dynamic": "^2.1.1",
     "@vanilla-extract/recipes": "^0.5.3",
     "@vanilla-extract/sprinkles": "^1.6.2",
+    "cloudinary": "^2.5.1",
     "clsx": "^2.1.1",
     "draft-js": "^0.11.7",
+    "fs-extra": "^11.2.0",
     "lodash-es": "^4.17.21",
     "moment": "^2.30.1",
     "mongoose": "^8.7.0",
@@ -33,10 +35,12 @@
     "postcss-reporter": "^7.1.0",
     "react": "^18",
     "react-dom": "^18",
-    "react-hook-form": "^7.53.0"
+    "react-hook-form": "^7.53.0",
+    "uuid": "^11.0.2"
   },
   "devDependencies": {
     "@types/draft-js": "^0.11.18",
+    "@types/fs-extra": "^11.0.4",
     "@types/node": "^22.7.4",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18",

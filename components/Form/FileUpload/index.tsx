@@ -1,4 +1,4 @@
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent, InputHTMLAttributes } from 'react';
 import { forwardRef } from 'react';
 
 import {
@@ -13,13 +13,23 @@ import * as css from './fileUpload.css';
 import useFileUpload from './useFileUpload';
 
 export type FileUploadPropsType = {
-  name?: string;
-  onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   error?: boolean;
-};
+} & Pick<
+  InputHTMLAttributes<HTMLInputElement>,
+  'accept' | 'multiple' | 'onChange' | 'name'
+>;
 
 const FileUpload = forwardRef(
-  ({ name, onChange, error = false }: FileUploadPropsType, ref) => {
+  (
+    {
+      name,
+      onChange,
+      error = false,
+      multiple = false,
+      accept,
+    }: FileUploadPropsType,
+    ref,
+  ) => {
     const {
       fileName,
       fileRef,
@@ -50,6 +60,8 @@ const FileUpload = forwardRef(
             onChange?.(event);
           }}
           ref={fileRef}
+          multiple={multiple}
+          accept={accept}
         />
 
         {error && (

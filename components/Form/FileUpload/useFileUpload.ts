@@ -63,7 +63,9 @@ const useFileUpload = (ref: ForwardedRef<unknown>) => {
   return {
     fileRef,
     isDropActive,
-    fileName: uploadedFile?.[0]?.name || '',
+    fileName: Array.from(uploadedFile || [])
+      .map(file => file.name)
+      .join(', '),
     handleSelectFileClick,
     handleFileChange,
     handleDragStart,

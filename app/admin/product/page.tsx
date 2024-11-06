@@ -19,12 +19,13 @@ const AdminProduct = () => {
     categories,
     subCategories,
     handleCategoryRegisterButton,
+    handleSubmit,
   } = useProduct();
 
   return (
     <>
       <Title>상품 등록</Title>
-      <Rhf.Form {...productForm} onSubmit={() => {}}>
+      <Rhf.Form {...productForm} onSubmit={handleSubmit}>
         <Table>
           <Table.Body>
             <Table.Tr>
@@ -99,11 +100,11 @@ const AdminProduct = () => {
               </Table.Td>
               <Table.Td colSpan={2}>
                 <Rhf.Radio
-                  name="subCategory"
+                  name="subCategoryId"
                   className={css.subCategoryRadioGroup}
                 >
                   {subCategories?.map(sub => (
-                    <Rhf.RadioOption key={sub._id} value={sub.name}>
+                    <Rhf.RadioOption key={sub._id} value={sub._id}>
                       {sub.name}
                     </Rhf.RadioOption>
                   ))}
@@ -128,11 +129,12 @@ const AdminProduct = () => {
             </Table.Tr>
             <Table.Tr>
               <Table.Th scope="row">
-                <Rhf.Label name="img">사진첨부</Rhf.Label>
+                <Rhf.Label name="image">사진첨부</Rhf.Label>
               </Table.Th>
               <Table.Td colSpan={3}>
-                {/* type="file" */}
-                <Rhf.Input name="a" />
+                <Rhf.FileUpload name="image" multiple accept={'image/*'} />
+                {/* image preview */}
+                {/* <image href={URL.createObjectURL()} /> */}
               </Table.Td>
             </Table.Tr>
             <Table.Tr>
@@ -145,9 +147,12 @@ const AdminProduct = () => {
             </Table.Tr>
           </Table.Body>
         </Table>
-        <Button fill size="large" type="submit">
-          Submit
-        </Button>
+
+        <div className={css.buttonWrapper}>
+          <Button fill size="large" type="submit">
+            Submit
+          </Button>
+        </div>
       </Rhf.Form>
     </>
   );

@@ -21,3 +21,9 @@ export const subCategoryRadioGroup = style({
   gap: tokens.spacing['spacing-008'],
   height: tokens.sizing['sizing-032'],
 });
+
+export const buttonWrapper = style({
+  display: 'flex',
+  justifyContent: 'flex-end',
+  marginTop: tokens.spacing['spacing-040'],
+});

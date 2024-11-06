@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 
 import { fetchData } from '@api/utils/fetch';
 import { API } from '@api/utils/path';
+import { uploadImages } from 'actions/upload';
 
 import type { CategoryVO, SubCategoryVO } from '@api/category/types/vo';
 
@@ -91,12 +92,25 @@ const useProduct = () => {
     router.push('/admin/category');
   };
 
+  // TODO
+  const handleSubmit = async (data: any) => {
+    // image upload in cloudinary
+    const formData = new FormData();
+    Array.from(data.image).forEach((item: any) => {
+      formData.append('images', item);
+    });
+    await uploadImages(formData);
+
+    // save mongoDB
+  };
+
   return {
     productForm,
     saleRate,
     categories,
     subCategories,
     handleCategoryRegisterButton,
+    handleSubmit,
   };
 };
 
