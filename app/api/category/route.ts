@@ -5,6 +5,7 @@ import CategoryModel from '@api/models/category';
 
 import type { CreateCategory } from './types/dto';
 import type { AnyBulkWriteOperation } from 'mongoose';
+import type { NextRequest } from 'next/server';
 
 export async function GET() {
   try {
@@ -24,7 +25,7 @@ export async function GET() {
   }
 }
 
-export async function PUT(req: Request) {
+export async function PUT(req: NextRequest) {
   const data: Array<CreateCategory> = await req.json();
 
   try {

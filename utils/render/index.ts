@@ -3,7 +3,7 @@ import { Children, cloneElement, isValidElement } from 'react';
 
 import { intersection, isEmpty } from 'lodash-es';
 
-type NewObject = { [key: string]: any };
+import type { NewObject } from '@utils/types/utility';
 
 export const passPropsToSingleChild = (child: ReactNode, props: NewObject) => {
   if (isValidElement(child)) {

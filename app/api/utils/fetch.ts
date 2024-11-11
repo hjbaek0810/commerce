@@ -17,7 +17,8 @@ export async function fetchData<T, U = unknown>(
       },
     };
 
-    if (options.data) fetchOptions.body = JSON.stringify(options.data);
+    if (options.data && method !== 'GET')
+      fetchOptions.body = JSON.stringify(options.data);
 
     const response = await fetch(`/api/${url}`, fetchOptions);
 
