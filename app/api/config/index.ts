@@ -1,10 +1,4 @@
-import { Client } from '@notionhq/client';
 import mongoose from 'mongoose';
-
-// TODO: remove
-export const notion = new Client({
-  auth: 'secret_DRKVmbYNIXIkZPaVF81JoHGkTy49unjEJw63OS4wmRe',
-});
 
 const connectDB = async () => {
   if (mongoose.connections[0].readyState) {
