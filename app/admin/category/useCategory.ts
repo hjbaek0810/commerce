@@ -63,7 +63,6 @@ const useCategory = () => {
   };
 
   const handleSaveSubmit = (data: CategoryUseFormType) => {
-    console.log(data);
     fetchData<Array<CategoryVO>>(API.CATEGORY, 'PUT', {
       data: data.categories.map(category => ({
         ...category,

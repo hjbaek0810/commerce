@@ -1,12 +1,12 @@
-type FetchDataOptionsType = {
-  data?: any;
+type FetchDataOptionsType<U> = {
+  data?: U;
   headers?: HeadersInit;
 };
 
-export async function fetchData<T>(
+export async function fetchData<T, U = unknown>(
   url: string,
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' = 'GET',
-  options: FetchDataOptionsType = {},
+  options: FetchDataOptionsType<U> = {},
 ) {
   try {
     const fetchOptions: RequestInit = {
@@ -22,12 +22,12 @@ export async function fetchData<T>(
     const response = await fetch(`/api/${url}`, fetchOptions);
 
     if (!response.ok) {
-      throw new Error(`Error: ${response.status}`);
+      const errorData = await response.json();
+      throw new Error(errorData.message || '서버 요청 실패');
     }
 
     return (await response.json()) as Promise<T>;
   } catch (error) {
-    console.error('Fetch error:', error);
     throw error;
   }
 }

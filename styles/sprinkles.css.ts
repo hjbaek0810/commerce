@@ -27,6 +27,7 @@ const spacingProperties = defineProperties({
 const fontProperties = defineProperties({
   properties: {
     fontSize: tokens.fontSize,
+    fontWeight: ['bold', 'normal'],
   },
 });
 
