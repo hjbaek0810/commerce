@@ -1,6 +1,7 @@
 'use client';
 
 import { isEmpty } from 'lodash-es';
+import Image from 'next/image';
 
 import Button from '@components/Button';
 import Rhf from '@components/Form';
@@ -8,9 +9,9 @@ import { Table } from '@components/Table';
 import Title from '@components/Title';
 
 import * as css from './product.css';
-import useProduct from './useProduct';
+import useProductRegister from './useProductRegister';
 
-import type { ProductUseFormType } from './useProduct';
+import type { ProductRegisterUseFormType } from './useProductRegister';
 
 const AdminProduct = () => {
   const {
@@ -18,10 +19,16 @@ const AdminProduct = () => {
     saleRate,
     categories,
     subCategories,
+    selectedImages,
     handleCategoryRegisterButton,
     handleSubmit,
-  } = useProduct();
+    validateImage,
+    isPending,
+  } = useProductRegister();
 
+  // TODO: mongoose에 이미지 저장 & 데이터 저장
+  // 이미지 등록 후 수정 기능은 어떻게 할지??
+  // 1. 등록 페이지 2. 조회 페이지(list) 3. 상세 페이지 4. 등록 페이지와 동일한 폼인 수정 페이지
   return (
     <>
       <Title>상품 등록</Title>
@@ -64,7 +71,7 @@ const AdminProduct = () => {
               </Table.Th>
               <Table.Td>
                 <div className={css.saleWrapper}>
-                  <Rhf.Input<ProductUseFormType>
+                  <Rhf.Input<ProductRegisterUseFormType>
                     name="salePrice"
                     type="number"
                     rules={{
@@ -81,7 +88,9 @@ const AdminProduct = () => {
             </Table.Tr>
             <Table.Tr>
               <Table.Th scope="row">
-                <Rhf.Label name="categoryId">카테고리</Rhf.Label>
+                <Rhf.Label name="categoryId" required>
+                  카테고리
+                </Rhf.Label>
               </Table.Th>
               <Table.Td>
                 {isEmpty(categories) ? (
@@ -89,7 +98,7 @@ const AdminProduct = () => {
                     카테고리 등록하기
                   </Button>
                 ) : (
-                  <Rhf.Select name="categoryId">
+                  <Rhf.Select name="categoryId" required>
                     {categories?.map(({ _id, name }) => (
                       <Rhf.SelectOption key={_id} value={_id}>
                         {name}
@@ -129,12 +138,35 @@ const AdminProduct = () => {
             </Table.Tr>
             <Table.Tr>
               <Table.Th scope="row">
-                <Rhf.Label name="image">사진첨부</Rhf.Label>
+                <Rhf.Label name="images">사진첨부</Rhf.Label>
               </Table.Th>
               <Table.Td colSpan={3}>
-                <Rhf.FileUpload name="image" multiple accept={'image/*'} />
+                <Rhf.FileUpload
+                  name="images"
+                  multiple
+                  accept="image/*"
+                  rules={{
+                    validate: validateImage,
+                  }}
+                />
                 {/* image preview */}
-                {/* <image href={URL.createObjectURL()} /> */}
+                {!isEmpty(selectedImages) && (
+                  <>
+                    <p className={css.imagePreviewTitle}>preview</p>
+                    <div className={css.imagePreviewWrapper}>
+                      {selectedImages.map((file, index) => (
+                        <Image
+                          key={index}
+                          className={css.imagePreview}
+                          src={URL.createObjectURL(file)}
+                          alt={file.name}
+                          width={200}
+                          height={150}
+                        />
+                      ))}
+                    </div>
+                  </>
+                )}
               </Table.Td>
             </Table.Tr>
             <Table.Tr>
@@ -149,7 +181,7 @@ const AdminProduct = () => {
         </Table>
 
         <div className={css.buttonWrapper}>
-          <Button fill size="large" type="submit">
+          <Button fill size="large" type="submit" disabled={isPending}>
             Submit
           </Button>
         </div>

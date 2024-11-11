@@ -15,22 +15,12 @@ export async function GET() {
       status: 200,
     });
   } catch (error) {
-    return NextResponse.json({ message: `failed: ${error}`, status: 400 });
-  }
-}
+    console.error(error);
 
-export async function POST(req: Request) {
-  const data = await req.json();
-
-  try {
-    await connectDB();
-    const response = await CategoryModel.create(data);
-
-    return NextResponse.json(response, {
-      status: 200,
+    return NextResponse.json({
+      message: 'Failed to load categories.',
+      status: 400,
     });
-  } catch (error) {
-    return NextResponse.json({ message: `failed: ${error}`, status: 400 });
   }
 }
 
@@ -97,6 +87,11 @@ export async function PUT(req: Request) {
       message: 'success',
     });
   } catch (error) {
-    return NextResponse.json({ message: `failed: ${error}`, status: 400 });
+    console.error(error);
+
+    return NextResponse.json({
+      message: 'Failed to update the categories.',
+      status: 400,
+    });
   }
 }

@@ -4,20 +4,15 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 
-import { v2 as cloudinary } from 'cloudinary';
-import { revalidatePath } from 'next/cache';
 import { v4 as uuidv4 } from 'uuid';
+
+import cloudinary from '@api/config/cloudinaryConfig';
+
 
 type NewFilesType = {
   fileName: string;
   filePath: string;
 }[];
-
-cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME,
-  api_key: process.env.CLOUD_API_KEY,
-  api_secret: process.env.CLOUD_API_SECRET,
-});
 
 const CLOUDINARY_FOLDER_NAME = 'next_commerce';
 
@@ -66,7 +61,7 @@ async function saveImagesToLocal(data: FormData) {
 export async function uploadImages(files: FormData) {
   try {
     const newFiles = await saveImagesToLocal(files);
-    await uploadImagesToCloudinary(newFiles);
+    const images = await uploadImagesToCloudinary(newFiles);
 
     newFiles.map(file =>
       fs.unlink(file.filePath, err => {
@@ -78,11 +73,11 @@ export async function uploadImages(files: FormData) {
       }),
     );
 
-    // revalidatePath('/')
-
-    return { message: 'upload success' };
+    return { message: 'upload success', images };
   } catch (error) {
-    return { error };
+    console.error(error);
+
+    return { message: 'Failed to upload the images.' };
   }
 }
 
@@ -93,10 +88,21 @@ export async function getAllImages() {
       .sort_by('created_at', 'desc')
       .max_results(500)
       .execute();
-    console.log(resources);
 
     return resources;
   } catch (error) {
-    return { error };
+    console.error(error);
+
+    return { message: 'Failed to retrieve the uploaded images.' };
+  }
+}
+
+export async function deleteImages(publicId: string) {
+  try {
+    cloudinary.uploader.destroy(publicId);
+  } catch (error) {
+    console.error(error);
+
+    return { message: 'Failed to delete the uploaded image.' };
   }
 }
