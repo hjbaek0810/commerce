@@ -1,6 +1,6 @@
 import type { PaginationProsType } from '.';
 
-const usePagination = ({
+const usePaginationLogic = ({
   totalCount,
   currentPage,
   currentLimit,
@@ -60,4 +60,4 @@ const usePagination = ({
   };
 };
 
-export default usePagination;
+export default usePaginationLogic;

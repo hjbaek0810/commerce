@@ -8,7 +8,7 @@ import { type NewObject } from '@utils/types/utility';
 const INITIAL_PAGE_NUMBER = 1;
 const INITIAL_LIMIT_COUNT = 10;
 
-const usePagination = () => {
+const useQueryPagination = () => {
   const { replace } = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -86,4 +86,4 @@ const usePagination = () => {
   };
 };
 
-export default usePagination;
+export default useQueryPagination;
