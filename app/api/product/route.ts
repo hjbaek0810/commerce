@@ -1,109 +1,68 @@
-'use server';
-
 import { NextResponse } from 'next/server';
 
-import { notion } from '@api/config';
-import { databaseId } from '@api/product/config';
+import { deleteImages } from '@actions/upload';
+import connectDB from '@api/config';
+import ProductModel from '@api/models/product';
 
-import type { NextApiResponse } from 'next';
 
-// https://developers.notion.com/reference/create-a-database
-// https://developers.notion.com/reference/post-database-query
-
-type Data = {
-  items?: Array<any>;
-  message: string;
-};
-
-// post
-async function addItem(name: string) {
-  try {
-    const response = await notion.pages.create({
-      parent: { database_id: databaseId },
-      properties: {
-        title: [
-          {
-            text: {
-              content: name,
-            },
-          },
-        ],
-      },
-    });
-    console.log(response);
-  } catch (error) {
-    console.error(JSON.stringify(error));
-  }
-}
-
-export async function POST(req: Request, res: NextApiResponse<Data>) {
+export async function POST(req: Request) {
   const data = await req.json();
 
-  const { name } = data ?? {};
-
-  if (!name) {
-    return NextResponse.json(
-      { message: `no name` },
-      {
-        status: 400,
-      },
-    );
-  }
-
   try {
-    await addItem(String(name));
+    await connectDB();
+    const response = await ProductModel.create(data);
 
-    return NextResponse.json(
-      { message: `success ${name} added` },
-      {
-        status: 200,
-      },
-    );
-  } catch (error) {
-    return NextResponse.json(
-      { message: `failed ${name} added` },
-      {
-        status: 400,
-      },
-    );
-  }
-}
-
-// get
-async function getItems() {
-  try {
-    const response = await notion.databases.query({
-      database_id: databaseId,
-      sorts: [
-        {
-          property: 'price',
-          direction: 'ascending',
-        },
-      ],
+    return NextResponse.json(response, {
+      status: 200,
     });
-
-    return response;
   } catch (error) {
-    console.error(JSON.stringify(error));
+    console.error(error);
+
+    return NextResponse.json(
+      {
+        message: `Failed to register product.`,
+      },
+      { status: 400 },
+    );
   }
 }
 
 export async function GET() {
   try {
-    const response = await getItems();
+    await connectDB();
+    const products = await ProductModel.find().sort('-createdAt'); // -는 desc
+    const response = products.map(product => ({
+      ...product._doc,
+      _id: product._id.toString(),
+    }));
 
-    return NextResponse.json(
-      { items: response?.results, message: 'success' },
-      {
-        status: 200,
-      },
-    );
+    return NextResponse.json(response, {
+      status: 200,
+    });
   } catch (error) {
-    return NextResponse.json(
-      { message: 'failed' },
-      {
-        status: 400,
-      },
-    );
+    console.error(error);
+
+    return NextResponse.json({
+      message: 'Failed to load products.',
+      status: 400,
+    });
+  }
+}
+
+export async function Delete(id: string, publicId: string) {
+  try {
+    await Promise.all([
+      ProductModel.findOneAndDelete({ _id: id }),
+      deleteImages(publicId),
+    ]);
+
+    return NextResponse.json({ message: 'success', status: 200 });
+  } catch (error) {
+    console.error(error);
+
+    return NextResponse.json({
+      message: 'Failed to delete the product.',
+      status: 400,
+    });
   }
 }

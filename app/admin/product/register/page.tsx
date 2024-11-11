@@ -8,7 +8,7 @@ import Rhf from '@components/Form';
 import { Table } from '@components/Table';
 import Title from '@components/Title';
 
-import * as css from './product.css';
+import * as css from './productRegister.css';
 import useProductRegister from './useProductRegister';
 
 import type { ProductRegisterUseFormType } from './useProductRegister';
@@ -45,12 +45,15 @@ const AdminProduct = () => {
                 <Rhf.Input name="name" required />
               </Table.Td>
               <Table.Th scope="row">
-                <Rhf.Label name="quantity">수량</Rhf.Label>
+                <Rhf.Label name="quantity" required>
+                  수량
+                </Rhf.Label>
               </Table.Th>
               <Table.Td>
                 <Rhf.Input
                   type="number"
                   name="quantity"
+                  required
                   rules={{
                     min: 0,
                   }}

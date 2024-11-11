@@ -4,11 +4,11 @@ const ProductSchema = new Schema(
   {
     name: {
       type: String,
-      unique: true,
       required: true,
     },
     quantity: {
       type: Number,
+      required: true,
     },
     price: {
       type: Number,
@@ -17,8 +17,9 @@ const ProductSchema = new Schema(
     salePrice: {
       type: Number,
     },
-    categoryName: {
+    categoryId: {
       type: String,
+      required: true,
     },
     status: {
       type: String,
@@ -28,6 +29,18 @@ const ProductSchema = new Schema(
     description: {
       type: String,
     },
+    images: [
+      {
+        publicId: {
+          type: String,
+          required: true,
+        },
+        secureUrl: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
   },
   { timestamps: true },
 );
