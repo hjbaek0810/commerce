@@ -14,6 +14,7 @@ import useFileUpload from './useFileUpload';
 
 export type FileUploadPropsType = {
   error?: boolean;
+  onUpdateFile?: (value: null | FileList) => void;
 } & Pick<
   InputHTMLAttributes<HTMLInputElement>,
   'accept' | 'multiple' | 'onChange' | 'name'
@@ -24,6 +25,7 @@ const FileUpload = forwardRef(
     {
       name,
       onChange,
+      onUpdateFile,
       error = false,
       multiple = false,
       accept,
@@ -41,7 +43,11 @@ const FileUpload = forwardRef(
       handleDragOver,
       handleDrop,
       handleRemoveButtonClick,
-    } = useFileUpload(ref);
+    } = useFileUpload({
+      ref,
+      onChange,
+      onUpdateFile,
+    });
 
     return (
       <div
@@ -55,10 +61,7 @@ const FileUpload = forwardRef(
           type="file"
           hidden
           name={name}
-          onChange={event => {
-            handleFileChange(event);
-            onChange?.(event);
-          }}
+          onChange={handleFileChange}
           ref={fileRef}
           multiple={multiple}
           accept={accept}

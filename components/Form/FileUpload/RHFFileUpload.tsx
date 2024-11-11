@@ -1,4 +1,5 @@
 import type { ChangeEvent } from 'react';
+import type { PathValue } from 'react-hook-form';
 import {
   type FieldValues,
   type Path,
@@ -28,6 +29,7 @@ const RHFFileUpload = <T extends FieldValues>({
 }: RHFInputPropsType<T>) => {
   const {
     register,
+    setValue,
     formState: { errors },
   } = useFormContext<T>();
 
@@ -40,12 +42,17 @@ const RHFFileUpload = <T extends FieldValues>({
     onChange?.(event);
   };
 
+  const handleUpdateFile = (value: null | FileList) => {
+    setValue(name, value as PathValue<T, Path<T>>);
+  };
+
   return (
     <FileUpload
       {...restProps}
       {...fileRegister}
       error={!isEmpty(error)}
       onChange={handleChange}
+      onUpdateFile={handleUpdateFile}
     />
   );
 };
