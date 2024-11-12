@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { useRouter } from 'next/navigation';
+
 import { fetchData } from '@api/utils/fetch';
 import { API } from '@api/utils/path';
 import { createQueryString } from '@api/utils/query';
@@ -14,6 +16,7 @@ type ProductsType = PaginatedResponse<'products', ProductVO>;
 const useProductList = () => {
   const [products, setProducts] = useState<ProductsType>();
   const { paginationProps } = useQueryPagination();
+  const router = useRouter();
 
   const fetchProducts = useCallback(() => {
     fetchData<ProductsType>(
@@ -42,6 +45,10 @@ const useProductList = () => {
     }
   };
 
+  const handleTableRowClick = (id: string) => {
+    router.push(`/admin/product/${id}`);
+  };
+
   return {
     paginationProps: {
       ...paginationProps,
@@ -49,6 +56,7 @@ const useProductList = () => {
     },
     products: products?.products || [],
     getStatusLabel,
+    handleTableRowClick,
   };
 };
 
