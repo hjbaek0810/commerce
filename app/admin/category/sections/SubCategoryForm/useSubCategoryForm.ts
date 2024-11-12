@@ -4,7 +4,7 @@ const useSubCategoryForm = (nestIndex: number) => {
   const { control } = useFormContext();
   const { fields, remove, append } = useFieldArray({
     control,
-    name: `categories.${nestIndex}.subCategory`,
+    name: `categories.${nestIndex}.subCategories`,
   });
 
   const handleSubCategoryItemDeleteClick = (index: number) => {

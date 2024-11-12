@@ -19,11 +19,13 @@ const ProductSchema = new Schema(
     },
     categoryIds: {
       _id: {
-        type: String,
+        type: Schema.Types.ObjectId,
+        ref: 'Category',
         required: true,
       },
       subCategoryId: {
-        type: String,
+        type: Schema.Types.ObjectId,
+        ref: 'SubCategory',
       },
     },
     status: {

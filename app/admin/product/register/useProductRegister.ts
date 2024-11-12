@@ -62,11 +62,11 @@ const useProductRegister = () => {
   useEffect(() => {
     fetchData<Array<CategoryVO>>(API.CATEGORY, 'GET').then(data =>
       setCategories(
-        data.map(({ _id, name, subCategory }) => {
+        data.map(({ _id, name, subCategories }) => {
           return {
             _id,
             name,
-            subCategory,
+            subCategories,
           };
         }),
       ),
@@ -80,7 +80,7 @@ const useProductRegister = () => {
       category => category._id === selectedCategoryId,
     );
 
-    setSubCategories(category?.subCategory ?? []);
+    setSubCategories(category?.subCategories ?? []);
   }, [selectedCategoryId, categories]);
 
   const calculateSaleRate = useCallback(() => {

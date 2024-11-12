@@ -6,5 +6,5 @@ export interface SubCategoryVO {
 export interface CategoryVO {
   _id: string;
   name: string;
-  subCategory: Array<SubCategoryVO>;
+  subCategories: Array<SubCategoryVO>;
 }

@@ -14,7 +14,7 @@ export type CategoryUseFormType = { categories: CreateCategory[] };
 const defaultValues: CreateCategory = {
   _id: '',
   name: '',
-  subCategory: [],
+  subCategories: [],
 };
 const useCategory = () => {
   const [editable, setEditable] = useState<boolean>(false);
@@ -36,11 +36,11 @@ const useCategory = () => {
       setCategories(
         isEmpty(data)
           ? [defaultValues]
-          : data.map(({ _id, name, subCategory }) => {
+          : data.map(({ _id, name, subCategories }) => {
               return {
                 _id,
                 name,
-                subCategory,
+                subCategories,
               };
             }),
       ),
@@ -66,7 +66,9 @@ const useCategory = () => {
     fetchData<Array<CategoryVO>>(API.CATEGORY, 'PUT', {
       data: data.categories.map(category => ({
         ...category,
-        subCategory: category.subCategory?.filter(sub => sub.name?.length > 0),
+        subCategories: category.subCategories?.filter(
+          sub => sub.name?.length > 0,
+        ),
       })),
     }).then(() => {
       setEditable(false);

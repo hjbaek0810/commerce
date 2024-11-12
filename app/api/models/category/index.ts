@@ -7,9 +7,10 @@ const CategorySchema = new Schema(
       unique: true,
       required: true,
     },
-    subCategory: [
+    subCategories: [
       {
-        name: { required: true, type: String },
+        type: Schema.Types.ObjectId,
+        ref: 'SubCategory',
       },
     ],
   },

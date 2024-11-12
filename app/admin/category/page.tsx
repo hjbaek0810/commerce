@@ -61,7 +61,7 @@ const AdminCategory = () => {
                     </Rhf.Label>
                   </Table.Th>
                   <Table.Td>
-                    {item._id && (
+                    {item.id && (
                       <Rhf.Input name={`categories.${index}._id`} hidden />
                     )}
 

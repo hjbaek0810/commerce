@@ -2,10 +2,8 @@ import { NextResponse } from 'next/server';
 
 import { deleteImages } from '@actions/upload';
 import connectDB from '@api/config';
-import CategoryModel from '@api/models/category';
 import ProductModel from '@api/models/product';
 
-import type { SubCategoryVO } from '@api/category/types/vo';
 import type { NextRequest } from 'next/server';
 
 export async function POST(req: NextRequest) {
@@ -13,6 +11,7 @@ export async function POST(req: NextRequest) {
 
   try {
     await connectDB();
+
     const response = await ProductModel.create(data);
 
     return NextResponse.json(response, {
@@ -42,35 +41,36 @@ export async function GET(req: NextRequest) {
     const products = await ProductModel.find()
       .limit(limitNumber)
       .skip((pageNumber - 1) * limitNumber)
-      .sort('-createdAt');
+      .sort('-createdAt')
+      .populate({
+        path: 'categoryIds._id',
+        select: 'name',
+      })
+      .populate({
+        path: 'categoryIds.subCategoryId',
+        select: 'name',
+      });
 
-    const response = await Promise.all(
-      products.map(async product => {
-        const { _id: productCategoryId, subCategoryId: productSubCategoryId } =
-          product.categoryIds;
+    const response = products.map(product => {
+      const { categoryIds } = product;
+      const { _id: categoryData, subCategoryId: subCategoryData } =
+        categoryIds || {};
 
-        const category = await CategoryModel.findById(productCategoryId);
+      const categoryName = categoryData?.name ?? null;
+      const subCategoryName = subCategoryData?.name ?? null;
 
-        let subCategory = null;
+      const getCategoryLabel = subCategoryName
+        ? `${categoryName} - ${subCategoryName}`
+        : categoryName;
 
-        if (category?.subCategory?.length > 0) {
-          subCategory = category.subCategory.find(
-            (subCat: SubCategoryVO) =>
-              subCat._id.toString() === productSubCategoryId.toString(),
-          );
-        }
+      const { categoryIds: _, ...productData } = product._doc;
 
-        const categoryData = subCategory ? subCategory : category;
-
-        const { categoryIds, ...productData } = product._doc;
-
-        return {
-          ...productData,
-          _id: product._id.toString(),
-          categoryName: categoryData ? categoryData.name : null,
-        };
-      }),
-    );
+      return {
+        ...productData,
+        _id: product._id.toString(),
+        categoryName: getCategoryLabel,
+      };
+    });
 
     const count = await ProductModel.countDocuments();
 
