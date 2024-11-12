@@ -2,6 +2,7 @@ import { style } from '@vanilla-extract/css';
 import { recipe } from '@vanilla-extract/recipes';
 
 import { ColorPalettes } from '@styles/palette';
+import { sprinkles } from '@styles/sprinkles.css';
 import { tokens } from '@styles/token.css';
 
 export const pagination = style({
@@ -10,6 +11,7 @@ export const pagination = style({
   alignItems: 'center',
   gap: tokens.spacing['spacing-024'],
   justifyContent: 'space-between',
+  marginTop: tokens.sizing['sizing-016'],
 });
 
 export const sizeSelectorWrapper = style({
@@ -73,4 +75,9 @@ export const rangeButton = recipe({
     active: false,
     disabled: false,
   },
+});
+
+export const button = sprinkles({
+  width: 'sizing-fill',
+  height: 'sizing-fill',
 });

@@ -35,7 +35,9 @@ const RangeButton = ({
 } & PropsWithChildren) => {
   return (
     <li className={css.rangeButton({ active, disabled })}>
-      <button onClick={onClick}>{children}</button>
+      <button className={css.button} onClick={onClick}>
+        {children}
+      </button>
     </li>
   );
 };
@@ -63,6 +65,7 @@ const Pagination = (props: PaginationProsType) => {
           className={css.sizeSelector}
           onChange={event => handleSizeChange(Number(event.target.value))}
         >
+          <Select.Option value={5}>5</Select.Option>
           <Select.Option value={10}>10</Select.Option>
           <Select.Option value={25}>25</Select.Option>
           <Select.Option value={50}>50</Select.Option>

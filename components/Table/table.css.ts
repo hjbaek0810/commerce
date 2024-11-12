@@ -18,6 +18,7 @@ export const th = style([
   sprinkles({
     paddingX: 'spacing-012',
     paddingY: 'spacing-016',
+    fontSize: 'font-size-012',
   }),
   {
     width: '20%',
@@ -36,6 +37,7 @@ export const td = style([
   sprinkles({
     paddingX: 'spacing-012',
     paddingY: 'spacing-016',
+    fontSize: 'font-size-012',
   }),
 ]);
 
