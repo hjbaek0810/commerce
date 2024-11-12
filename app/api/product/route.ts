@@ -2,8 +2,10 @@ import { NextResponse } from 'next/server';
 
 import { deleteImages } from '@actions/upload';
 import connectDB from '@api/config';
+import CategoryModel from '@api/models/category';
 import ProductModel from '@api/models/product';
 
+import type { SubCategoryVO } from '@api/category/types/vo';
 import type { NextRequest } from 'next/server';
 
 export async function POST(req: NextRequest) {
@@ -42,10 +44,33 @@ export async function GET(req: NextRequest) {
       .skip((pageNumber - 1) * limitNumber)
       .sort('-createdAt');
 
-    const response = products.map(product => ({
-      ...product._doc,
-      _id: product._id.toString(),
-    }));
+    const response = await Promise.all(
+      products.map(async product => {
+        const { _id: productCategoryId, subCategoryId: productSubCategoryId } =
+          product.categoryIds;
+
+        const category = await CategoryModel.findById(productCategoryId);
+
+        let subCategory = null;
+
+        if (category?.subCategory?.length > 0) {
+          subCategory = category.subCategory.find(
+            (subCat: SubCategoryVO) =>
+              subCat._id.toString() === productSubCategoryId.toString(),
+          );
+        }
+
+        const categoryData = subCategory ? subCategory : category;
+
+        const { categoryIds, ...productData } = product._doc;
+
+        return {
+          ...productData,
+          _id: product._id.toString(),
+          categoryName: categoryData ? categoryData.name : null,
+        };
+      }),
+    );
 
     const count = await ProductModel.countDocuments();
 

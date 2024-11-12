@@ -17,9 +17,14 @@ const ProductSchema = new Schema(
     salePrice: {
       type: Number,
     },
-    categoryId: {
-      type: String,
-      required: true,
+    categoryIds: {
+      _id: {
+        type: String,
+        required: true,
+      },
+      subCategoryId: {
+        type: String,
+      },
     },
     status: {
       type: String,

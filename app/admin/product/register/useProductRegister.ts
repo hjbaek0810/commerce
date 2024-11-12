@@ -6,13 +6,19 @@ import { useRouter } from 'next/navigation';
 
 import { fetchData } from '@api/utils/fetch';
 import { API } from '@api/utils/path';
+import { ProductStatusType } from '@api/utils/types/enum';
 import { uploadImages } from 'actions/upload';
 
 import type { CategoryVO, SubCategoryVO } from '@api/category/types/vo';
 import type { CreateProduct } from '@api/product/types/dto';
+import type { ProductVO } from '@api/product/types/vo';
 import type { UploadApiResponse } from 'cloudinary';
 
-export type ProductRegisterUseFormType = Omit<CreateProduct, 'images'> & {
+export type ProductRegisterUseFormType = Omit<
+  CreateProduct,
+  'images' | 'categoryIds'
+> & {
+  categoryId: string;
   subCategoryId?: string;
   images?: FileList;
 };
@@ -29,7 +35,7 @@ const useProductRegister = () => {
   const productForm = useForm<ProductRegisterUseFormType>({
     reValidateMode: 'onChange',
     defaultValues: {
-      status: 'PENDING',
+      status: ProductStatusType.PENDING,
     },
   });
 
@@ -94,6 +100,12 @@ const useProductRegister = () => {
     calculateSaleRate();
   }, [calculateSaleRate]);
 
+  const validateSubCategory = (value: string) => {
+    if (!value && subCategories?.length > 0) return false;
+
+    return true;
+  };
+
   const validateImage = (value: FileList) => {
     const hasNonImageFile = Array.from(value).some(
       file => !file.type.includes('image'),
@@ -119,7 +131,7 @@ const useProductRegister = () => {
   };
 
   const saveProductToDB = async (productData: CreateProduct) => {
-    const response = await fetchData<unknown, CreateProduct>(
+    const response = await fetchData<ProductVO, CreateProduct>(
       API.PRODUCT,
       'POST',
       {
@@ -141,10 +153,13 @@ const useProductRegister = () => {
         }
 
         // save mongoDB
-        const { subCategoryId, images, ...restData } = data;
+        const { categoryId, subCategoryId, images, ...restData } = data;
         const productData: CreateProduct = {
           ...restData,
-          categoryId: subCategoryId || data.categoryId,
+          categoryIds: {
+            _id: categoryId,
+            subCategoryId,
+          },
           images: imageResult.map(({ public_id, secure_url }) => ({
             publicId: public_id,
             secureUrl: secure_url,
@@ -155,6 +170,8 @@ const useProductRegister = () => {
 
         router.push('/admin/product');
       } catch (error) {
+        console.error(error);
+
         toast.error(
           '상품 등록에 실패하였습니다. 잠시 후 시도해주시길 바랍니다.',
           {
@@ -173,6 +190,7 @@ const useProductRegister = () => {
     selectedImages: selectedImages ? Array.from(selectedImages) : [],
     handleCategoryRegisterButton,
     handleSubmit,
+    validateSubCategory,
     validateImage,
     isPending,
   };
