@@ -14,6 +14,10 @@ type TableTdPropsType = Pick<TableThPropsType, 'className'> & {
   colSpan?: number;
 };
 
+type TableTrPropsType = {
+  onClick?: () => void;
+};
+
 const TableRoot = ({ children }: PropsWithChildren) => {
   return (
     <div className={css.root}>
@@ -51,8 +55,13 @@ const TableTd = ({
   </td>
 );
 
-const TableTr = ({ children }: PropsWithChildren) => (
-  <tr className={css.tr}>{children}</tr>
+const TableTr = ({
+  onClick,
+  children,
+}: PropsWithChildren<TableTrPropsType>) => (
+  <tr onClick={onClick} className={css.tr({ clickable: !!onClick })}>
+    {children}
+  </tr>
 );
 
 export const Table = Object.assign(TableRoot, {

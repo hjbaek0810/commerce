@@ -1,5 +1,7 @@
 import { style } from '@vanilla-extract/css';
+import { recipe } from '@vanilla-extract/recipes';
 
+import { ColorPalettes } from '@styles/palette';
 import { sprinkles } from '@styles/sprinkles.css';
 
 export const root = style({
@@ -41,10 +43,23 @@ export const td = style([
   }),
 ]);
 
-export const tr = style({
-  borderBottom: '1px solid #d9d4cd',
+export const tr = recipe({
+  base: {
+    borderBottom: '1px solid #d9d4cd',
 
-  ':last-child': {
-    borderBottom: 0,
+    ':last-child': {
+      borderBottom: 0,
+    },
+  },
+  variants: {
+    clickable: {
+      true: {
+        ':hover': {
+          backgroundColor: ColorPalettes.Grey['90'],
+          cursor: 'pointer',
+        },
+      },
+      false: {},
+    },
   },
 });
