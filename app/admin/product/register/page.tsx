@@ -3,6 +3,7 @@
 import { isEmpty } from 'lodash-es';
 import Image from 'next/image';
 
+import { ProductStatusType } from '@api/utils/types/enum';
 import Button from '@components/Button';
 import Rhf from '@components/Form';
 import { Table } from '@components/Table';
@@ -23,12 +24,10 @@ const AdminProduct = () => {
     handleCategoryRegisterButton,
     handleSubmit,
     validateImage,
+    validateSubCategory,
     isPending,
   } = useProductRegister();
 
-  // TODO: mongoose에 이미지 저장 & 데이터 저장
-  // 이미지 등록 후 수정 기능은 어떻게 할지??
-  // 1. 등록 페이지 2. 조회 페이지(list) 3. 상세 페이지 4. 등록 페이지와 동일한 폼인 수정 페이지
   return (
     <>
       <Title>상품 등록</Title>
@@ -114,6 +113,9 @@ const AdminProduct = () => {
                 <Rhf.Radio
                   name="subCategoryId"
                   className={css.subCategoryRadioGroup}
+                  rules={{
+                    validate: validateSubCategory,
+                  }}
                 >
                   {subCategories?.map(sub => (
                     <Rhf.RadioOption key={sub._id} value={sub._id}>
@@ -133,9 +135,15 @@ const AdminProduct = () => {
                   className={css.subCategoryRadioGroup}
                   required
                 >
-                  <Rhf.RadioOption value="PENDING">대기</Rhf.RadioOption>
-                  <Rhf.RadioOption value="IN_PROGRESS">진행</Rhf.RadioOption>
-                  <Rhf.RadioOption value="STOPPED">정지</Rhf.RadioOption>
+                  <Rhf.RadioOption value={ProductStatusType.PENDING}>
+                    대기
+                  </Rhf.RadioOption>
+                  <Rhf.RadioOption value={ProductStatusType.IN_PROGRESS}>
+                    진행
+                  </Rhf.RadioOption>
+                  <Rhf.RadioOption value={ProductStatusType.STOPPED}>
+                    정지
+                  </Rhf.RadioOption>
                 </Rhf.Radio>
               </Table.Td>
             </Table.Tr>
