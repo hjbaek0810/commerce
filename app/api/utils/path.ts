@@ -1,4 +1,7 @@
 export const API = {
   CATEGORY: 'category',
-  PRODUCT: 'product',
+  PRODUCT: {
+    BASE: 'product',
+    DETAIL: (productId: string) => `product/${productId}`,
+  },
 };
