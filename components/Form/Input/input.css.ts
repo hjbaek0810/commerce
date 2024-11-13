@@ -19,7 +19,7 @@ export const inputWrapper = recipe({
       transition: 'all 100ms cubic-bezier(0.4, 0, 0.2, 1)',
 
       selectors: {
-        '&:has(input:disabled)': {
+        '&:has(:where(input,textarea,select):disabled)': {
           borderColor: 'transparent',
         },
       },
@@ -42,6 +42,7 @@ export const input = recipe({
       paddingLeft: 'spacing-008',
     }),
     {
+      color: ColorPalettes.Grey['00'],
       backgroundColor: 'white',
 
       selectors: {

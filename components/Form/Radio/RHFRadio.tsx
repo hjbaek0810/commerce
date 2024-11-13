@@ -1,4 +1,4 @@
-import type { PropsWithChildren} from 'react';
+import type { PropsWithChildren } from 'react';
 import { createContext, useContext, useMemo } from 'react';
 import type { FieldValues, Path, UseControllerReturn } from 'react-hook-form';
 import { useController, useFormContext } from 'react-hook-form';
@@ -9,11 +9,10 @@ import Radio from '.';
 import { RHFRules } from '..';
 
 import type { RadioPropsType } from '.';
-import type { CommonRHFPropsType} from '..';
-
+import type { CommonRHFPropsType } from '..';
 
 type RHFRadioGroupPropsType<T extends FieldValues> = CommonRHFPropsType<
-  Pick<RadioPropsType, 'name' | 'required'>,
+  Pick<RadioPropsType, 'name' | 'required' | 'disabled'>,
   T
 > & { className?: string };
 
@@ -21,6 +20,7 @@ type RHFRadioPropsType = Omit<RadioPropsType, 'checked' | 'error'>;
 
 type RadioStateType<T extends FieldValues, U extends Path<T>> = {
   controller: UseControllerReturn<T, U>;
+  disabled?: boolean;
 };
 
 const RadioContext = createContext<RadioStateType<any, any> | null>(null);
@@ -41,6 +41,7 @@ export const RHFRadioGroup = <T extends FieldValues>({
   name = '' as Path<T>,
   rules,
   required,
+  disabled,
   className,
   children,
 }: PropsWithChildren<RHFRadioGroupPropsType<T>>) => {
@@ -52,7 +53,10 @@ export const RHFRadioGroup = <T extends FieldValues>({
     rules: RHFRules(rules, required),
   });
 
-  const value = useMemo(() => ({ controller }), [controller]);
+  const value = useMemo(
+    () => ({ controller, disabled }),
+    [controller, disabled],
+  );
 
   return (
     <RadioContext.Provider value={value}>
@@ -64,7 +68,7 @@ export const RHFRadioGroup = <T extends FieldValues>({
 export const RHFRadio = (props: RHFRadioPropsType) => {
   const { value, onChange, ...restProps } = props;
 
-  const { controller } = useRadioContext();
+  const { controller, disabled } = useRadioContext();
   const {
     field,
     fieldState: { error },
@@ -84,6 +88,7 @@ export const RHFRadio = (props: RHFRadioPropsType) => {
       value={value}
       onChange={handleChange}
       checked={field.value === value}
+      disabled={disabled}
       error={!isEmpty(error)}
     />
   );

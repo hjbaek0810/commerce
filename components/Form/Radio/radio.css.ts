@@ -5,13 +5,12 @@ import { ColorPalettes } from '@styles/palette';
 import { sprinkles } from '@styles/sprinkles.css';
 import { tokens } from '@styles/token.css';
 
-import type { RecipeVariants} from '@vanilla-extract/recipes';
+import type { RecipeVariants } from '@vanilla-extract/recipes';
 
 export const radioWrapper = recipe({
   variants: {
     disabled: {
       true: {
-        opacity: '0.4',
         cursor: 'default',
         pointerEvents: 'none',
       },
@@ -47,6 +46,9 @@ export const radio = recipe({
       transition: 'all 100ms cubic-bezier(0.4, 0, 0.2, 1)',
       ':checked': {
         borderWidth: '0.4rem',
+      },
+      selectors: {
+        '&:not(:checked):disabled': { opacity: 0.4 },
       },
     },
   ],
@@ -97,6 +99,12 @@ export const label = style({
   color: ColorPalettes.Grey['10'],
   fontSize: tokens.fontSize['font-size-014'],
   lineHeight: '1.4',
+
+  selectors: {
+    'input:not(:checked):disabled+&': {
+      opacity: 0.4,
+    },
+  },
 });
 
 export type RadioVariants = NonNullable<RecipeVariants<typeof radio>>;

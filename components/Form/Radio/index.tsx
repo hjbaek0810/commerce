@@ -6,7 +6,6 @@ import * as css from './radio.css';
 import type { RadioVariants } from './radio.css';
 import type { CheckedValueType } from './useRadio';
 
-
 export type RadioPropsType = Omit<
   InputHTMLAttributes<HTMLInputElement>,
   'defaultValue' | 'defaultChecked' | 'readOnly' | 'value'

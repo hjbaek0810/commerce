@@ -34,6 +34,7 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaPropsType>(
       minHeight = 'sizing-096',
       maxLength = 400,
       curLength,
+      disabled,
       onChange,
       ...restProps
     },
@@ -83,12 +84,15 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaPropsType>(
             )}
             onChange={handleTextAreaChange}
             hidden={hidden}
+            disabled={disabled}
             ref={textAreaInputRef}
           />
         </div>
-        <span className={css.strLengthWrapper}>
-          {strLength} / {maxLength}
-        </span>
+        {!disabled && (
+          <span className={css.strLengthWrapper}>
+            {strLength} / {maxLength}
+          </span>
+        )}
       </div>
     );
   },

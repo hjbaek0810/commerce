@@ -14,7 +14,6 @@ import * as css from './select.css';
 
 import type { SelectVariants } from './select.css';
 
-
 type SelectOptionsType = {
   value: any;
 };
@@ -63,10 +62,12 @@ const SelectComponent = forwardRef<HTMLSelectElement, SelectPropsType>(
             icon={faExclamationCircle}
           />
         )}
-        <FontAwesomeIcon
-          className={css.selectArrowIcon({ error })}
-          icon={faAngleDown}
-        />
+        {!disabled && (
+          <FontAwesomeIcon
+            className={css.selectArrowIcon({ error })}
+            icon={faAngleDown}
+          />
+        )}
       </div>
     );
   },
