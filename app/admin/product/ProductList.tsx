@@ -6,7 +6,7 @@ import Pagination from '@components/Pagination';
 import { Table } from '@components/Table';
 import { formatNumber } from '@utils/formatter/number';
 
-import useProductList from './useProduct';
+import useProductList from './useProductList';
 
 const List = () => {
   const { products, paginationProps, getStatusLabel, handleTableRowClick } =
@@ -35,7 +35,7 @@ const List = () => {
               price,
               salePrice,
               status,
-              categoryName,
+              category,
               images,
             }) => (
               <Table.Tr
@@ -47,7 +47,7 @@ const List = () => {
                 <Table.Td>{name}</Table.Td>
                 <Table.Td>{formatNumber(quantity)}</Table.Td>
                 <Table.Td>{formatNumber(salePrice || price)}</Table.Td>
-                <Table.Td>{categoryName}</Table.Td>
+                <Table.Td>{category.name}</Table.Td>
                 <Table.Td>{getStatusLabel(status)}</Table.Td>
                 <Table.Td>
                   {images && images[0] && (

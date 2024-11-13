@@ -20,7 +20,7 @@ const useProductList = () => {
 
   const fetchProducts = useCallback(() => {
     fetchData<ProductsType>(
-      createQueryString(API.PRODUCT, {
+      createQueryString(API.PRODUCT.BASE, {
         page: paginationProps.currentPage,
         limit: paginationProps.currentLimit,
       }),
