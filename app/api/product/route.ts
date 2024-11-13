@@ -2,12 +2,15 @@ import { NextResponse } from 'next/server';
 
 import { deleteImages } from '@actions/upload';
 import connectDB from '@api/config';
+import CategoryModel from '@api/models/category';
 import ProductModel from '@api/models/product';
+import SubCategoryModel from '@api/models/subCategory';
 
+import type { CreateProduct } from './types/dto';
 import type { NextRequest } from 'next/server';
 
 export async function POST(req: NextRequest) {
-  const data = await req.json();
+  const data: CreateProduct = await req.json();
 
   try {
     await connectDB();
@@ -45,16 +48,17 @@ export async function GET(req: NextRequest) {
       .populate({
         path: 'categoryIds._id',
         select: 'name',
+        model: CategoryModel,
       })
       .populate({
         path: 'categoryIds.subCategoryId',
         select: 'name',
+        model: SubCategoryModel,
       });
 
     const response = products.map(product => {
-      const { categoryIds } = product;
       const { _id: categoryData, subCategoryId: subCategoryData } =
-        categoryIds || {};
+        product.categoryIds || {};
 
       const categoryName = categoryData?.name ?? null;
       const subCategoryName = subCategoryData?.name ?? null;
@@ -63,12 +67,15 @@ export async function GET(req: NextRequest) {
         ? `${categoryName} - ${subCategoryName}`
         : categoryName;
 
-      const { categoryIds: _, ...productData } = product._doc;
+      const { categoryIds, ...productData } = product._doc;
 
       return {
         ...productData,
         _id: product._id.toString(),
-        categoryName: getCategoryLabel,
+        category: {
+          ...categoryIds,
+          name: getCategoryLabel,
+        },
       };
     });
 

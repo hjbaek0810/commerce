@@ -4,6 +4,7 @@ export interface ImageVO {
   _id: string;
   publicId: string;
   secureUrl: string;
+  name: string;
 }
 
 export interface ProductVO {
@@ -12,8 +13,19 @@ export interface ProductVO {
   quantity: number;
   price: number;
   salePrice: number | null;
-  categoryName: string;
+  category: {
+    _id: string;
+    subCategoryId: string;
+    name: string;
+  };
   status: ProductStatusType;
-  description: string | null;
+  description: string;
   images: Array<ImageVO>;
+}
+
+export interface ProductDetailVO extends Omit<ProductVO, 'category'> {
+  categoryIds: {
+    _id: string;
+    subCategoryId?: string;
+  };
 }

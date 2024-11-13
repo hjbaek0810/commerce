@@ -38,6 +38,9 @@ const ProductSchema = new Schema(
     },
     images: [
       {
+        name: {
+          type: String,
+        },
         publicId: {
           type: String,
           required: true,
