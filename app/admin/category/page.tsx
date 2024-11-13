@@ -9,7 +9,7 @@ import { Table } from '@components/Table';
 import Title from '@components/Title';
 
 import * as css from './category.css';
-import SubCategoryForm from './sections/SubCategoryForm';
+import SubCategoryForm from './components/SubCategoryForm';
 import useCategory from './useCategory';
 
 import type { CategoryUseFormType } from './useCategory';
