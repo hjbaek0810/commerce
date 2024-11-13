@@ -4,6 +4,17 @@ import { tokens } from './token.css';
 
 const spacingProperties = defineProperties({
   properties: {
+    display: ['flex', 'block', 'inline', 'inline-block', 'none'],
+    flexDirection: ['row', 'column'],
+    justifyContent: [
+      'flex-start',
+      'flex-end',
+      'center',
+      'space-between',
+      'space-around',
+      'space-evenly',
+    ],
+    alignItems: ['center', 'flex-start', 'flex-end'],
     padding: tokens.spacing,
     paddingTop: tokens.spacing,
     paddingBottom: tokens.spacing,
