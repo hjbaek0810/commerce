@@ -1,197 +1,29 @@
 'use client';
 
-import { isEmpty } from 'lodash-es';
-import Image from 'next/image';
-
-import { ProductStatusType } from '@api/utils/types/enum';
 import Button from '@components/Button';
 import Rhf from '@components/Form';
-import { Table } from '@components/Table';
 import Title from '@components/Title';
+import { sprinkles } from '@styles/sprinkles.css';
 
-import * as css from './productRegister.css';
 import useProductRegister from './useProductRegister';
-
-import type { ProductRegisterUseFormType } from './useProductRegister';
+import ProductForm from '../components/ProductForm';
 
 const AdminProduct = () => {
-  const {
-    productForm,
-    saleRate,
-    categories,
-    subCategories,
-    selectedImages,
-    handleCategoryRegisterButton,
-    handleSubmit,
-    validateImage,
-    validateSubCategory,
-    isPending,
-  } = useProductRegister();
+  const { productForm, handleSubmit, isPending } = useProductRegister();
 
   return (
     <>
       <Title>상품 등록</Title>
       <Rhf.Form {...productForm} onSubmit={handleSubmit}>
-        <Table>
-          <Table.Body>
-            <Table.Tr>
-              <Table.Th scope="row">
-                <Rhf.Label name="name" required>
-                  상품명
-                </Rhf.Label>
-              </Table.Th>
-              <Table.Td>
-                <Rhf.Input name="name" required />
-              </Table.Td>
-              <Table.Th scope="row">
-                <Rhf.Label name="quantity" required>
-                  수량
-                </Rhf.Label>
-              </Table.Th>
-              <Table.Td>
-                <Rhf.Input
-                  type="number"
-                  name="quantity"
-                  required
-                  rules={{
-                    min: 0,
-                  }}
-                />
-              </Table.Td>
-            </Table.Tr>
-            <Table.Tr>
-              <Table.Th scope="row">
-                <Rhf.Label name="price" required>
-                  가격
-                </Rhf.Label>
-              </Table.Th>
-              <Table.Td>
-                <Rhf.Input name="price" type="number" required />
-              </Table.Td>
-              <Table.Th scope="row">
-                <Rhf.Label name="salePrice">할인가</Rhf.Label>
-              </Table.Th>
-              <Table.Td>
-                <div className={css.saleWrapper}>
-                  <Rhf.Input<ProductRegisterUseFormType>
-                    name="salePrice"
-                    type="number"
-                    rules={{
-                      validate: (value, { price }) => {
-                        if (Number(value) > Number(price))
-                          return '원가보다 높을 수 없습니다.';
-                      },
-                    }}
-                  />
-                  <span className={css.calculatedSale}>{saleRate}%</span>
-                </div>
-                <Rhf.ErrorMessage name="salePrice" />
-              </Table.Td>
-            </Table.Tr>
-            <Table.Tr>
-              <Table.Th scope="row">
-                <Rhf.Label name="categoryId" required>
-                  카테고리
-                </Rhf.Label>
-              </Table.Th>
-              <Table.Td>
-                {isEmpty(categories) ? (
-                  <Button onClick={handleCategoryRegisterButton}>
-                    카테고리 등록하기
-                  </Button>
-                ) : (
-                  <Rhf.Select name="categoryId" required>
-                    {categories?.map(({ _id, name }) => (
-                      <Rhf.SelectOption key={_id} value={_id}>
-                        {name}
-                      </Rhf.SelectOption>
-                    ))}
-                  </Rhf.Select>
-                )}
-              </Table.Td>
-              <Table.Td colSpan={2}>
-                <Rhf.Radio
-                  name="subCategoryId"
-                  className={css.subCategoryRadioGroup}
-                  rules={{
-                    validate: validateSubCategory,
-                  }}
-                >
-                  {subCategories?.map(sub => (
-                    <Rhf.RadioOption key={sub._id} value={sub._id}>
-                      {sub.name}
-                    </Rhf.RadioOption>
-                  ))}
-                </Rhf.Radio>
-              </Table.Td>
-            </Table.Tr>
-            <Table.Tr>
-              <Table.Th scope="row">
-                <Rhf.Label name="status">상품상태</Rhf.Label>
-              </Table.Th>
-              <Table.Td colSpan={3}>
-                <Rhf.Radio
-                  name="status"
-                  className={css.subCategoryRadioGroup}
-                  required
-                >
-                  <Rhf.RadioOption value={ProductStatusType.PENDING}>
-                    대기
-                  </Rhf.RadioOption>
-                  <Rhf.RadioOption value={ProductStatusType.IN_PROGRESS}>
-                    진행
-                  </Rhf.RadioOption>
-                  <Rhf.RadioOption value={ProductStatusType.STOPPED}>
-                    정지
-                  </Rhf.RadioOption>
-                </Rhf.Radio>
-              </Table.Td>
-            </Table.Tr>
-            <Table.Tr>
-              <Table.Th scope="row">
-                <Rhf.Label name="images">사진첨부</Rhf.Label>
-              </Table.Th>
-              <Table.Td colSpan={3}>
-                <Rhf.FileUpload
-                  name="images"
-                  multiple
-                  accept="image/*"
-                  rules={{
-                    validate: validateImage,
-                  }}
-                />
-                {/* image preview */}
-                {!isEmpty(selectedImages) && (
-                  <>
-                    <p className={css.imagePreviewTitle}>preview</p>
-                    <div className={css.imagePreviewWrapper}>
-                      {selectedImages.map((file, index) => (
-                        <Image
-                          key={index}
-                          className={css.imagePreview}
-                          src={URL.createObjectURL(file)}
-                          alt={file.name}
-                          width={200}
-                          height={150}
-                        />
-                      ))}
-                    </div>
-                  </>
-                )}
-              </Table.Td>
-            </Table.Tr>
-            <Table.Tr>
-              <Table.Th scope="row">
-                <Rhf.Label name="description">설명</Rhf.Label>
-              </Table.Th>
-              <Table.Td colSpan={3}>
-                <Rhf.TextArea name="description" />
-              </Table.Td>
-            </Table.Tr>
-          </Table.Body>
-        </Table>
+        <ProductForm />
 
-        <div className={css.buttonWrapper}>
+        <div
+          className={sprinkles({
+            display: 'flex',
+            justifyContent: 'flex-end',
+            marginTop: 'spacing-040',
+          })}
+        >
           <Button fill size="large" type="submit" disabled={isPending}>
             Submit
           </Button>

@@ -8,7 +8,6 @@ import { v4 as uuidv4 } from 'uuid';
 
 import cloudinary from '@api/config/cloudinaryConfig';
 
-
 type NewFilesType = {
   fileName: string;
   filePath: string;
@@ -17,11 +16,16 @@ type NewFilesType = {
 const CLOUDINARY_FOLDER_NAME = 'next_commerce';
 
 async function uploadImagesToCloudinary(newFiles: NewFilesType) {
-  const multipleImagesPromise = newFiles.map(file =>
-    cloudinary.uploader.upload(file.filePath, {
+  const multipleImagesPromise = newFiles.map(async file => {
+    const uploadResponse = await cloudinary.uploader.upload(file.filePath, {
       folder: CLOUDINARY_FOLDER_NAME,
-    }),
-  );
+    });
+
+    return {
+      ...uploadResponse,
+      name: file.fileName,
+    };
+  });
 
   return await Promise.all(multipleImagesPromise);
 }
