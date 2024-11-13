@@ -5,7 +5,7 @@ import { ColorPalettes } from '@styles/palette';
 import { sprinkles } from '@styles/sprinkles.css';
 import { tokens } from '@styles/token.css';
 
-import type { ComplexStyleRule} from '@vanilla-extract/css';
+import type { ComplexStyleRule } from '@vanilla-extract/css';
 
 export const saleWrapper = style({
   display: 'flex',
@@ -66,11 +66,13 @@ export const deleteImageButton = recipe({
   variants: {
     active: {
       true: {
-        '::after': backdropStyle,
+        selectors: {
+          '&:not(:disabled)::after': backdropStyle,
+        },
       },
       false: {
         selectors: {
-          '&:hover::after': backdropStyle,
+          '&:not(:disabled):hover::after': backdropStyle,
         },
       },
     },

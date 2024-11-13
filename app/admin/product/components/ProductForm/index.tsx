@@ -14,10 +14,9 @@ import useProductForm from './useProductForm';
 import type { ProductUseFormType } from './useProductForm';
 import type { ImageVO } from '@api/product/types/vo';
 
+type ProductFormType = { savedImages?: Array<ImageVO>; editable?: boolean };
 
-type ProductFormType = { savedImages?: Array<ImageVO> };
-
-const ProductForm = ({ savedImages }: ProductFormType) => {
+const ProductForm = ({ savedImages, editable = true }: ProductFormType) => {
   const {
     categories,
     subCategories,
@@ -35,16 +34,16 @@ const ProductForm = ({ savedImages }: ProductFormType) => {
       <Table.Body>
         <Table.Tr>
           <Table.Th scope="row">
-            <Rhf.Label name="name" required>
+            <Rhf.Label name="name" required={editable}>
               상품명
             </Rhf.Label>
           </Table.Th>
           <Table.Td>
             <Rhf.Input name="_id" hidden />
-            <Rhf.Input name="name" required />
+            <Rhf.Input name="name" required={editable} disabled={!editable} />
           </Table.Td>
           <Table.Th scope="row">
-            <Rhf.Label name="quantity" required>
+            <Rhf.Label name="quantity" required={editable}>
               수량
             </Rhf.Label>
           </Table.Th>
@@ -52,7 +51,8 @@ const ProductForm = ({ savedImages }: ProductFormType) => {
             <Rhf.Input
               type="number"
               name="quantity"
-              required
+              required={editable}
+              disabled={!editable}
               rules={{
                 min: 0,
               }}
@@ -61,12 +61,17 @@ const ProductForm = ({ savedImages }: ProductFormType) => {
         </Table.Tr>
         <Table.Tr>
           <Table.Th scope="row">
-            <Rhf.Label name="price" required>
+            <Rhf.Label name="price" required={editable}>
               가격
             </Rhf.Label>
           </Table.Th>
           <Table.Td>
-            <Rhf.Input name="price" type="number" required />
+            <Rhf.Input
+              name="price"
+              type="number"
+              required={editable}
+              disabled={!editable}
+            />
           </Table.Td>
           <Table.Th scope="row">
             <Rhf.Label name="salePrice">할인가</Rhf.Label>
@@ -82,15 +87,18 @@ const ProductForm = ({ savedImages }: ProductFormType) => {
                       return '원가보다 높을 수 없습니다.';
                   },
                 }}
+                disabled={!editable}
               />
-              <span className={css.calculatedSale}>{saleRate}%</span>
+              {!(!editable && !saleRate) && (
+                <span className={css.calculatedSale}>{saleRate}%</span>
+              )}
             </div>
             <Rhf.ErrorMessage name="salePrice" />
           </Table.Td>
         </Table.Tr>
         <Table.Tr>
           <Table.Th scope="row">
-            <Rhf.Label name="categoryId" required>
+            <Rhf.Label name="categoryId" required={editable}>
               카테고리
             </Rhf.Label>
           </Table.Th>
@@ -100,7 +108,11 @@ const ProductForm = ({ savedImages }: ProductFormType) => {
                 카테고리 등록하기
               </Button>
             ) : (
-              <Rhf.Select name="categoryId" required>
+              <Rhf.Select
+                name="categoryId"
+                required={editable}
+                disabled={!editable}
+              >
                 {categories?.map(({ _id, name }) => (
                   <Rhf.SelectOption key={_id} value={_id}>
                     {name}
@@ -116,6 +128,7 @@ const ProductForm = ({ savedImages }: ProductFormType) => {
               rules={{
                 validate: validateSubCategory,
               }}
+              disabled={!editable}
             >
               {subCategories?.map(sub => (
                 <Rhf.RadioOption key={sub._id} value={sub._id}>
@@ -133,7 +146,8 @@ const ProductForm = ({ savedImages }: ProductFormType) => {
             <Rhf.Radio
               name="status"
               className={css.subCategoryRadioGroup}
-              required
+              required={editable}
+              disabled={!editable}
             >
               <Rhf.RadioOption value={ProductStatusType.PENDING}>
                 대기
@@ -147,39 +161,42 @@ const ProductForm = ({ savedImages }: ProductFormType) => {
             </Rhf.Radio>
           </Table.Td>
         </Table.Tr>
-        <Table.Tr>
-          <Table.Th scope="row">
-            <Rhf.Label name="images">이미지 첨부</Rhf.Label>
-          </Table.Th>
-          <Table.Td colSpan={3}>
-            <Rhf.FileUpload
-              name="images"
-              multiple
-              accept="image/*"
-              rules={{
-                validate: validateImage,
-              }}
-            />
-            {/* image preview */}
-            {!isEmpty(selectedImages) && (
-              <>
-                <p className={css.imagePreviewTitle}>preview</p>
-                <div className={css.imagePreviewWrapper}>
-                  {selectedImages.map((file, index) => (
-                    <Image
-                      key={index}
-                      className={css.imagePreview}
-                      src={URL.createObjectURL(file)}
-                      alt={file.name}
-                      width={200}
-                      height={150}
-                    />
-                  ))}
-                </div>
-              </>
-            )}
-          </Table.Td>
-        </Table.Tr>
+        {editable && (
+          <Table.Tr>
+            <Table.Th scope="row">
+              <Rhf.Label name="images">이미지 첨부</Rhf.Label>
+            </Table.Th>
+            <Table.Td colSpan={3}>
+              <Rhf.FileUpload
+                name="images"
+                multiple
+                accept="image/*"
+                rules={{
+                  validate: validateImage,
+                }}
+              />
+              {/* image preview */}
+              {!isEmpty(selectedImages) && (
+                <>
+                  <p className={css.imagePreviewTitle}>preview</p>
+                  <div className={css.imagePreviewWrapper}>
+                    {selectedImages.map((file, index) => (
+                      <Image
+                        key={index}
+                        className={css.imagePreview}
+                        src={URL.createObjectURL(file)}
+                        alt={file.name}
+                        width={200}
+                        height={150}
+                      />
+                    ))}
+                  </div>
+                </>
+              )}
+            </Table.Td>
+          </Table.Tr>
+        )}
+
         {/* (상세페이지) 저장된 이미지 show, delete */}
         {!isEmpty(savedImages) && (
           <Table.Tr>
@@ -193,6 +210,7 @@ const ProductForm = ({ savedImages }: ProductFormType) => {
                   <button
                     key={_id}
                     type="button"
+                    disabled={!editable}
                     className={css.deleteImageButton({
                       active: isImageToBeDeleted(publicId),
                     })}
@@ -207,17 +225,18 @@ const ProductForm = ({ savedImages }: ProductFormType) => {
                       priority
                     />
 
-                    {isImageToBeDeleted(publicId) ? (
-                      <FontAwesomeIcon
-                        icon={faMinus}
-                        className={css.minusIcon}
-                      />
-                    ) : (
-                      <FontAwesomeIcon
-                        icon={faTrash}
-                        className={css.trashIcon}
-                      />
-                    )}
+                    {editable &&
+                      (isImageToBeDeleted(publicId) ? (
+                        <FontAwesomeIcon
+                          icon={faMinus}
+                          className={css.minusIcon}
+                        />
+                      ) : (
+                        <FontAwesomeIcon
+                          icon={faTrash}
+                          className={css.trashIcon}
+                        />
+                      ))}
                   </button>
                 ))}
               </div>
@@ -230,7 +249,7 @@ const ProductForm = ({ savedImages }: ProductFormType) => {
             <Rhf.Label name="description">설명</Rhf.Label>
           </Table.Th>
           <Table.Td colSpan={3}>
-            <Rhf.TextArea name="description" />
+            <Rhf.TextArea name="description" disabled={!editable} />
           </Table.Td>
         </Table.Tr>
       </Table.Body>
