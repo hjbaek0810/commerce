@@ -7,6 +7,7 @@ import { API } from '@api/utils/path';
 import { createQueryString } from '@api/utils/query';
 import { ProductStatusType } from '@api/utils/types/enum';
 import useQueryPagination from '@utils/hooks/useQueryPagination';
+import { PATH } from '@utils/path';
 
 import type { ProductVO } from '@api/product/types/vo';
 import type { PaginatedResponse } from '@api/utils/types/pagination';
@@ -46,7 +47,7 @@ const useProductList = () => {
   };
 
   const handleTableRowClick = (id: string) => {
-    router.push(`/admin/product/${id}`);
+    router.push(PATH.ADMIN.PRODUCT.DETAIL(id));
   };
 
   return {

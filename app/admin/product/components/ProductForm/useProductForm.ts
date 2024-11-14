@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 
 import { fetchData } from '@api/utils/fetch';
 import { API } from '@api/utils/path';
+import { PATH } from '@utils/path';
 
 import type { CategoryVO, SubCategoryVO } from '@api/category/types/vo';
 import type { CreateProduct } from '@api/product/types/dto';
@@ -95,7 +96,7 @@ const useProductForm = () => {
     calculateSaleRate();
   }, [calculateSaleRate]);
 
-  const handleCategoryRegisterButton = () => router.push('/admin/category');
+  const handleCategoryRegisterButton = () => router.push(PATH.ADMIN.CATEGORY);
 
   const validateSubCategory = (value: string) => {
     if (!value && subCategories?.length > 0) return false;

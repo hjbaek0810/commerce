@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { fetchData } from '@api/utils/fetch';
 import { API } from '@api/utils/path';
 import { ProductStatusType } from '@api/utils/types/enum';
+import { PATH } from '@utils/path';
 
 import { uploadImagesAndGetUrls } from '../services';
 
@@ -66,7 +67,7 @@ const useProductRegister = () => {
         await toast.promise(
           async () => {
             await saveProductToDB(productData);
-            router.push('/admin/product');
+            router.push(PATH.ADMIN.PRODUCT.LIST);
           },
           {
             pending: 'in progress..',

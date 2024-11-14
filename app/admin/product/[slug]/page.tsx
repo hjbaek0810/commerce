@@ -8,8 +8,6 @@ import { sprinkles } from '@styles/sprinkles.css';
 import useProductDetail from './useProductDetail';
 import ProductForm from '../components/ProductForm';
 
-// TODO: 삭제, 뒤로가기 기능 , 로딩표시
-
 const ProductDetail = () => {
   const {
     productForm,
