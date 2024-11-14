@@ -39,7 +39,8 @@ const ProductForm = ({ savedImages, editable = true }: ProductFormType) => {
             </Rhf.Label>
           </Table.Th>
           <Table.Td>
-            <Rhf.Input name="_id" hidden />
+            {/* detail */}
+            {savedImages && <Rhf.Input name="_id" hidden />}
             <Rhf.Input name="name" required={editable} disabled={!editable} />
           </Table.Td>
           <Table.Th scope="row">
