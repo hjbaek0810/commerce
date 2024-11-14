@@ -2,6 +2,7 @@ import type { ProductStatusType } from '@api/utils/types/enum';
 
 export type CreateProduct = {
   name: string;
+  quantity: number;
   price: number;
   salePrice: number | null;
   categoryIds: {

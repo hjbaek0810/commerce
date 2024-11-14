@@ -8,13 +8,18 @@ import { sprinkles } from '@styles/sprinkles.css';
 import useProductDetail from './useProductDetail';
 import ProductForm from '../components/ProductForm';
 
+// TODO: 삭제, 뒤로가기 기능 , 로딩표시
+
 const ProductDetail = () => {
   const {
     productForm,
     savedImages,
     editable,
+    isPending,
     handleEditClick,
     handleCancelClick,
+    handleBackClick,
+    handleDeleteClick,
     handleSubmit,
   } = useProductDetail();
 
@@ -33,15 +38,19 @@ const ProductDetail = () => {
         >
           {editable ? (
             <>
-              <Button color="secondary" onClick={handleCancelClick}>
+              <Button
+                size="medium"
+                color="secondary"
+                onClick={handleCancelClick}
+              >
                 Cancel
               </Button>
-              <Button fill type="submit">
+              <Button size="medium" fill type="submit" disabled={isPending}>
                 Save
               </Button>
             </>
           ) : (
-            <Button fill onClick={handleEditClick}>
+            <Button size="medium" fill onClick={handleEditClick}>
               Edit
             </Button>
           )}
@@ -52,10 +61,22 @@ const ProductDetail = () => {
         <div
           className={sprinkles({
             display: 'flex',
-            justifyContent: 'flex-end',
+            justifyContent: 'space-between',
             marginTop: 'spacing-040',
           })}
-         />
+        >
+          <Button size="large" onClick={handleBackClick}>
+            돌아가기
+          </Button>
+          <Button
+            size="large"
+            fill
+            onClick={handleDeleteClick}
+            disabled={isPending}
+          >
+            삭제
+          </Button>
+        </div>
       </Rhf.Form>
     </>
   );

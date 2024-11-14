@@ -63,18 +63,22 @@ const useProductRegister = () => {
           })),
         };
 
-        await saveProductToDB(productData);
-
-        router.push('/admin/product');
+        await toast.promise(
+          async () => {
+            await saveProductToDB(productData);
+            router.push('/admin/product');
+          },
+          {
+            pending: 'in progress..',
+            error: '상품 등록에 실패하였습니다. 잠시 후 시도해주시길 바랍니다.',
+          },
+        );
       } catch (error) {
         console.error(error);
 
-        toast.error(
-          '상품 등록에 실패하였습니다. 잠시 후 시도해주시길 바랍니다.',
-          {
-            position: 'bottom-right',
-          },
-        );
+        toast.error('상품 등록 중 오류가 발생했습니다. 다시 시도해주세요.', {
+          position: 'bottom-right',
+        });
       }
     });
   };

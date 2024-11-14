@@ -81,7 +81,7 @@ export async function uploadImages(files: FormData) {
   } catch (error) {
     console.error(error);
 
-    return { message: 'Failed to upload the images.' };
+    throw new Error('Failed to upload the images.');
   }
 }
 
@@ -97,7 +97,7 @@ export async function getAllImages() {
   } catch (error) {
     console.error(error);
 
-    return { message: 'Failed to retrieve the uploaded images.' };
+    throw new Error('Failed to retrieve the uploaded images.');
   }
 }
 
@@ -107,6 +107,6 @@ export async function deleteImages(publicId: string) {
   } catch (error) {
     console.error(error);
 
-    return { message: 'Failed to delete the uploaded image.' };
+    throw new Error('Failed to delete the uploaded image.');
   }
 }
