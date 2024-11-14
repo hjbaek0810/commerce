@@ -2,7 +2,7 @@ import { createSprinkles, defineProperties } from '@vanilla-extract/sprinkles';
 
 import { tokens } from './token.css';
 
-const spacingProperties = defineProperties({
+const displayProperties = defineProperties({
   properties: {
     display: ['flex', 'block', 'inline', 'inline-block', 'none'],
     flexDirection: ['row', 'column'],
@@ -15,6 +15,17 @@ const spacingProperties = defineProperties({
       'space-evenly',
     ],
     alignItems: ['center', 'flex-start', 'flex-end'],
+  },
+});
+
+const overflowProperties = defineProperties({
+  properties: {
+    overflow: ['auto', 'hidden', 'scroll'],
+  },
+});
+
+const spacingProperties = defineProperties({
+  properties: {
     padding: tokens.spacing,
     paddingTop: tokens.spacing,
     paddingBottom: tokens.spacing,
@@ -60,6 +71,8 @@ const zIndexProperties = defineProperties({
 });
 
 export const sprinkles = createSprinkles(
+  displayProperties,
+  overflowProperties,
   spacingProperties,
   fontProperties,
   sizingProperties,
