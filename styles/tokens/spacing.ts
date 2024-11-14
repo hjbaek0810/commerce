@@ -17,6 +17,7 @@ const spacing = {
   'spacing-096': '9.6rem',
   'spacing-128': '12.8rem',
   'spacing-160': '16rem',
+  'spacing-auto': 'auto',
   inherit: 'inherit',
 } as const;
 

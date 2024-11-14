@@ -2,7 +2,7 @@ import { ToastContainer } from 'react-toastify';
 
 import { config } from '@fortawesome/fontawesome-svg-core';
 
-import { sprinkles } from '@styles/sprinkles.css';
+import ModalsProvider from '@utils/modals/provider';
 
 import type { Metadata } from 'next';
 
@@ -11,8 +11,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import '@styles/global.css';
 
 import '@fortawesome/fontawesome-svg-core/styles.css';
-
-import ModalsProvider from '@utils/modals/provider';
 
 config.autoAddCss = false;
 
@@ -30,15 +28,8 @@ const RootLayout = ({
     <html lang="en">
       <body>
         <ModalsProvider>
-          <div
-            className={sprinkles({
-              paddingX: 'spacing-024',
-              paddingY: 'spacing-032',
-              minHeight: 'sizing-full-screen',
-            })}
-          >
-            {children}
-          </div>
+          {children}
+
           <ToastContainer
             position="bottom-right"
             autoClose={5000} // 자동 off 시간
