@@ -50,6 +50,7 @@ const fontProperties = defineProperties({
   properties: {
     fontSize: tokens.fontSize,
     fontWeight: ['bold', 'normal'],
+    textAlign: ['start', 'center', 'end'],
   },
 });
 

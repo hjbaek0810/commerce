@@ -4,6 +4,7 @@ import Image from 'next/image';
 
 import Pagination from '@components/Pagination';
 import { Table } from '@components/Table';
+import { sprinkles } from '@styles/sprinkles.css';
 import { formatNumber } from '@utils/formatter/number';
 
 import useProductList from './useProductList';
@@ -27,6 +28,16 @@ const List = () => {
           </Table.Tr>
         </Table.Header>
         <Table.Body>
+          {products.length === 0 && (
+            <Table.Tr>
+              <Table.Td
+                colSpan={6}
+                className={sprinkles({ textAlign: 'center' })}
+              >
+                no data available
+              </Table.Td>
+            </Table.Tr>
+          )}
           {products.map(
             ({
               _id,
