@@ -4,22 +4,24 @@ import { useFieldArray, useForm } from 'react-hook-form';
 import { isEmpty } from 'lodash-es';
 
 import {
+  useAdminCategoriesQuery,
   useCategoriesMutation,
-  useCategoriesQuery,
 } from '@services/queries/category';
 
-import type { CreateCategory } from '@api/category/types/dto';
+import type { AdminCreateCategory } from '@api/admin/category/types/dto';
 
-export type CategoryUseFormType = { categories: CreateCategory[] };
+export type CategoryUseFormType = {
+  categories: Array<AdminCreateCategory>;
+};
 
-const defaultValues: CreateCategory = {
+const defaultValues: AdminCreateCategory = {
   _id: '',
   name: '',
   subCategories: [],
 };
 
 const useCategory = () => {
-  const { data: categories } = useCategoriesQuery();
+  const { data: categories, isPending } = useAdminCategoriesQuery();
 
   const [editable, setEditable] = useState<boolean>(false);
   const { mutate: updateCategories } = useCategoriesMutation();
@@ -64,6 +66,7 @@ const useCategory = () => {
     categoryForm,
     fields,
     editable,
+    isPending,
     handleCategoryAddClick,
     handleCategoryDeleteClick,
     handleEditClick,

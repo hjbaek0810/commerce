@@ -1,7 +1,9 @@
 import { useFieldArray, useFormContext } from 'react-hook-form';
 
+import type { CategoryUseFormType } from '../../useCategory';
+
 const useSubCategoryForm = (nestIndex: number) => {
-  const { control } = useFormContext();
+  const { control } = useFormContext<CategoryUseFormType>();
   const { fields, remove, append } = useFieldArray({
     control,
     name: `categories.${nestIndex}.subCategories`,
@@ -12,7 +14,9 @@ const useSubCategoryForm = (nestIndex: number) => {
   };
 
   const handleSubCategoryItemAddClick = () => {
-    append('');
+    append({
+      name: '',
+    });
   };
 
   return {

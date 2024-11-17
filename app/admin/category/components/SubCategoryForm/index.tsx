@@ -43,7 +43,9 @@ const SubCategoryForm = ({ nestIndex, editable }: SubCategoryFormPropsType) => {
               />
               <button
                 type="button"
-                className={css.removeButton({ show: editable })}
+                className={css.removeButton({
+                  show: editable && item.deletable,
+                })}
                 onClick={() => handleSubCategoryItemDeleteClick(index)}
               >
                 <FontAwesomeIcon icon={faXmark} className={css.buttonIcon} />

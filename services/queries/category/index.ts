@@ -7,7 +7,8 @@ import { fetchData } from '@services/utils/fetch';
 import { API } from '@services/utils/path';
 import { CategoryExceptionCode } from '@services/utils/types/exception';
 
-import type { CreateCategory } from '@api/category/types/dto';
+import type { AdminCreateCategory } from '@api/admin/category/types/dto';
+import type { AdminCategoryVO } from '@api/admin/category/types/vo';
 import type { CategoryVO } from '@api/category/types/vo';
 
 export const useCategoriesQuery = () => {
@@ -22,12 +23,24 @@ export const useCategoriesQuery = () => {
   };
 };
 
+export const useAdminCategoriesQuery = () => {
+  const { data, ...rest } = useQuery({
+    queryKey: ['categories', 'admin'],
+    queryFn: () => fetchData<Array<AdminCategoryVO>>(API.ADMIN.CATEGORY, 'GET'),
+  });
+
+  return {
+    ...rest,
+    data: data || [],
+  };
+};
+
 export const useCategoriesMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (categories: CreateCategory[]) =>
-      fetchData<Array<CategoryVO>>(API.CATEGORY, 'PUT', {
+    mutationFn: (categories: AdminCreateCategory[]) =>
+      fetchData<Array<CategoryVO>>(API.ADMIN.CATEGORY, 'PUT', {
         data: categories.map(category => ({
           ...category,
           subCategories: category.subCategories?.filter(
@@ -42,7 +55,7 @@ export const useCategoriesMutation = () => {
       }),
     onError: error => {
       if (isApiError(error)) {
-        if (error.code === CategoryExceptionCode.CATEGORY_REFERENCED) {
+        if (error.code === CategoryExceptionCode.ADMIN_CATEGORY_REFERENCED) {
           toast.error(
             '삭제하려는 카테고리 중 일부가 등록된 상품에 포함되어 있어 삭제할 수 없습니다. 관련 상품을 먼저 수정하거나 삭제해주세요.',
           );

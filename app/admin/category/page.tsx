@@ -17,6 +17,7 @@ import type { CategoryUseFormType } from './useCategory';
 const AdminCategory = () => {
   const {
     editable,
+    isPending,
     categoryForm,
     fields,
     handleCategoryAddClick,
@@ -29,6 +30,15 @@ const AdminCategory = () => {
   return (
     <>
       <Title>Manage Categories</Title>
+      {editable && (
+        <p className={css.deleteMessage}>
+          삭제 버튼이 비활성화되었거나 보이지 않는 경우, 해당 카테고리는 이미
+          상품에 사용 중인 상태입니다.
+          <br />
+          먼저 카테고리가 포함된 상품을 수정하거나 삭제해야 카테고리를 삭제할 수
+          있습니다.
+        </p>
+      )}
       <Rhf.Form {...categoryForm} onSubmit={handleSaveSubmit}>
         <div className={css.categoryForm}>
           <div className={css.categoryButtonWrapper}>
@@ -42,7 +52,7 @@ const AdminCategory = () => {
                 </Button>
               </>
             ) : (
-              <Button fill onClick={handleEditClick}>
+              <Button fill onClick={handleEditClick} disabled={isPending}>
                 Edit
               </Button>
             )}
@@ -93,7 +103,7 @@ const AdminCategory = () => {
                       onClick={() => {
                         handleCategoryDeleteClick(index);
                       }}
-                      disabled={fields.length === 1}
+                      disabled={fields.length === 1 || !item.deletable}
                     >
                       <FontAwesomeIcon
                         icon={faXmark}

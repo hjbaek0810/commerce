@@ -2,6 +2,7 @@ import { style } from '@vanilla-extract/css';
 import { recipe } from '@vanilla-extract/recipes';
 
 import { ColorPalettes } from '@styles/palette';
+import { sprinkles } from '@styles/sprinkles.css';
 import { tokens } from '@styles/token.css';
 
 export const categoryForm = style({
@@ -37,6 +38,10 @@ export const removeButton = recipe({
     backgroundColor: '#eae5dd',
     borderRadius: '50%',
     visibility: 'hidden',
+
+    ':disabled': {
+      opacity: '0.4',
+    },
   },
   variants: {
     show: {
@@ -133,3 +138,15 @@ export const categoryItemAddButton = style({
     backgroundColor: ColorPalettes.Grey['90'],
   },
 });
+
+export const deleteMessage = style([
+  sprinkles({
+    padding: 'spacing-016',
+    fontSize: 'font-size-014',
+    marginBottom: 'spacing-024',
+  }),
+  {
+    color: ColorPalettes.Grey['20'],
+    backgroundColor: ColorPalettes.Red['80'],
+  },
+]);
