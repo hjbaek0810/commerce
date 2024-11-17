@@ -39,8 +39,10 @@ export async function PUT(req: NextRequest) {
   try {
     await connectDB();
 
-    const existingCategories = await CategoryModel.find({});
-    const existingSubCategories = await SubCategoryModel.find({});
+    const [existingCategories, existingSubCategories] = await Promise.all([
+      CategoryModel.find({}, '_id'),
+      SubCategoryModel.find({}, '_id'),
+    ]);
 
     const existingCategoryIds = existingCategories.map(category =>
       category._id.toString(),
@@ -50,13 +52,16 @@ export async function PUT(req: NextRequest) {
     );
 
     const newCategoryIds = data.map(item => item._id).filter(id => id); // 새로 입력된 카테고리
+    const newSubCategoryIds = data
+      .flatMap(item => item.subCategories.map(subCategory => subCategory._id))
+      .filter(id => id); // 새로 입력된 서브 카테고리
 
     // 삭제할 카테고리 및 서브카테고리 ID
     const idsToDelete = existingCategoryIds.filter(
       _id => !newCategoryIds.includes(_id),
     );
     const subCategoryIdsToDelete = existingSubCategoryIds.filter(
-      _id => !newCategoryIds.includes(_id),
+      _id => !newSubCategoryIds.includes(_id),
     );
 
     const [productsWithCategories, productsWithSubCategories] =
