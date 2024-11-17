@@ -19,58 +19,56 @@ export async function GET() {
   try {
     await connectDB();
 
-    const categories = (await CategoryModel.find()
+    const categories = await CategoryModel.find()
       .populate({
         path: 'subCategories',
+        select: '_id name',
         model: SubCategoryModel,
       })
-      .lean()) as Array<AdminCategoryVO>;
+      .lean<AdminCategoryVO[]>();
 
-    const categoryIds = categories.map(category => category._id.toString());
-    const subCategoryIds = categories.flatMap(item =>
-      item.subCategories.map(subCategory => subCategory._id.toString()),
-    );
-
-    if (categoryIds.length === 0) {
+    if (!categories.length) {
       return NextResponse.json([], { status: 200 });
     }
 
-    const productsWithCategory = await ProductModel.find({
-      $or: [
-        { 'categoryIds._id': { $in: categoryIds } },
-        { 'categoryIds.subCategoryId': { $in: subCategoryIds } },
-      ],
-    }).select('categoryIds');
+    // 카테고리와 서브카테고리 ID 추출
+    const categoryIds = categories.map(category => category._id.toString());
+    const subCategoryIds = categories.flatMap(category =>
+      category.subCategories.map(subCategory => subCategory._id.toString()),
+    );
 
-    const notDeletableCategoryIds = productsWithCategory.map(product => ({
-      categoryId: product.categoryIds._id.toString(),
-      ...(product.categoryIds.subCategoryId && {
-        subCategoryId: product.categoryIds.subCategoryId.toString(),
-      }),
-    }));
+    // 해당 카테고리/서브카테고리를 사용하는 상품 조회
+    const products = await ProductModel.find(
+      {
+        $or: [
+          { 'categoryIds._id': { $in: categoryIds } },
+          { 'categoryIds.subCategoryId': { $in: subCategoryIds } },
+        ],
+      },
+      'categoryIds',
+    ).lean();
 
-    const uniqueNotDeletableCategoryIds = [
-      ...new Set(notDeletableCategoryIds.map(item => item.categoryId)),
-    ];
+    const notDeletableCategoryMap = new Map();
+    const notDeletableSubCategoryMap = new Map();
 
-    const uniqueNotDeletableSubCategoryIds = [
-      ...new Set(
-        notDeletableCategoryIds
-          .filter(item => item.subCategoryId)
-          .map(item => item.subCategoryId),
-      ),
-    ];
+    products.forEach(product => {
+      if (product.categoryIds._id) {
+        notDeletableCategoryMap.set(product.categoryIds._id.toString(), true);
+      }
+      if (product.categoryIds.subCategoryId) {
+        notDeletableSubCategoryMap.set(
+          product.categoryIds.subCategoryId.toString(),
+          true,
+        );
+      }
+    });
 
     const response = categories.map(category => ({
       ...category,
-      deletable: !uniqueNotDeletableCategoryIds.includes(
-        category._id.toString(),
-      ),
+      deletable: !notDeletableCategoryMap.has(category._id.toString()),
       subCategories: category.subCategories.map(subCategory => ({
         ...subCategory,
-        deletable: !uniqueNotDeletableSubCategoryIds.includes(
-          subCategory._id.toString(),
-        ),
+        deletable: !notDeletableSubCategoryMap.has(subCategory._id.toString()),
       })),
     }));
 
@@ -81,7 +79,7 @@ export async function GET() {
     console.error(error);
 
     return NextResponse.json({
-      message: 'Failed to load categories.',
+      message: 'Failed to load admin categories.',
 
       status: 400,
     });
@@ -140,42 +138,49 @@ export async function PUT(req: NextRequest) {
       );
     }
 
-    // 삭제
+    const deleteOperations = [];
     if (idsToDelete.length) {
-      await CategoryModel.deleteMany({
-        _id: { $in: idsToDelete },
-      });
+      deleteOperations.push(
+        CategoryModel.deleteMany({ _id: { $in: idsToDelete } }),
+      );
+    }
+    if (subCategoryIdsToDelete.length) {
+      deleteOperations.push(
+        SubCategoryModel.deleteMany({ _id: { $in: subCategoryIdsToDelete } }),
+      );
     }
 
-    if (subCategoryIdsToDelete.length) {
-      await SubCategoryModel.deleteMany({
-        _id: { $in: subCategoryIdsToDelete },
-      });
-    }
+    // 삭제 처리
+    await Promise.all(deleteOperations);
 
     // 카테고리와 서브카테고리 생성 및 업데이트 처리
+    const bulkCategoryOps = [];
+    const bulkSubCategoryOps = [];
+
     for (const item of data) {
       let categoryId = item._id;
+
       const subCategoryIds = [];
 
       // 카테고리
       if (categoryId) {
         // 기존 카테고리 업데이트
-        await CategoryModel.updateOne(
-          { _id: categoryId },
-          {
-            $set: { name: item.name },
+        bulkCategoryOps.push({
+          updateOne: {
+            filter: { _id: categoryId },
+            update: { $set: { name: item.name } },
           },
-          { upsert: true },
-        );
+        });
       } else {
         // 새 카테고리 생성
         const newCategory = new CategoryModel({
           name: item.name,
           subCategories: [], // 처음엔 빈 배열로 시작
         });
+
+        // 새 카테고리 저장 후 _id 받기
         const savedCategory = await newCategory.save();
-        categoryId = savedCategory._id; // 새로 생성된 카테고리 _id
+        categoryId = savedCategory._id; // 새로 생성된 카테고리 ID를 가져옴
       }
 
       // 서브카테고리
@@ -183,33 +188,46 @@ export async function PUT(req: NextRequest) {
         for (const subCategory of item.subCategories) {
           if (subCategory._id) {
             // 기존 서브카테고리 업데이트
-            await SubCategoryModel.updateOne(
-              { _id: subCategory._id },
-              {
-                $set: {
-                  name: subCategory.name,
-                  categoryId,
-                },
+            bulkSubCategoryOps.push({
+              updateOne: {
+                filter: { _id: subCategory._id },
+                update: { $set: { name: subCategory.name, categoryId } },
               },
-              { upsert: true },
-            );
+            });
+
             subCategoryIds.push(subCategory._id);
           } else {
             // 새 서브카테고리 생성
-            const newSubCategory = new SubCategoryModel({
-              name: subCategory.name,
-              categoryId,
-            });
-            const savedSubCategory = await newSubCategory.save();
-            subCategoryIds.push(savedSubCategory._id); // 새로 생성된 서브카테고리 _id
+            if (categoryId) {
+              const newSubCategory = new SubCategoryModel({
+                name: subCategory.name,
+                categoryId,
+              });
+
+              const savedSubCategory = await newSubCategory.save();
+              subCategoryIds.push(savedSubCategory._id);
+            }
           }
         }
+      }
 
-        // 카테고리 업데이트 시 서브카테고리 _id 연결
-        await CategoryModel.updateOne(
-          { _id: categoryId },
-          { $set: { subCategories: subCategoryIds } },
-        );
+      if (subCategoryIds.length > 0) {
+        bulkCategoryOps.push({
+          updateOne: {
+            filter: { _id: categoryId },
+            update: {
+              $set: { subCategories: subCategoryIds },
+            },
+          },
+        });
+      }
+
+      if (bulkCategoryOps.length > 0) {
+        await CategoryModel.bulkWrite(bulkCategoryOps);
+      }
+
+      if (bulkSubCategoryOps.length > 0) {
+        await SubCategoryModel.bulkWrite(bulkSubCategoryOps);
       }
     }
 
