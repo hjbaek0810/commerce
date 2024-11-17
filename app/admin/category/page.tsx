@@ -103,7 +103,7 @@ const AdminCategory = () => {
                       onClick={() => {
                         handleCategoryDeleteClick(index);
                       }}
-                      disabled={fields.length === 1 || !item.deletable}
+                      disabled={fields.length === 1 || item.deletable === false}
                     >
                       <FontAwesomeIcon
                         icon={faXmark}
