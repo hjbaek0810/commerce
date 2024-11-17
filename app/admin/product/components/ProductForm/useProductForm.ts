@@ -61,8 +61,12 @@ const useProductForm = () => {
       category => category._id === selectedCategoryId,
     );
 
+    if (category?.subCategories.length === 1) {
+      setValue('subCategoryId', category.subCategories[0]._id);
+    }
+
     setSubCategories(category?.subCategories ?? []);
-  }, [selectedCategoryId, categories]);
+  }, [selectedCategoryId, categories, setValue]);
 
   const calculateSaleRate = useCallback(() => {
     if (
