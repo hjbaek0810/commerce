@@ -1,37 +1,12 @@
-import { useCallback, useEffect, useState } from 'react';
-
+import { useProductListQuery } from '@queries/product';
 import { useRouter } from 'next/navigation';
 
-import { fetchData } from '@api/utils/fetch';
-import { API } from '@api/utils/path';
-import { createQueryString } from '@api/utils/query';
-import { ProductStatusType } from '@api/utils/types/enum';
-import useQueryPagination from '@utils/hooks/useQueryPagination';
+import { ProductStatusType } from '@api/utils/types/status';
 import { PATH } from '@utils/path';
 
-import type { ProductVO } from '@api/product/types/vo';
-import type { PaginatedResponse } from '@api/utils/types/pagination';
-
-type ProductsType = PaginatedResponse<'products', ProductVO>;
-
 const useProductList = () => {
-  const [products, setProducts] = useState<ProductsType>();
-  const { paginationProps } = useQueryPagination();
   const router = useRouter();
-
-  const fetchProducts = useCallback(() => {
-    fetchData<ProductsType>(
-      createQueryString(API.PRODUCT.BASE, {
-        page: paginationProps.currentPage,
-        limit: paginationProps.currentLimit,
-      }),
-      'GET',
-    ).then(data => setProducts(data));
-  }, [paginationProps.currentPage, paginationProps.currentLimit]);
-
-  useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
+  const { data: products, paginationProps } = useProductListQuery();
 
   const getStatusLabel = (status: ProductStatusType) => {
     switch (status) {
@@ -51,11 +26,8 @@ const useProductList = () => {
   };
 
   return {
-    paginationProps: {
-      ...paginationProps,
-      totalCount: products?.totalCount || 0,
-    },
-    products: products?.products || [],
+    paginationProps,
+    products: products,
     getStatusLabel,
     handleTableRowClick,
   };

@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { isEmpty } from 'lodash-es';
 import Image from 'next/image';
 
-import { ProductStatusType } from '@api/utils/types/enum';
+import { ProductStatusType } from '@api/utils/types/status';
 import Button from '@components/Button';
 import Rhf from '@components/Form';
 import { Table } from '@components/Table';

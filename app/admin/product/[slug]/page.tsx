@@ -63,7 +63,7 @@ const ProductDetail = () => {
             marginTop: 'spacing-040',
           })}
         >
-          <Button size="large" onClick={handleBackClick}>
+          <Button size="large" onClick={handleBackClick} disabled={isPending}>
             돌아가기
           </Button>
           <Button

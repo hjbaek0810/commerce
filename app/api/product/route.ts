@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 
-import { deleteImages } from '@actions/upload';
 import connectDB from '@api/config';
 import CategoryModel from '@api/models/category';
 import ProductModel from '@api/models/product';
@@ -103,12 +102,9 @@ export async function GET(req: NextRequest) {
 export async function Delete(req: NextRequest) {
   try {
     await connectDB();
-    const { _id, publicId } = await req.json();
+    const { _id } = await req.json();
 
-    await Promise.all([
-      ProductModel.findOneAndDelete({ _id }),
-      deleteImages(publicId),
-    ]);
+    await ProductModel.findOneAndDelete({ _id });
 
     return NextResponse.json({ message: 'success', status: 200 });
   } catch (error) {

@@ -1,4 +1,4 @@
-import type { ProductStatusType } from '@api/utils/types/enum';
+import type { ProductStatusType } from '@api/utils/types/status';
 
 export interface ImageVO {
   _id: string;

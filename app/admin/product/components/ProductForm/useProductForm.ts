@@ -1,13 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
+import { useCategoriesQuery } from '@queries/category';
 import { useRouter } from 'next/navigation';
 
-import { fetchData } from '@api/utils/fetch';
-import { API } from '@api/utils/path';
 import { PATH } from '@utils/path';
 
-import type { CategoryVO, SubCategoryVO } from '@api/category/types/vo';
+import type { SubCategoryVO } from '@api/category/types/vo';
 import type { CreateProduct } from '@api/product/types/dto';
 
 export type ProductUseFormType = Omit<
@@ -23,8 +22,8 @@ export type ProductUseFormType = Omit<
 
 const useProductForm = () => {
   const router = useRouter();
+  const { data: categories } = useCategoriesQuery();
   const [saleRate, setSaleRate] = useState<number>(0);
-  const [categories, setCategories] = useState<Array<CategoryVO>>();
 
   const [subCategories, setSubCategories] = useState<Array<SubCategoryVO>>([]);
 
@@ -54,20 +53,6 @@ const useProductForm = () => {
     name: 'deleteImageIds',
     control,
   });
-
-  useEffect(() => {
-    fetchData<Array<CategoryVO>>(API.CATEGORY, 'GET').then(data =>
-      setCategories(
-        data.map(({ _id, name, subCategories }) => {
-          return {
-            _id,
-            name,
-            subCategories,
-          };
-        }),
-      ),
-    );
-  }, []);
 
   useEffect(() => {
     if (!categories || !selectedCategoryId) return;

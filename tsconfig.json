@@ -19,7 +19,7 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@actions/*": ["actions/*"],
+      "@services/*": ["services/*"],
       "@components/*": ["components/*"],
       "@styles/*": ["styles/*"],
       "@utils/*": ["utils/*"],

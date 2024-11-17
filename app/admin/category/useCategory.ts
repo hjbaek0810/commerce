@@ -1,13 +1,11 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 
+import { useCategoriesMutation, useCategoriesQuery } from '@queries/category';
 import { isEmpty } from 'lodash-es';
 
-import { fetchData } from '@api/utils/fetch';
-import { API } from '@api/utils/path';
 
 import type { CreateCategory } from '@api/category/types/dto';
-import type { CategoryVO } from '@api/category/types/vo';
 
 export type CategoryUseFormType = { categories: CreateCategory[] };
 
@@ -16,13 +14,16 @@ const defaultValues: CreateCategory = {
   name: '',
   subCategories: [],
 };
+
 const useCategory = () => {
+  const { data: categories } = useCategoriesQuery();
+
   const [editable, setEditable] = useState<boolean>(false);
-  const [categories, setCategories] = useState<Array<CreateCategory>>();
+  const { mutate: updateCategories } = useCategoriesMutation();
 
   const categoryForm = useForm<CategoryUseFormType>({
     values: {
-      categories: categories || [defaultValues],
+      categories: isEmpty(categories) ? [defaultValues] : categories,
     },
   });
 
@@ -30,26 +31,6 @@ const useCategory = () => {
     name: 'categories',
     control: categoryForm.control,
   });
-
-  const fetchCategory = useCallback(() => {
-    fetchData<Array<CategoryVO>>(API.CATEGORY, 'GET').then(data =>
-      setCategories(
-        isEmpty(data)
-          ? [defaultValues]
-          : data.map(({ _id, name, subCategories }) => {
-              return {
-                _id,
-                name,
-                subCategories,
-              };
-            }),
-      ),
-    );
-  }, []);
-
-  useEffect(() => {
-    fetchCategory();
-  }, [fetchCategory]);
 
   const handleEditClick = () => {
     setEditable(true);
@@ -63,16 +44,8 @@ const useCategory = () => {
   };
 
   const handleSaveSubmit = (data: CategoryUseFormType) => {
-    fetchData<Array<CategoryVO>>(API.CATEGORY, 'PUT', {
-      data: data.categories.map(category => ({
-        ...category,
-        subCategories: category.subCategories?.filter(
-          sub => sub.name?.length > 0,
-        ),
-      })),
-    }).then(() => {
-      setEditable(false);
-      fetchCategory();
+    updateCategories(data.categories, {
+      onSuccess: () => setEditable(false),
     });
   };
 

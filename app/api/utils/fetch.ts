@@ -1,3 +1,5 @@
+import { ApiError } from './error';
+
 type FetchDataOptionsType<U> = {
   data?: U;
   headers?: HeadersInit;
@@ -24,7 +26,13 @@ export async function fetchData<T, U = unknown>(
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.message || '서버 요청 실패');
+
+      const error = new ApiError(
+        errorData.message || '서버 요청 실패',
+        errorData.code || 'UNKNOWN_ERROR',
+      );
+
+      throw error;
     }
 
     return (await response.json()) as Promise<T>;
