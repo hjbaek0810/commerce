@@ -2,10 +2,10 @@ import { toast } from 'react-toastify';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { isApiError } from '@api/utils/error';
-import { fetchData } from '@api/utils/fetch';
-import { API } from '@api/utils/path';
-import { CategoryExceptionCode } from 'services/exception';
+import { isApiError } from '@services/utils/error';
+import { fetchData } from '@services/utils/fetch';
+import { API } from '@services/utils/path';
+import { CategoryExceptionCode } from '@services/utils/types/exception';
 
 import type { CreateCategory } from '@api/category/types/dto';
 import type { CategoryVO } from '@api/category/types/vo';

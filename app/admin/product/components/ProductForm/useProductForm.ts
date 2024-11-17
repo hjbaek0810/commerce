@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
-import { useCategoriesQuery } from '@queries/category';
 import { useRouter } from 'next/navigation';
 
+import { useCategoriesQuery } from '@services/queries/category';
 import { PATH } from '@utils/path';
 
 import type { SubCategoryVO } from '@api/category/types/vo';

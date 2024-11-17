@@ -1,4 +1,4 @@
-import type { ProductStatusType } from '@api/utils/types/status';
+import type { ProductStatusType } from '@utils/constants/product';
 
 export type CreateProduct = {
   name: string;

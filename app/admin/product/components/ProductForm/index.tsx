@@ -3,10 +3,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { isEmpty } from 'lodash-es';
 import Image from 'next/image';
 
-import { ProductStatusType } from '@api/utils/types/status';
 import Button from '@components/Button';
 import Rhf from '@components/Form';
 import { Table } from '@components/Table';
+import { ProductStatusType } from '@utils/constants/product';
 
 import * as css from './productForm.css';
 import useProductForm from './useProductForm';

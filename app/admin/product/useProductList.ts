@@ -1,7 +1,7 @@
-import { useProductListQuery } from '@queries/product';
 import { useRouter } from 'next/navigation';
 
-import { ProductStatusType } from '@api/utils/types/status';
+import { useProductListQuery } from '@services/queries/product';
+import { ProductStatusType } from '@utils/constants/product';
 import { PATH } from '@utils/path';
 
 const useProductList = () => {

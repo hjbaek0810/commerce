@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 
-import { useCategoriesMutation, useCategoriesQuery } from '@queries/category';
 import { isEmpty } from 'lodash-es';
 
+import {
+  useCategoriesMutation,
+  useCategoriesQuery,
+} from '@services/queries/category';
 
 import type { CreateCategory } from '@api/category/types/dto';
 

@@ -1,9 +1,9 @@
 import { useForm } from 'react-hook-form';
 
-import { useProductMutation } from '@queries/product';
 import { useRouter } from 'next/navigation';
 
-import { ProductStatusType } from '@api/utils/types/status';
+import { useProductMutation } from '@services/queries/product';
+import { ProductStatusType } from '@utils/constants/product';
 import { PATH } from '@utils/path';
 
 import type { ProductUseFormType } from '../components/ProductForm/useProductForm';

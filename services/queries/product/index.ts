@@ -8,11 +8,11 @@ import {
 } from '@tanstack/react-query';
 import { isEmpty } from 'lodash-es';
 
-import { fetchData } from '@api/utils/fetch';
-import { API } from '@api/utils/path';
-import { createQueryString } from '@api/utils/query';
 import { deleteImages, uploadImages } from '@services/upload';
+import { fetchData } from '@services/utils/fetch';
+import { API } from '@services/utils/path';
 import useQueryPagination from '@utils/hooks/useQueryPagination';
+import { createQueryString } from '@utils/query/helper';
 
 import type { CreateProduct, UpdateProduct } from '@api/product/types/dto';
 import type {
@@ -20,7 +20,7 @@ import type {
   ProductDetailVO,
   ProductVO,
 } from '@api/product/types/vo';
-import type { PaginatedResponse } from '@api/utils/types/pagination';
+import type { PaginatedResponse } from '@services/utils/types/pagination';
 import type { ProductUseFormType } from 'app/admin/product/components/ProductForm/useProductForm';
 import type { UploadApiResponse } from 'cloudinary';
 

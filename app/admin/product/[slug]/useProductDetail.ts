@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { useParams, useRouter } from 'next/navigation';
+
+import PromptModal from '@components/Modal/templates/PromptModal';
 import {
   useProductDeleteMutation,
   useProductDetailMutation,
   useProductDetailQuery,
-} from '@queries/product';
-import { useParams, useRouter } from 'next/navigation';
-
-import { ProductStatusType } from '@api/utils/types/status';
-import PromptModal from '@components/Modal/templates/PromptModal';
+} from '@services/queries/product';
+import { ProductStatusType } from '@utils/constants/product';
 import useModals from '@utils/hooks/useModals';
 
 import type { ProductUseFormType } from '../components/ProductForm/useProductForm';
