@@ -31,7 +31,7 @@ const SubCategoryForm = ({ nestIndex, editable }: SubCategoryFormPropsType) => {
         <div className={css.subCategoryForm}>
           {fields.map((item, index) => (
             <div key={item.id} className={css.subCategoryInputWrapper}>
-              {item.id && (
+              {item._id && (
                 <Rhf.Input
                   name={`categories.${nestIndex}.subCategories.${index}._id`}
                   hidden
