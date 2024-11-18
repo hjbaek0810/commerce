@@ -1,4 +1,8 @@
 export const API = {
+  AUTH: {
+    BASE: 'auth',
+    SIGN_IN: 'auth/sign-in',
+  },
   ADMIN: {
     CATEGORY: 'admin/category',
     PRODUCT: {
@@ -6,7 +10,6 @@ export const API = {
       DETAIL: (productId: string) => `admin/product/${productId}`,
     },
   },
-
   CATEGORY: 'category',
   PRODUCT: {
     BASE: 'product',

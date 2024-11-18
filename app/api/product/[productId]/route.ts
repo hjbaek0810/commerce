@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-import connectDB from '@api/config';
+import connectDB from '@api/config/connectDB';
 import ProductModel from '@api/models/product';
 
 import type { UpdateProduct } from '../types/dto';
