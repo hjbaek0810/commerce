@@ -1,28 +1,29 @@
-module.exports = {
-  root: true,
-  env: {
-    browser: true,
-    node: true,
-    es6: true,
+import nextPlugin from '@next/eslint-plugin-next';
+import typescriptEslintPlugin from '@typescript-eslint/eslint-plugin';
+import parser from '@typescript-eslint/parser';
+import { defineConfig } from 'eslint-define-config';
+import importPlugin from 'eslint-plugin-import';
+import reactPlugin from 'eslint-plugin-react';
+import reactHooksPlugin from 'eslint-plugin-react-hooks';
+
+export default defineConfig({
+  plugins: {
+    '@typescript-eslint': typescriptEslintPlugin,
+    import: importPlugin,
+    next: nextPlugin,
+    react: reactPlugin,
+    'react-hooks': reactHooksPlugin,
   },
-  extends: [
-    'next/core-web-vitals',
-    'plugin:react/recommended',
-    'plugin:react-hooks/recommended',
-    'plugin:jsx-a11y/recommended',
-    'plugin:@typescript-eslint/eslint-recommended',
-    'plugin:@typescript-eslint/recommended',
-    'prettier',
-  ],
-  plugins: ['@typescript-eslint', 'import', 'react-hooks'],
-  parser: '@typescript-eslint/parser',
-  parserOptions: {
-    project: './tsconfig.json',
-    sourceType: 'module',
+  languageOptions: {
+    parser: parser,
+    parserOptions: {
+      project: './tsconfig.json',
+      sourceType: 'module',
+    },
   },
   settings: {
     next: {
-      rootDir: ['./src/'],
+      rootDir: ['./'],
     },
     react: {
       version: '18.3.1',
@@ -52,7 +53,6 @@ module.exports = {
       },
     ],
     eqeqeq: ['warn', 'always'],
-    'react/react-in-jsx-scope': 'off',
     'prefer-destructuring': 'warn',
     'sort-imports': [
       'warn',
@@ -130,5 +130,15 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'warn',
     '@typescript-eslint/no-throw-literal': 'off',
   },
-  ignorePatterns: ['.eslintrc.js'],
-};
+  ignores: [
+    'tsconfig.json',
+    'node_modules',
+    'dist',
+    'public',
+    '*.mjs',
+    'next-sitemap.config.js',
+    'lint-staged.config.js',
+    'commitlint.config.js',
+    'babel.config.json',
+  ],
+});

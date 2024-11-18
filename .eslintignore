@@ -1,9 +1,0 @@
-.eslintrc.js
-lint-staged.config.js
-commitlint.config.js
-babel.config.json
-dist
-public
-node_modules
-*.mjs
-next-sitemap.config.js

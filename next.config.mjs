@@ -5,11 +5,18 @@ import { createVanillaExtractPlugin } from '@vanilla-extract/next-plugin';
 const withVanillaExtract = createVanillaExtractPlugin();
 
 const nextConfig = {
-  experimental: {
-    serverActions: true,
-  },
+  reactStrictMode: true,
   images: {
-    domains: ['res.cloudinary.com', 'picsum.photos'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'picsum.photos',
+      },
+    ],
   },
 };
 
