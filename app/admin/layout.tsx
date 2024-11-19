@@ -1,39 +1,25 @@
-import SideMenu from '@components/SideMenu';
+import Outlet from '@components/Layout/Outlet';
+import SideMenu, { ListType } from '@components/SideMenu';
 import { sprinkles } from '@styles/sprinkles.css';
 import { PATH } from '@utils/path';
+import { PropsWithChildren } from 'react';
 
-import type { ListType } from '@components/SideMenu';
+const LIST: Array<ListType> = [
+  { title: 'Home', href: PATH.ADMIN.HOME, fullMatch: true },
+  { title: 'Categories', href: PATH.ADMIN.CATEGORY },
+  { title: 'Products', href: PATH.ADMIN.PRODUCT.LIST },
+];
 
-const AdminLayout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
-  const LIST: Array<ListType> = [
-    { title: 'Home', href: PATH.ADMIN.HOME, fullMatch: true },
-    { title: 'Categories', href: PATH.ADMIN.CATEGORY },
-    { title: 'Products', href: PATH.ADMIN.PRODUCT.LIST },
-  ];
-
+const AdminLayout = ({ children }: PropsWithChildren) => {
   return (
-    <div
+    <main
       className={sprinkles({
-        display: 'flex',
+        height: 'sizing-fill',
       })}
     >
       <SideMenu list={LIST} />
-      <div
-        style={{
-          paddingLeft: '18.4rem',
-        }}
-        className={sprinkles({
-          display: 'flex',
-          flexDirection: 'column',
-          paddingRight: 'spacing-024',
-          paddingY: 'spacing-032',
-          width: 'sizing-fill',
-          minHeight: 'sizing-full-screen',
-        })}
-      >
-        {children}
-      </div>
-    </div>
+      <Outlet>{children}</Outlet>
+    </main>
   );
 };
 

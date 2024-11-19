@@ -10,6 +10,7 @@ import QueryProvider from '@utils/query/provider';
 
 import type { Metadata } from 'next';
 import AuthProvider from '@utils/auth/provider';
+import Layout from '@components/Layout';
 
 config.autoAddCss = false;
 
@@ -27,15 +28,13 @@ const RootLayout = ({
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
-  // const clientId = process.env.GOOGLE_OAUTH_CLIENT_ID || '';
-
   return (
     <html lang="en">
       <body>
         <AuthProvider>
           <QueryProvider>
             <ModalsProvider>
-              {children}
+              <Layout>{children}</Layout>
 
               <ToastContainer
                 position="bottom-right"
@@ -51,7 +50,6 @@ const RootLayout = ({
             </ModalsProvider>
           </QueryProvider>
         </AuthProvider>
-        {/* <GoogleOAuthProvider clientId={clientId}></GoogleOAuthProvider> */}
       </body>
     </html>
   );

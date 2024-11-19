@@ -22,11 +22,16 @@ globalStyle(':root', {
 });
 
 globalStyle('html', {
+  overflow: 'hidden',
   fontSize: '62.5%',
 });
 
 globalStyle('html, body', {
   height: '100%',
+});
+
+globalStyle('body', {
+  overflow: 'scroll',
 });
 
 globalStyle('img, picture, video, canvas, svg', {

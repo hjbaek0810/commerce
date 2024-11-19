@@ -7,10 +7,12 @@ import { tokens } from '@styles/token.css';
 import type { RecipeVariants } from '@vanilla-extract/recipes';
 
 export const itemIndexVar = createVar();
+export const heightVar = createVar();
 
 export const sliderRoot = style({
   position: 'relative',
   overflow: 'hidden',
+  height: heightVar,
 });
 
 export const sliderItem = recipe({

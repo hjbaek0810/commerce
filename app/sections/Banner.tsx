@@ -42,7 +42,7 @@ const Banner = () => (
         content="http://static01.nyt.com/images/2015/02/19/arts/international/19iht-btnumbers19A/19iht-btnumbers19A-facebookJumbo-v2.jpg"
       />
     </Head>
-    <Slider type="fade" height="sizing-640" width="sizing-1024">
+    <Slider type="fade" height="30vw">
       <Slider.List>
         {imgInfo.map((item, index) => (
           <Slider.Item key={index}>

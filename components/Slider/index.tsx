@@ -10,7 +10,7 @@ import {
 } from 'react';
 
 import { assignInlineVars } from '@vanilla-extract/dynamic';
-import clsx from 'clsx';
+
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -21,16 +21,16 @@ import {
   useSliderActionContext,
   useSliderValueContext,
 } from '@components/Slider/context';
-import { sprinkles } from '@styles/sprinkles.css';
+
 import { passPropsToSingleChild } from '@utils/render';
 
 import * as css from './slider.css';
-import { itemIndexVar } from './slider.css';
+import { heightVar, itemIndexVar } from './slider.css';
 
 // TODO: dot, arrow button type
 type SliderRootPropsType = Pick<
   SliderValueContextType,
-  'showDot' | 'autoPlay' | 'type' | 'width' | 'height'
+  'showDot' | 'autoPlay' | 'type' | 'height'
 >;
 
 type SliderItemPropsType = {
@@ -46,7 +46,6 @@ type SliderClickableImagePropsType = {
 const SliderRoot = ({
   showDot = true,
   autoPlay = true,
-  width = 'sizing-fill',
   height,
   type,
   children,
@@ -59,7 +58,6 @@ const SliderRoot = ({
       showDot,
       autoPlay,
       type,
-      width,
       height,
     }),
     [autoPlay, showDot, showIndex, type],
@@ -76,13 +74,10 @@ const SliderRoot = ({
     <SliderActionContext.Provider value={actions}>
       <SliderValueContext.Provider value={values}>
         <div
-          className={clsx(
-            css.sliderRoot,
-            sprinkles({
-              width,
-              height,
-            }),
-          )}
+          style={assignInlineVars({
+            [heightVar]: height,
+          })}
+          className={css.sliderRoot}
         >
           {children}
         </div>
@@ -184,7 +179,16 @@ const SliderClickableImage = ({
 }: SliderClickableImagePropsType) => {
   return (
     <Link className={css.sliderLink} href={redirectTo}>
-      <Image src={src} alt={alt || src} fill priority />
+      <Image
+        src={src}
+        alt={alt || src}
+        fill
+        height={0}
+        priority
+        style={{
+          objectFit: 'cover',
+        }}
+      />
     </Link>
   );
 };

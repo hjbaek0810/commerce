@@ -12,6 +12,7 @@ export const sideMenu = style({
   minWidth: SIDE_MENU_WIDTH,
   height: '100%',
   backgroundColor: ColorPalettes.Grey['95'],
+  zIndex: tokens.zIndex['z-index-sticky'],
 });
 
 export const sideMenuItem = style({
