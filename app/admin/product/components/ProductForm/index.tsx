@@ -72,6 +72,9 @@ const ProductForm = ({ savedImages, editable = true }: ProductFormType) => {
               type="number"
               required={editable}
               disabled={!editable}
+              rules={{
+                min: 0,
+              }}
             />
           </Table.Td>
           <Table.Th scope="row">
@@ -83,6 +86,7 @@ const ProductForm = ({ savedImages, editable = true }: ProductFormType) => {
                 name="salePrice"
                 type="number"
                 rules={{
+                  min: 0,
                   validate: (value, { price }) => {
                     if (Number(value) > Number(price))
                       return '원가보다 높을 수 없습니다.';
