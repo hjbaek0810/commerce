@@ -99,7 +99,7 @@ export async function GET(req: NextRequest) {
   }
 }
 
-export async function Delete(req: NextRequest) {
+export async function DELETE(req: NextRequest) {
   try {
     await connectDB();
     const { _id } = await req.json();
