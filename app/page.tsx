@@ -1,7 +1,7 @@
-import Banner from './sections/Banner';
+import Outlet from '@components/Layout/Outlet';
 import { SIDE_MENU_WIDTH } from '@components/SideMenu/sideMenu.css';
 
-import Outlet from '@components/Layout/Outlet';
+import Banner from './sections/Banner';
 
 const Home = () => {
   return (

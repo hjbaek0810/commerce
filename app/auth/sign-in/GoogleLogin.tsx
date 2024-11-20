@@ -1,7 +1,8 @@
 'use client';
 
-import Button from '@components/Button';
 import { signIn, signOut, useSession } from 'next-auth/react';
+
+import Button from '@components/Button';
 
 // TODO: home header?
 const GoogleLogin = () => {
@@ -15,11 +16,7 @@ const GoogleLogin = () => {
       </>
     );
   } else {
-    return (
-      <>
-        <Button onClick={() => signIn()}>Sign in</Button>
-      </>
-    );
+    return <Button onClick={() => signIn()}>Sign in</Button>;
   }
 };
 

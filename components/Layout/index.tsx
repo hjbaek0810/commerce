@@ -1,14 +1,17 @@
 'use client';
 
-import Header from '@components/Header';
+import type { PropsWithChildren } from 'react';
 
-import SideMenu, { ListType } from '@components/SideMenu';
-
-import { PropsWithChildren } from 'react';
-import * as css from './layout.css';
 import { usePathname } from 'next/navigation';
+
+import Header from '@components/Header';
+import SideMenu from '@components/SideMenu';
 import { PATH } from '@utils/path';
+
 import Outlet from './Outlet';
+import * as css from './layout.css';
+
+import type { ListType } from '@components/SideMenu';
 
 const HEADER_LIST = [{ path: '', label: 'asd' }];
 

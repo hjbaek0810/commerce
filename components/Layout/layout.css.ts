@@ -1,9 +1,10 @@
+import { style } from '@vanilla-extract/css';
+import { calc } from '@vanilla-extract/css-utils';
+
 import { HEADER_BAR_HEIGHT } from '@components/Header/header.css';
 import { SIDE_MENU_WIDTH } from '@components/SideMenu/sideMenu.css';
 import { sprinkles } from '@styles/sprinkles.css';
 import { tokens } from '@styles/token.css';
-import { style } from '@vanilla-extract/css';
-import { calc } from '@vanilla-extract/css-utils';
 
 export const layout = style({
   marginTop: HEADER_BAR_HEIGHT,

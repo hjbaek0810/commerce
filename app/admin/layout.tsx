@@ -1,8 +1,11 @@
+import type { PropsWithChildren } from 'react';
+
 import Outlet from '@components/Layout/Outlet';
-import SideMenu, { ListType } from '@components/SideMenu';
+import SideMenu from '@components/SideMenu';
 import { sprinkles } from '@styles/sprinkles.css';
 import { PATH } from '@utils/path';
-import { PropsWithChildren } from 'react';
+
+import type { ListType } from '@components/SideMenu';
 
 const LIST: Array<ListType> = [
   { title: 'Home', href: PATH.ADMIN.HOME, fullMatch: true },

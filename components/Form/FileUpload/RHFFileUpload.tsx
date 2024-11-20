@@ -1,8 +1,8 @@
 import type { ChangeEvent } from 'react';
-import type { PathValue } from 'react-hook-form';
-import {
+import type {
   type FieldValues,
   type Path,
+  PathValue,
   get,
   useFormContext,
 } from 'react-hook-form';

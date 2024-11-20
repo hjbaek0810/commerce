@@ -131,48 +131,44 @@ export const useProductDetailMutation = (id: string) => {
 
   return useMutation({
     mutationFn: async (data: ProductUseFormType) => {
-      try {
-        let imageResult: UploadApiResponse[] = [];
+      let imageResult: UploadApiResponse[] = [];
 
-        // image upload in cloudinary
-        if (data.images && !isEmpty(data.images)) {
-          imageResult = await uploadImagesAndGetUrls(Array.from(data.images));
-        }
-
-        // save mongoDB
-        const { _id, categoryId, subCategoryId, deleteImageIds, ...restData } =
-          data;
-
-        const productData: UpdateProduct = {
-          ...restData,
-          _id: _id ?? '',
-          categoryIds: {
-            _id: categoryId,
-            subCategoryId,
-          },
-          images: imageResult.map(({ public_id, secure_url, name }) => ({
-            name,
-            publicId: public_id,
-            secureUrl: secure_url,
-          })),
-          deleteImageIds,
-        };
-
-        const updateProductPromise = fetchData<ProductDetailVO, UpdateProduct>(
-          API.PRODUCT.DETAIL(id),
-          'PUT',
-          { data: productData },
-        );
-
-        const deleteImagesPromise =
-          deleteImageIds && deleteImageIds.length > 0
-            ? Promise.all(deleteImageIds.map(id => deleteImages(id)))
-            : Promise.resolve();
-
-        return await Promise.all([updateProductPromise, deleteImagesPromise]);
-      } catch (error) {
-        throw error;
+      // image upload in cloudinary
+      if (data.images && !isEmpty(data.images)) {
+        imageResult = await uploadImagesAndGetUrls(Array.from(data.images));
       }
+
+      // save mongoDB
+      const { _id, categoryId, subCategoryId, deleteImageIds, ...restData } =
+        data;
+
+      const productData: UpdateProduct = {
+        ...restData,
+        _id: _id ?? '',
+        categoryIds: {
+          _id: categoryId,
+          subCategoryId,
+        },
+        images: imageResult.map(({ public_id, secure_url, name }) => ({
+          name,
+          publicId: public_id,
+          secureUrl: secure_url,
+        })),
+        deleteImageIds,
+      };
+
+      const updateProductPromise = fetchData<ProductDetailVO, UpdateProduct>(
+        API.PRODUCT.DETAIL(id),
+        'PUT',
+        { data: productData },
+      );
+
+      const deleteImagesPromise =
+        deleteImageIds && deleteImageIds.length > 0
+          ? Promise.all(deleteImageIds.map(id => deleteImages(id)))
+          : Promise.resolve();
+
+      return await Promise.all([updateProductPromise, deleteImagesPromise]);
     },
     onSuccess: () =>
       queryClient.invalidateQueries({

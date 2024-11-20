@@ -1,7 +1,12 @@
 'use client';
 
-import type { ComponentProps } from 'react';
-import { type PropsWithChildren, useMemo, useRef, useState } from 'react';
+import {
+  type ComponentProps,
+  type PropsWithChildren,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import Modals from '@utils/modals';
 import {

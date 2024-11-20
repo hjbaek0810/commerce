@@ -10,7 +10,6 @@ import {
 } from 'react';
 
 import { assignInlineVars } from '@vanilla-extract/dynamic';
-
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -21,7 +20,6 @@ import {
   useSliderActionContext,
   useSliderValueContext,
 } from '@components/Slider/context';
-
 import { passPropsToSingleChild } from '@utils/render';
 
 import * as css from './slider.css';

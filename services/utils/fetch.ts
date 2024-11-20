@@ -10,33 +10,29 @@ export async function fetchData<T, U = unknown>(
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' = 'GET',
   options: FetchDataOptionsType<U> = {},
 ) {
-  try {
-    const fetchOptions: RequestInit = {
-      method,
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers,
-      },
-    };
+  const fetchOptions: RequestInit = {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  };
 
-    if (options.data && method !== 'GET')
-      fetchOptions.body = JSON.stringify(options.data);
+  if (options.data && method !== 'GET')
+    fetchOptions.body = JSON.stringify(options.data);
 
-    const response = await fetch(`/api/${url}`, fetchOptions);
+  const response = await fetch(`/api/${url}`, fetchOptions);
 
-    if (!response.ok) {
-      const errorData = await response.json();
+  if (!response.ok) {
+    const errorData = await response.json();
 
-      const error = new ApiError(
-        errorData.message || '서버 요청 실패',
-        errorData.code || 'UNKNOWN_ERROR',
-      );
+    const error = new ApiError(
+      errorData.message || '서버 요청 실패',
+      errorData.code || 'UNKNOWN_ERROR',
+    );
 
-      throw error;
-    }
-
-    return (await response.json()) as Promise<T>;
-  } catch (error) {
     throw error;
   }
+
+  return (await response.json()) as Promise<T>;
 }

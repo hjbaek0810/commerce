@@ -1,4 +1,5 @@
-import { CSSProperties, PropsWithChildren } from 'react';
+import type { CSSProperties, PropsWithChildren } from 'react';
+
 import * as css from './layout.css';
 
 const Outlet = ({
