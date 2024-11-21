@@ -26,7 +26,7 @@ const Layout = ({ children }: PropsWithChildren) => {
       <Header list={headers} />
 
       <main className={css.layout}>
-        <SideMenu list={subMenus} />
+        {!homePage && <SideMenu list={subMenus} />}
 
         {homePage ? children : <Outlet>{children}</Outlet>}
       </main>

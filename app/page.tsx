@@ -1,27 +1,23 @@
-import Outlet from '@components/Layout/Outlet';
-import { SIDE_MENU_WIDTH } from '@components/SideMenu/sideMenu.css';
+import { sprinkles } from '@styles/sprinkles.css';
 
 import Banner from './sections/Banner';
 
 const Home = () => {
-  console.log('hi');
-
   return (
     <>
-      <article
-        style={{
-          paddingLeft: SIDE_MENU_WIDTH,
-        }}
-      >
+      <article>
         <Banner />
       </article>
-      <Outlet
-        style={{
-          height: 'auto',
-        }}
+      <section
+        className={sprinkles({
+          width: 'sizing-fill',
+          height: 'sizing-auto',
+          paddingRight: 'spacing-024',
+          paddingY: 'spacing-032',
+        })}
       >
         <h1>Home!!</h1>
-      </Outlet>
+      </section>
     </>
   );
 };
