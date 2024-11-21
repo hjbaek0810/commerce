@@ -5,7 +5,8 @@ import CategoryModel from '@api/models/category';
 import ProductModel from '@api/models/product';
 import SubCategoryModel from '@api/models/subCategory';
 
-import type { CreateProduct } from './types/dto';
+import type { CreateProduct, SearchProduct } from './types/dto';
+import type { FilterQuery } from 'mongoose';
 import type { NextRequest } from 'next/server';
 
 export async function POST(req: NextRequest) {
@@ -40,7 +41,25 @@ export async function GET(req: NextRequest) {
     const pageNumber = Number(searchParams.get('page'));
     const limitNumber = Number(searchParams.get('limit'));
 
-    const products = await ProductModel.find()
+    const filters: FilterQuery<SearchProduct> = {};
+
+    searchParams.forEach((value, key) => {
+      if (value && key !== 'page' && key !== 'limit') {
+        switch (key) {
+          case 'category':
+            filters['categoryIds._id'] = value;
+            break;
+          case 'subCategory':
+            filters['categoryIds.subCategoryId'] = value;
+            break;
+          default:
+            filters[key] = value;
+            break;
+        }
+      }
+    });
+
+    const products = await ProductModel.find(filters)
       .limit(limitNumber)
       .skip((pageNumber - 1) * limitNumber)
       .sort('-createdAt')
@@ -62,10 +81,6 @@ export async function GET(req: NextRequest) {
       const categoryName = categoryData?.name ?? null;
       const subCategoryName = subCategoryData?.name ?? null;
 
-      const getCategoryLabel = subCategoryName
-        ? `${categoryName} - ${subCategoryName}`
-        : categoryName;
-
       const { categoryIds, ...productData } = product._doc;
 
       return {
@@ -73,7 +88,8 @@ export async function GET(req: NextRequest) {
         _id: product._id.toString(),
         category: {
           ...categoryIds,
-          name: getCategoryLabel,
+          name: categoryName,
+          subCategoryName,
         },
       };
     });
@@ -83,6 +99,8 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(
       {
         products: response,
+        currentPage: pageNumber,
+        currentLimit: limitNumber,
         totalCount: count,
       },
       {

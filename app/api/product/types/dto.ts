@@ -1,5 +1,11 @@
 import type { ProductStatusType } from '@utils/constants/product';
 
+export type SearchProduct = {
+  category?: string;
+  subCategory?: string;
+  name?: string;
+};
+
 export type CreateProduct = {
   name: string;
   quantity: number;

@@ -1,22 +1,40 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 
 import * as css from './sideMenu.css';
 
+import type { ParsedUrlQueryInput } from 'querystring';
+
 type SideMenuPropsType = {
-  list: Array<ListType>;
+  list: Array<SideMenuListType>;
 };
 
-export type ListType = {
+export type SideMenuListType = {
   title: string;
-  href: string;
-  fullMatch?: boolean;
+  href: {
+    path: string;
+    query?: ParsedUrlQueryInput | string;
+  };
+  show?: boolean;
 };
 
 const SideMenu = ({ list }: SideMenuPropsType) => {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const selected = (menuPath: string, query?: ParsedUrlQueryInput | string) => {
+    if (!query) {
+      return menuPath === pathname;
+    }
+
+    const queryParams = new URLSearchParams(query as string);
+    const currentFullPath = `${pathname}?${searchParams.toString()}`;
+    const menuFullPath = `${pathname}?${queryParams}`;
+
+    return currentFullPath === menuFullPath;
+  };
 
   return (
     <aside>
@@ -25,12 +43,16 @@ const SideMenu = ({ list }: SideMenuPropsType) => {
           <li
             key={item.title}
             className={css.sideMenuItemBg({
-              selected: item.fullMatch
-                ? pathname === item.href
-                : pathname.startsWith(item.href),
+              selected: selected(item.href.path, item.href.query),
             })}
           >
-            <Link className={css.sideMenuItem} href={item.href}>
+            <Link
+              className={css.sideMenuItem}
+              href={{
+                pathname: item.href.path,
+                query: item.href.query,
+              }}
+            >
               {item.title}
             </Link>
           </li>

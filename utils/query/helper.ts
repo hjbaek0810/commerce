@@ -15,3 +15,7 @@ export function createQueryString(url: string, params: NewObject) {
 
   return `${url}?${queryString}`;
 }
+
+export const parseQueryParams = (searchParams: URLSearchParams) => {
+  return Object.fromEntries(searchParams.entries());
+};

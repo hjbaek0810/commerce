@@ -4,6 +4,8 @@ import { SIDE_MENU_WIDTH } from '@components/SideMenu/sideMenu.css';
 import Banner from './sections/Banner';
 
 const Home = () => {
+  console.log('hi');
+
   return (
     <>
       <article
@@ -18,11 +20,8 @@ const Home = () => {
           height: 'auto',
         }}
       >
-        <h1>Home@</h1>
+        <h1>Home!!</h1>
       </Outlet>
-      {/* <section className={css.outlet}>
-        <h1>Home!</h1>
-      </section> */}
     </>
   );
 };

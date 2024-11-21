@@ -17,6 +17,7 @@ export interface ProductVO {
     _id: string;
     subCategoryId: string;
     name: string;
+    subCategoryName: string;
   };
   status: ProductStatusType;
   description: string;

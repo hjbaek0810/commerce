@@ -23,6 +23,7 @@ const List = () => {
             <Table.Th>수량</Table.Th>
             <Table.Th>판매가격</Table.Th>
             <Table.Th>카테고리명</Table.Th>
+            <Table.Th>서브 카테고리명</Table.Th>
             <Table.Th>상품상태</Table.Th>
             <Table.Th>preview</Table.Th>
           </Table.Tr>
@@ -31,7 +32,7 @@ const List = () => {
           {products.length === 0 && (
             <Table.Tr>
               <Table.Td
-                colSpan={6}
+                colSpan={7}
                 className={sprinkles({ textAlign: 'center' })}
               >
                 no data available
@@ -59,6 +60,7 @@ const List = () => {
                 <Table.Td>{formatNumber(quantity)}</Table.Td>
                 <Table.Td>{formatNumber(salePrice || price)}</Table.Td>
                 <Table.Td>{category.name}</Table.Td>
+                <Table.Td>{category.subCategoryName}</Table.Td>
                 <Table.Td>{getStatusLabel(status)}</Table.Td>
                 <Table.Td>
                   {images && images[0] && (

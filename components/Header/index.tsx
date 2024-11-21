@@ -8,17 +8,40 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 
 import * as css from './header.css';
 
+import type { ParsedUrlQueryInput } from 'querystring';
+
+export type HeaderListType = {
+  title: string;
+  href: {
+    path: string;
+    query?: ParsedUrlQueryInput | string;
+  };
+};
+
 type HeaderPropsType = {
-  list: Array<{ path: string; label: string }>;
+  list: Array<HeaderListType>;
 };
 
 const Header = ({ list }: HeaderPropsType) => {
   const pathname = usePathname();
-  const selected = (menuPath: string) => menuPath === pathname;
+  const searchParams = useSearchParams();
+
+  const selected = (menuPath: string, query?: ParsedUrlQueryInput | string) => {
+    if (!query) {
+      return pathname.startsWith(menuPath);
+    }
+
+    const queryParams = new URLSearchParams(query as string);
+
+    const currentFullPath = `${pathname}?${searchParams.toString()}`;
+    const menuFullPath = `${pathname}?${queryParams}`;
+
+    return currentFullPath.startsWith(menuFullPath);
+  };
 
   return (
     <header className={css.header}>
@@ -29,12 +52,21 @@ const Header = ({ list }: HeaderPropsType) => {
 
       <nav className={css.bar}>
         <ul className={css.menu}>
-          {list.map(({ label, path }) => (
+          {list.map(({ title, href }) => (
             <li
-              key={label}
-              className={css.menuItem({ selected: selected(path) })}
+              key={title}
+              className={css.menuItem({
+                selected: selected(href.path, href?.query),
+              })}
             >
-              <Link href={path}>{label}</Link>
+              <Link
+                href={{
+                  pathname: href.path,
+                  query: href.query,
+                }}
+              >
+                {title}
+              </Link>
             </li>
           ))}
         </ul>

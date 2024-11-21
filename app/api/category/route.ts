@@ -11,9 +11,11 @@ enum CategoryErrorType {
 export async function GET() {
   try {
     await connectDB();
+
     const categories = await CategoryModel.find().populate({
       path: 'subCategories',
       model: SubCategoryModel,
+      select: '-categoryId',
     });
 
     return NextResponse.json(categories, {

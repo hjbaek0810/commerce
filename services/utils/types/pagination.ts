@@ -5,4 +5,6 @@ export type PaginatedResponse<T extends string, K extends NewObject> = Record<
   Array<K>
 > & {
   totalCount: number;
+  currentPage: number;
+  currentLimit: number;
 };

@@ -11,4 +11,8 @@ export const PATH = {
       DETAIL: (productId: string) => ADMIN_HOME + PRODUCT + `/${productId}`,
     },
   },
+  PRODUCT: {
+    LIST: PRODUCT,
+    DETAIL: (productId: string) => PRODUCT + `/${productId}`,
+  },
 };

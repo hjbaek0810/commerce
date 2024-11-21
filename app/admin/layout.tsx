@@ -5,12 +5,27 @@ import SideMenu from '@components/SideMenu';
 import { sprinkles } from '@styles/sprinkles.css';
 import { PATH } from '@utils/path';
 
-import type { ListType } from '@components/SideMenu';
+import type { SideMenuListType } from '@components/SideMenu';
 
-const LIST: Array<ListType> = [
-  { title: 'Home', href: PATH.ADMIN.HOME, fullMatch: true },
-  { title: 'Categories', href: PATH.ADMIN.CATEGORY },
-  { title: 'Products', href: PATH.ADMIN.PRODUCT.LIST },
+const LIST: Array<SideMenuListType> = [
+  {
+    title: 'Home',
+    href: {
+      path: PATH.ADMIN.HOME,
+    },
+  },
+  {
+    title: 'Categories',
+    href: {
+      path: PATH.ADMIN.CATEGORY,
+    },
+  },
+  {
+    title: 'Products',
+    href: {
+      path: PATH.ADMIN.PRODUCT.LIST,
+    },
+  },
 ];
 
 const AdminLayout = ({ children }: PropsWithChildren) => {

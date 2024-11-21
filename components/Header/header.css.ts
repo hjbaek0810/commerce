@@ -19,6 +19,7 @@ export const header = style({
   height: HEADER_BAR_HEIGHT,
   backgroundColor: 'white',
   zIndex: tokens.zIndex['z-index-sticky'],
+  borderBottom: '2px solid #d9d4cd',
 });
 
 export const logo = style({

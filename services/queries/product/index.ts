@@ -2,17 +2,19 @@ import { toast } from 'react-toastify';
 
 import {
   keepPreviousData,
+  useInfiniteQuery,
   useMutation,
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
 import { isEmpty } from 'lodash-es';
+import { useSearchParams } from 'next/navigation';
 
 import { deleteImages, uploadImages } from '@services/upload';
 import { fetchData } from '@services/utils/fetch';
 import { API } from '@services/utils/path';
 import useQueryPagination from '@utils/hooks/useQueryPagination';
-import { createQueryString } from '@utils/query/helper';
+import { createQueryString, parseQueryParams } from '@utils/query/helper';
 
 import type { CreateProduct, UpdateProduct } from '@api/product/types/dto';
 import type {
@@ -52,6 +54,7 @@ export const useProductListQuery = () => {
   const { data, ...rest } = useQuery({
     queryKey: [
       'products',
+      { scope: 'list' },
       {
         page: paginationProps.currentPage,
         limit: paginationProps.currentLimit,
@@ -78,9 +81,46 @@ export const useProductListQuery = () => {
   };
 };
 
+export const useProductListInfiniteQuery = () => {
+  const searchParams = useSearchParams();
+  const queryParams = parseQueryParams(searchParams);
+
+  const LIMIT_ITEM = 10;
+
+  const fetchProducts = async ({ pageParam = 1 }) => {
+    const response = await fetchData<ProductsType>(
+      createQueryString(API.PRODUCT.BASE, {
+        page: pageParam,
+        limit: LIMIT_ITEM,
+        ...queryParams,
+      }),
+      'GET',
+    );
+
+    return response;
+  };
+
+  const { data, ...rest } = useInfiniteQuery({
+    queryKey: ['products', { scope: 'list-infinity' }, queryParams],
+    queryFn: fetchProducts,
+    getNextPageParam: lastPage => {
+      const { currentPage, totalCount } = lastPage;
+      if (currentPage * LIMIT_ITEM < totalCount) {
+        return lastPage.currentPage + 1;
+      }
+    },
+    initialPageParam: 1,
+  });
+
+  return {
+    ...rest,
+    products: data?.pages.flatMap(page => page.products) || [],
+  };
+};
+
 export const useProductDetailQuery = (id: string) =>
   useQuery({
-    queryKey: ['products', 'item', id],
+    queryKey: ['products', { scope: 'item' }, id],
     queryFn: () => fetchData<ProductDetailVO>(API.PRODUCT.DETAIL(id), 'GET'),
   });
 

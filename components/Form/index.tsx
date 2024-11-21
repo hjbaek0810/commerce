@@ -1,12 +1,12 @@
 import type { PropsWithChildren } from 'react';
 import type {
   FieldPath,
-  type FieldValues,
-  FormProvider,
+  FieldValues,
   RegisterOptions,
   SubmitHandler,
   UseFormReturn,
 } from 'react-hook-form';
+import { FormProvider } from 'react-hook-form';
 
 import RHFErrorMessage from '@components/Form/ErrorMessage';
 import RHFInput from '@components/Form/Input/RHFInput';
