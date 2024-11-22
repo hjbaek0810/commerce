@@ -9,6 +9,7 @@ import type { ParsedUrlQueryInput } from 'querystring';
 
 type SideMenuPropsType = {
   list: Array<SideMenuListType>;
+  isHide?: boolean;
 };
 
 export type SideMenuListType = {
@@ -20,7 +21,7 @@ export type SideMenuListType = {
   show?: boolean;
 };
 
-const SideMenu = ({ list }: SideMenuPropsType) => {
+const SideMenu = ({ list, isHide }: SideMenuPropsType) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -37,7 +38,7 @@ const SideMenu = ({ list }: SideMenuPropsType) => {
   };
 
   return (
-    <aside>
+    <aside data-hide={isHide} className={css.sideMenuWrapper}>
       <ul className={css.sideMenu}>
         {list.map(item => (
           <li

@@ -12,7 +12,7 @@ const Home = () => {
         className={sprinkles({
           width: 'sizing-fill',
           height: 'sizing-auto',
-          paddingRight: 'spacing-024',
+          paddingX: 'spacing-024',
           paddingY: 'spacing-032',
         })}
       >

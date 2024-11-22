@@ -1,37 +1,14 @@
-'use client';
+import { type PropsWithChildren } from 'react';
 
-import type { PropsWithChildren } from 'react';
+import { headers } from 'next/headers';
 
-import { usePathname } from 'next/navigation';
-
-import Header from '@components/Header';
-import SideMenu from '@components/SideMenu';
-import useMenu from '@utils/hooks/useMenu';
-import { PATH } from '@utils/path';
-
-import Outlet from './Outlet';
-import * as css from './layout.css';
+import UserLayout from '@components/Layout/UserLayout';
 
 const Layout = ({ children }: PropsWithChildren) => {
-  const pathname = usePathname();
-  const isAdminPage = pathname.startsWith(PATH.ADMIN.HOME);
-  const homePage = pathname === '/';
+  const pathname = headers().get('x-current-path');
+  const isAdmin = pathname?.startsWith('/admin');
 
-  if (isAdminPage) return children;
-
-  const { headers, subMenus } = useMenu();
-
-  return (
-    <>
-      <Header list={headers} />
-
-      <main className={css.layout}>
-        {!homePage && <SideMenu list={subMenus} />}
-
-        {homePage ? children : <Outlet>{children}</Outlet>}
-      </main>
-    </>
-  );
+  return isAdmin ? children : <UserLayout>{children}</UserLayout>;
 };
 
 export default Layout;

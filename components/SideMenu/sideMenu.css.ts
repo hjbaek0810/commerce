@@ -6,6 +6,14 @@ import { tokens } from '@styles/token.css';
 
 export const SIDE_MENU_WIDTH = tokens.sizing['sizing-160'];
 
+export const sideMenuWrapper = style({
+  selectors: {
+    '&[data-hide="true"]': {
+      display: 'none',
+    },
+  },
+});
+
 export const sideMenu = style({
   position: 'fixed',
   width: SIDE_MENU_WIDTH,

@@ -1,4 +1,4 @@
-import { useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 
 import { useCategoriesQuery } from '@services/queries/category';
 import { PATH } from '@utils/path';
@@ -12,8 +12,12 @@ type MenuListType = {
 };
 
 const useMenu = () => {
-  const { data: menus } = useCategoriesQuery();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const isHome = pathname === '/';
+
+  const { data: menus } = useCategoriesQuery();
+
   const selectedCategory = searchParams.get('category');
 
   const MENU_LIST: MenuListType[] = menus.map(main => {
@@ -56,7 +60,7 @@ const useMenu = () => {
       : [allMenu, ...menu.subMenus];
   });
 
-  return { headers, subMenus };
+  return { headers, subMenus, isHome };
 };
 
 export default useMenu;

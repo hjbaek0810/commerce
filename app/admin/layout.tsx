@@ -7,7 +7,7 @@ import { PATH } from '@utils/path';
 
 import type { SideMenuListType } from '@components/SideMenu';
 
-const LIST: Array<SideMenuListType> = [
+const ADMIN_LIST: Array<SideMenuListType> = [
   {
     title: 'Home',
     href: {
@@ -35,7 +35,8 @@ const AdminLayout = ({ children }: PropsWithChildren) => {
         height: 'sizing-fill',
       })}
     >
-      <SideMenu list={LIST} />
+      <SideMenu list={ADMIN_LIST} />
+
       <Outlet>{children}</Outlet>
     </main>
   );

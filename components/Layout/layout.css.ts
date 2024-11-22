@@ -1,5 +1,6 @@
 import { style } from '@vanilla-extract/css';
 import { calc } from '@vanilla-extract/css-utils';
+import { recipe } from '@vanilla-extract/recipes';
 
 import { HEADER_BAR_HEIGHT } from '@components/Header/header.css';
 import { SIDE_MENU_WIDTH } from '@components/SideMenu/sideMenu.css';
@@ -18,7 +19,12 @@ export const outlet = style([
     paddingRight: 'spacing-024',
     paddingY: 'spacing-032',
   }),
+  { paddingLeft: calc.add(SIDE_MENU_WIDTH, tokens.spacing['spacing-024']) },
   {
-    paddingLeft: calc.add(SIDE_MENU_WIDTH, tokens.spacing['spacing-024']),
+    selectors: {
+      'aside[data-hide="true"]+&': {
+        padding: 0,
+      },
+    },
   },
 ]);
