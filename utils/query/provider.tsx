@@ -1,17 +1,20 @@
 'use client';
 
-import type { PropsWithChildren } from 'react';
-import { useState } from 'react';
+import { type PropsWithChildren } from 'react';
 
 import { QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
-import CustomQueryClient from './queryClient';
+import { getQueryClient } from '@utils/query/queryClient';
 
 const QueryProvider = ({ children }: PropsWithChildren) => {
-  const [queryClient] = useState(CustomQueryClient());
+  const queryClient = getQueryClient();
 
   return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <QueryClientProvider client={queryClient}>
+      {children}
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   );
 };
 

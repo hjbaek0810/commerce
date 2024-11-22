@@ -1,9 +1,9 @@
 import { toast } from 'react-toastify';
 
-import { QueryClient } from '@tanstack/react-query';
+import { QueryClient, isServer } from '@tanstack/react-query';
 
-const CustomQueryClient = () => {
-  const queryClient = new QueryClient({
+export function makeQueryClient() {
+  return new QueryClient({
     defaultOptions: {
       queries: {
         retry: false,
@@ -26,8 +26,16 @@ const CustomQueryClient = () => {
       },
     },
   });
+}
 
-  return queryClient;
-};
+let browserQueryClient: QueryClient | undefined;
 
-export default CustomQueryClient;
+export function getQueryClient() {
+  if (isServer) {
+    return makeQueryClient();
+  } else {
+    if (!browserQueryClient) browserQueryClient = makeQueryClient();
+
+    return browserQueryClient;
+  }
+}
