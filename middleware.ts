@@ -4,26 +4,30 @@ import type { NextRequest } from 'next/server';
 
 export async function middleware(request: NextRequest) {
   const hasToken = request.cookies.has('next-auth.session-token');
+  const requestHeaders = new Headers(request.headers);
 
-  if (!hasToken && request.nextUrl.pathname !== '/auth/sign-in') {
+  const pathName = request.nextUrl.pathname;
+
+  requestHeaders.set('x-current-path', pathName);
+
+  const accessPage = pathName.startsWith('/product');
+  const signInPage = pathName === '/auth/sign-in';
+
+  if (!hasToken && !signInPage && accessPage) {
     return NextResponse.redirect(new URL('/auth/sign-in', request.url));
   }
 
-  if (hasToken && request.nextUrl.pathname === '/auth/sign-in') {
+  if (hasToken && signInPage) {
     return NextResponse.redirect(new URL('/', request.url));
   }
 
-  return NextResponse.next();
+  return NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  });
 }
 
 export const config = {
-  matcher: [
-    '/auth/sign-in',
-    '/admin/:path*',
-    '/settings/:path*',
-    '/my-account',
-    '/cart',
-    '/orders',
-    '/wish-list',
-  ],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
 };
