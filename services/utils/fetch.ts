@@ -23,7 +23,7 @@ export async function fetchData<T, U = unknown>(
 
   // FIXME: 배포환경 url
   const response = await fetch(
-    `http://localhost:3000/api/${url}`,
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/${url}`,
     fetchOptions,
   );
 
