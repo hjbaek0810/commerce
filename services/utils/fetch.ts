@@ -21,7 +21,11 @@ export async function fetchData<T, U = unknown>(
   if (options.data && method !== 'GET')
     fetchOptions.body = JSON.stringify(options.data);
 
-  const response = await fetch(`/api/${url}`, fetchOptions);
+  // FIXME: 배포환경 url
+  const response = await fetch(
+    `http://localhost:3000/api/${url}`,
+    fetchOptions,
+  );
 
   if (!response.ok) {
     const errorData = await response.json();
