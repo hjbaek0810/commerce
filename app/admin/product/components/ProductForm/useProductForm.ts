@@ -9,6 +9,7 @@ import { PATH } from '@utils/path';
 import type { CreateProduct } from '@api/admin/product/types/dto';
 import type { SubCategoryVO } from '@api/category/types/vo';
 
+const MAX_SIZE = 10485760; // 10MB
 export type ProductUseFormType = Omit<
   CreateProduct,
   'images' | 'categoryIds'
@@ -94,11 +95,17 @@ const useProductForm = () => {
   };
 
   const validateImage = (value: FileList) => {
-    const hasNonImageFile = Array.from(value).some(
-      file => !file.type.includes('image'),
-    );
+    if (value) {
+      const hasNonImageFile = Array.from(value).some(
+        file => !file.type.includes('image'),
+      );
 
-    return !hasNonImageFile;
+      const hasLargeFile = Array.from(value).some(file => file.size > MAX_SIZE);
+
+      if (hasNonImageFile || hasLargeFile) return false;
+    }
+
+    return true;
   };
 
   const handleDeleteImageToggleButtonClick = (imageId: string) => {

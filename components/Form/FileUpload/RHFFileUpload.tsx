@@ -30,6 +30,7 @@ const RHFFileUpload = <T extends FieldValues>({
   const {
     register,
     setValue,
+    clearErrors,
     formState: { errors },
   } = useFormContext<T>();
 
@@ -44,6 +45,7 @@ const RHFFileUpload = <T extends FieldValues>({
 
   const handleUpdateFile = (value: null | FileList) => {
     setValue(name, value as PathValue<T, Path<T>>);
+    clearErrors(name);
   };
 
   return (

@@ -107,3 +107,8 @@ export const minusIcon = style({
   ...iconStyle,
   fontSize: tokens.sizing['sizing-064'],
 });
+
+export const imageDesc = style({
+  color: ColorPalettes.Grey['50'],
+  fontSize: tokens.fontSize['font-size-012'],
+});

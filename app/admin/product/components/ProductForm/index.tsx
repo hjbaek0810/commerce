@@ -172,6 +172,7 @@ const ProductForm = ({ savedImages, editable = true }: ProductFormType) => {
               <Rhf.Label name="images">이미지 첨부</Rhf.Label>
             </Table.Th>
             <Table.Td colSpan={3}>
+              <p className={css.imageDesc}>이미지 10MB를 초과할 수 없습니다.</p>
               <Rhf.FileUpload
                 name="images"
                 multiple
