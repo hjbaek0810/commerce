@@ -4,9 +4,9 @@ import SideMenu from '@components/SideMenu';
 import useMenu from '@utils/hooks/useMenu';
 
 const UserSideMenu = () => {
-  const { subMenus, isHome } = useMenu();
+  const { subMenus, showSideBar } = useMenu();
 
-  return <SideMenu isHide={isHome} list={subMenus} />;
+  return <SideMenu isHide={!showSideBar} list={subMenus} />;
 };
 
 export default UserSideMenu;
