@@ -20,6 +20,7 @@ export type HeaderListType = {
     path: string;
     query?: ParsedUrlQueryInput | string;
   };
+  fullMatch?: boolean;
 };
 
 type HeaderPropsType = {
@@ -30,8 +31,12 @@ const Header = ({ list }: HeaderPropsType) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const selected = (menuPath: string, query?: ParsedUrlQueryInput | string) => {
-    if (!query) {
+  const selected = (
+    menuPath: string,
+    query?: ParsedUrlQueryInput | string,
+    fullMatch?: boolean,
+  ) => {
+    if (!query && !fullMatch) {
       return pathname.startsWith(menuPath);
     }
 
@@ -39,6 +44,10 @@ const Header = ({ list }: HeaderPropsType) => {
 
     const currentFullPath = `${pathname}?${searchParams.toString()}`;
     const menuFullPath = `${pathname}?${queryParams}`;
+
+    if (fullMatch) {
+      return currentFullPath === menuFullPath;
+    }
 
     return currentFullPath.startsWith(menuFullPath);
   };
@@ -52,11 +61,11 @@ const Header = ({ list }: HeaderPropsType) => {
 
       <nav className={css.bar}>
         <ul className={css.menu}>
-          {list.map(({ title, href }) => (
+          {list.map(({ title, href, fullMatch }) => (
             <li
               key={title}
               className={css.menuItem({
-                selected: selected(href.path, href?.query),
+                selected: selected(href.path, href?.query, fullMatch),
               })}
             >
               <Link

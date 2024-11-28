@@ -42,7 +42,14 @@ const useMenu = () => {
     };
   });
 
-  const headers: HeaderListType[] = MENU_LIST.map(menu => menu.headers);
+  const headers: HeaderListType[] = [
+    {
+      title: 'ALL',
+      href: { path: PATH.PRODUCT.LIST, query: undefined },
+      fullMatch: true,
+    },
+    ...MENU_LIST.map(menu => menu.headers),
+  ];
 
   const subMenus: SideMenuListType[] = MENU_LIST.flatMap(menu => {
     const query = menu.headers.href?.query as { category?: string };
