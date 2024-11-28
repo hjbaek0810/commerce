@@ -51,6 +51,7 @@ const ProductSchema = new Schema(
         },
       },
     ],
+    views: { type: Number, default: 0 },
   },
   { timestamps: true },
 );
