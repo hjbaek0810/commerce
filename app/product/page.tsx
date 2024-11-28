@@ -1,20 +1,19 @@
-'use client';
+import { Suspense } from 'react';
 
-import { useProductListInfiniteQuery } from '@services/queries/product';
+import Title from '@components/Title';
+import Loading from 'app/product/loading';
 
-// import * as css from './product.css';
+import ProductListTable from './ProductListTable';
 
-const Product = () => {
-  const { products } = useProductListInfiniteQuery();
-
+const ProductList = () => {
   return (
-    <div>
-      <h1>product list</h1>
-      {products.map((item, index) => (
-        <div key={item._id}>{item.name}</div>
-      ))}
-    </div>
+    <>
+      <Title>상품 목록</Title>
+      <Suspense fallback={<Loading />}>
+        <ProductListTable />
+      </Suspense>
+    </>
   );
 };
 
-export default Product;
+export default ProductList;
