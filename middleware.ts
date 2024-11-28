@@ -6,14 +6,14 @@ export async function middleware(request: NextRequest) {
   const hasToken = request.cookies.has('next-auth.session-token');
   const requestHeaders = new Headers(request.headers);
 
-  const pathName = request.nextUrl.pathname;
+  const { pathname } = request.nextUrl;
 
-  requestHeaders.set('x-current-path', pathName);
+  requestHeaders.set('x-current-path', pathname);
 
-  const accessPage = pathName.startsWith('/product');
-  const signInPage = pathName === '/auth/sign-in';
+  const accessPage = pathname.startsWith('/product') || pathname === '/';
+  const signInPage = pathname === '/auth/sign-in';
 
-  if (!hasToken && !signInPage && accessPage) {
+  if (!hasToken && !signInPage && !accessPage) {
     return NextResponse.redirect(new URL('/auth/sign-in', request.url));
   }
 
