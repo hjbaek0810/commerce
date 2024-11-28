@@ -64,7 +64,7 @@ export const useAdminProductListQuery = () => {
       },
     ],
     queryFn: () =>
-      fetchData<PaginatedResponse<'products', ProductVO>>(
+      fetchData<PaginatedResponse<'products', AdminProductVO>>(
         createQueryString(API.ADMIN.PRODUCT.BASE, {
           page: paginationProps.currentPage,
           limit: paginationProps.currentLimit,
@@ -91,7 +91,7 @@ export const useProductListInfiniteQuery = () => {
   const LIMIT_ITEM = 10;
 
   const fetchProducts = async ({ pageParam = 1 }) => {
-    const response = await fetchData<ProductsType>(
+    const response = await fetchData<PaginatedResponse<'products', ProductVO>>(
       createQueryString(API.PRODUCT.BASE, {
         page: pageParam,
         limit: LIMIT_ITEM,
