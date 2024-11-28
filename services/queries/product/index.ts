@@ -2,6 +2,7 @@ import { toast } from 'react-toastify';
 
 import {
   keepPreviousData,
+  useInfiniteQuery,
   useMutation,
   useQuery,
   useQueryClient,
@@ -104,7 +105,7 @@ export const useProductListInfiniteQuery = () => {
   };
 
   const { data, ...rest } = useSuspenseInfiniteQuery({
-    queryKey: ['products', { scope: 'list-infinity' }, queryParams],
+    queryKey: ['products', { scope: 'list' }, queryParams],
     queryFn: fetchProducts,
     getNextPageParam: lastPage => {
       const { currentPage, totalCount } = lastPage;
