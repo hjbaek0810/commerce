@@ -14,7 +14,8 @@ type MenuListType = {
 const useMenu = () => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const isHome = pathname === '/';
+
+  const showSideBar = pathname.startsWith('/product');
 
   const { data: menus } = useCategoriesQuery();
 
@@ -60,7 +61,7 @@ const useMenu = () => {
       : [allMenu, ...menu.subMenus];
   });
 
-  return { headers, subMenus, isHome };
+  return { headers, subMenus, showSideBar };
 };
 
 export default useMenu;
