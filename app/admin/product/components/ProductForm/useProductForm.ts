@@ -3,11 +3,11 @@ import { useFormContext, useWatch } from 'react-hook-form';
 
 import { useRouter } from 'next/navigation';
 
-import { useCategoriesQuery } from '@services/queries/category';
+import { useAdminCategoriesQuery } from '@services/queries/category';
 import { PATH } from '@utils/path';
 
+import type { CreateProduct } from '@api/admin/product/types/dto';
 import type { SubCategoryVO } from '@api/category/types/vo';
-import type { CreateProduct } from '@api/product/types/dto';
 
 export type ProductUseFormType = Omit<
   CreateProduct,
@@ -22,7 +22,7 @@ export type ProductUseFormType = Omit<
 
 const useProductForm = () => {
   const router = useRouter();
-  const { data: categories } = useCategoriesQuery();
+  const { data: categories } = useAdminCategoriesQuery();
   const [saleRate, setSaleRate] = useState<number>(0);
 
   const [subCategories, setSubCategories] = useState<Array<SubCategoryVO>>([]);

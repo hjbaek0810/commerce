@@ -35,7 +35,7 @@ export const useAdminCategoriesQuery = () => {
   };
 };
 
-export const useCategoriesMutation = () => {
+export const useAdminCategoriesMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({

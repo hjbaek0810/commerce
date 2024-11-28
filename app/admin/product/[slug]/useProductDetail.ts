@@ -5,9 +5,9 @@ import { useParams, useRouter } from 'next/navigation';
 
 import PromptModal from '@components/Modal/templates/PromptModal';
 import {
-  useProductDeleteMutation,
-  useProductDetailMutation,
-  useProductDetailQuery,
+  useAdminProductDeleteMutation,
+  useAdminProductDetailMutation,
+  useAdminProductDetailQuery,
 } from '@services/queries/product';
 import { ProductStatusType } from '@utils/constants/product';
 import useModals from '@utils/hooks/useModals';
@@ -19,10 +19,11 @@ const useProductDetail = () => {
   const params = useParams();
   const id = params.slug as string;
 
-  const { data: product } = useProductDetailQuery(id);
-  const { mutate: updateProduct, isPending } = useProductDetailMutation(id);
+  const { data: product } = useAdminProductDetailQuery(id);
+  const { mutate: updateProduct, isPending } =
+    useAdminProductDetailMutation(id);
   const { mutate: deleteProduct, isPending: isDeletePending } =
-    useProductDeleteMutation(id);
+    useAdminProductDeleteMutation(id);
 
   const [editable, setEditable] = useState<boolean>(false);
 

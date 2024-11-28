@@ -2,10 +2,10 @@ import { toast } from 'react-toastify';
 
 import {
   keepPreviousData,
-  useInfiniteQuery,
   useMutation,
   useQuery,
   useQueryClient,
+  useSuspenseInfiniteQuery,
 } from '@tanstack/react-query';
 import { isEmpty } from 'lodash-es';
 import { useSearchParams } from 'next/navigation';
@@ -16,17 +16,19 @@ import { API } from '@services/utils/path';
 import useQueryPagination from '@utils/hooks/useQueryPagination';
 import { createQueryString, parseQueryParams } from '@utils/query/helper';
 
-import type { CreateProduct, UpdateProduct } from '@api/product/types/dto';
 import type {
-  ImageVO,
-  ProductDetailVO,
-  ProductVO,
-} from '@api/product/types/vo';
+  CreateProduct,
+  UpdateProduct,
+} from '@api/admin/product/types/dto';
+import type {
+  AdminImageVO,
+  AdminProductDetailVO,
+  AdminProductVO,
+} from '@api/admin/product/types/vo';
+import type { ProductDetailVO, ProductVO } from '@api/product/types/vo';
 import type { PaginatedResponse } from '@services/utils/types/pagination';
 import type { ProductUseFormType } from 'app/admin/product/components/ProductForm/useProductForm';
 import type { UploadApiResponse } from 'cloudinary';
-
-type ProductsType = PaginatedResponse<'products', ProductVO>;
 
 async function uploadImagesAndGetUrls(
   images: File[],
@@ -48,12 +50,13 @@ async function uploadImagesAndGetUrls(
   }
 }
 
-export const useProductListQuery = () => {
+export const useAdminProductListQuery = () => {
   const { paginationProps } = useQueryPagination();
 
   const { data, ...rest } = useQuery({
     queryKey: [
       'products',
+      'admin',
       { scope: 'list' },
       {
         page: paginationProps.currentPage,
@@ -61,8 +64,8 @@ export const useProductListQuery = () => {
       },
     ],
     queryFn: () =>
-      fetchData<ProductsType>(
-        createQueryString(API.PRODUCT.BASE, {
+      fetchData<PaginatedResponse<'products', ProductVO>>(
+        createQueryString(API.ADMIN.PRODUCT.BASE, {
           page: paginationProps.currentPage,
           limit: paginationProps.currentLimit,
         }),
@@ -100,7 +103,7 @@ export const useProductListInfiniteQuery = () => {
     return response;
   };
 
-  const { data, ...rest } = useInfiniteQuery({
+  const { data, ...rest } = useSuspenseInfiniteQuery({
     queryKey: ['products', { scope: 'list-infinity' }, queryParams],
     queryFn: fetchProducts,
     getNextPageParam: lastPage => {
@@ -118,13 +121,20 @@ export const useProductListInfiniteQuery = () => {
   };
 };
 
+export const useAdminProductDetailQuery = (id: string) =>
+  useQuery({
+    queryKey: ['products', 'admin', { scope: 'item' }, id],
+    queryFn: () =>
+      fetchData<AdminProductDetailVO>(API.ADMIN.PRODUCT.DETAIL(id), 'GET'),
+  });
+
 export const useProductDetailQuery = (id: string) =>
   useQuery({
     queryKey: ['products', { scope: 'item' }, id],
     queryFn: () => fetchData<ProductDetailVO>(API.PRODUCT.DETAIL(id), 'GET'),
   });
 
-export const useProductMutation = () => {
+export const useAdminProductMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -151,9 +161,13 @@ export const useProductMutation = () => {
         })),
       };
 
-      return fetchData<ProductVO, CreateProduct>(API.PRODUCT.BASE, 'POST', {
-        data: productData,
-      });
+      return fetchData<AdminProductVO, CreateProduct>(
+        API.PRODUCT.BASE,
+        'POST',
+        {
+          data: productData,
+        },
+      );
     },
     onSuccess: () =>
       queryClient.invalidateQueries({
@@ -166,7 +180,7 @@ export const useProductMutation = () => {
   });
 };
 
-export const useProductDetailMutation = (id: string) => {
+export const useAdminProductDetailMutation = (id: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -197,11 +211,10 @@ export const useProductDetailMutation = (id: string) => {
         deleteImageIds,
       };
 
-      const updateProductPromise = fetchData<ProductDetailVO, UpdateProduct>(
-        API.PRODUCT.DETAIL(id),
-        'PUT',
-        { data: productData },
-      );
+      const updateProductPromise = fetchData<
+        AdminProductDetailVO,
+        UpdateProduct
+      >(API.ADMIN.PRODUCT.DETAIL(id), 'PUT', { data: productData });
 
       const deleteImagesPromise =
         deleteImageIds && deleteImageIds.length > 0
@@ -221,13 +234,13 @@ export const useProductDetailMutation = (id: string) => {
   });
 };
 
-export const useProductDeleteMutation = (id: string) => {
+export const useAdminProductDeleteMutation = (id: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (images?: ImageVO[]) =>
+    mutationFn: (images?: AdminImageVO[]) =>
       Promise.all([
-        fetchData(API.PRODUCT.DETAIL(id), 'DELETE'),
+        fetchData(API.ADMIN.PRODUCT.DETAIL(id), 'DELETE'),
         ...(images ? images.map(({ publicId }) => deleteImages(publicId)) : []),
       ]),
     onSuccess: () =>

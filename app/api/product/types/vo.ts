@@ -15,9 +15,11 @@ export interface ProductVO {
   salePrice: number | null;
   category: {
     _id: string;
-    subCategoryId: string;
     name: string;
-    subCategoryName: string;
+    subCategory: {
+      _id: string;
+      name: string;
+    };
   };
   status: ProductStatusType;
   description: string;
@@ -29,4 +31,5 @@ export interface ProductDetailVO extends Omit<ProductVO, 'category'> {
     _id: string;
     subCategoryId?: string;
   };
+  views: number;
 }

@@ -1,12 +1,12 @@
 import { useRouter } from 'next/navigation';
 
-import { useProductListQuery } from '@services/queries/product';
+import { useAdminProductListQuery } from '@services/queries/product';
 import { ProductStatusType } from '@utils/constants/product';
 import { PATH } from '@utils/path';
 
-const useProductList = () => {
+const useAdminProductList = () => {
   const router = useRouter();
-  const { data: products, paginationProps } = useProductListQuery();
+  const { data: products, paginationProps } = useAdminProductListQuery();
 
   const getStatusLabel = (status: ProductStatusType) => {
     switch (status) {
@@ -33,4 +33,4 @@ const useProductList = () => {
   };
 };
 
-export default useProductList;
+export default useAdminProductList;

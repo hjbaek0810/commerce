@@ -5,9 +5,32 @@ import CategoryModel from '@api/models/category';
 import ProductModel from '@api/models/product';
 import SubCategoryModel from '@api/models/subCategory';
 
-import type { SearchProduct } from './types/dto';
+import type { CreateProduct, SearchProduct } from './types/dto';
 import type { FilterQuery } from 'mongoose';
 import type { NextRequest } from 'next/server';
+
+export async function POST(req: NextRequest) {
+  const data: CreateProduct = await req.json();
+
+  try {
+    await connectDB();
+
+    const response = await ProductModel.create(data);
+
+    return NextResponse.json(response, {
+      status: 200,
+    });
+  } catch (error) {
+    console.error(error);
+
+    return NextResponse.json(
+      {
+        message: `Failed to register product.`,
+      },
+      { status: 400 },
+    );
+  }
+}
 
 export async function GET(req: NextRequest) {
   try {
@@ -57,10 +80,12 @@ export async function GET(req: NextRequest) {
       const categoryId = {
         _id: categoryIds?._id?._id ?? null,
         name: categoryIds?._id?.name ?? null,
-        subCategory: {
-          _id: categoryIds?.subCategoryId?._id ?? null,
-          name: categoryIds?.subCategoryId?.name ?? null,
-        },
+        subCategory: categoryIds?.subCategoryId?._id
+          ? {
+              _id: categoryIds?.subCategoryId?._id ?? null,
+              name: categoryIds?.subCategoryId?.name ?? null,
+            }
+          : {},
       };
 
       return {
@@ -88,6 +113,24 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({
       message: 'Failed to load products.',
+      status: 400,
+    });
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  try {
+    await connectDB();
+    const { _id } = await req.json();
+
+    await ProductModel.findOneAndDelete({ _id });
+
+    return NextResponse.json({ message: 'success', status: 200 });
+  } catch (error) {
+    console.error(error);
+
+    return NextResponse.json({
+      message: 'Failed to delete the product.',
       status: 400,
     });
   }
