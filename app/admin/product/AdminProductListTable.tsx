@@ -7,11 +7,11 @@ import { Table } from '@components/Table';
 import { sprinkles } from '@styles/sprinkles.css';
 import { formatNumber } from '@utils/formatter/number';
 
-import useProductList from './useProductList';
+import useAdminProductList from './useProductList';
 
-const List = () => {
+const AdminProductListTable = () => {
   const { products, paginationProps, getStatusLabel, handleTableRowClick } =
-    useProductList();
+    useAdminProductList();
 
   // TODO: 필터 검색 기능
   return (
@@ -60,7 +60,7 @@ const List = () => {
                 <Table.Td>{formatNumber(quantity)}</Table.Td>
                 <Table.Td>{formatNumber(salePrice || price)}</Table.Td>
                 <Table.Td>{category.name}</Table.Td>
-                <Table.Td>{category.subCategoryName}</Table.Td>
+                <Table.Td>{category.subCategory.name}</Table.Td>
                 <Table.Td>{getStatusLabel(status)}</Table.Td>
                 <Table.Td>
                   {images && images[0] && (
@@ -89,4 +89,4 @@ const List = () => {
   );
 };
 
-export default List;
+export default AdminProductListTable;
