@@ -43,7 +43,7 @@ const Header = ({ list }: HeaderPropsType) => {
     const queryParams = new URLSearchParams(query as string);
 
     const currentFullPath = `${pathname}?${searchParams.toString()}`;
-    const menuFullPath = `${pathname}?${queryParams}`;
+    const menuFullPath = `${menuPath}?${queryParams}`;
 
     if (fullMatch) {
       return currentFullPath === menuFullPath;
