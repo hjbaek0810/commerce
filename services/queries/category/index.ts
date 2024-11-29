@@ -15,6 +15,8 @@ export const useCategoriesQuery = () => {
   const { data, ...rest } = useQuery({
     queryKey: ['categories'],
     queryFn: () => fetchData<Array<CategoryVO>>(API.CATEGORY, 'GET'),
+    staleTime: 10 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
   });
 
   return {
@@ -27,8 +29,8 @@ export const useAdminCategoriesQuery = () => {
   const { data, ...rest } = useQuery({
     queryKey: ['categories', 'admin'],
     queryFn: () => fetchData<Array<AdminCategoryVO>>(API.ADMIN.CATEGORY, 'GET'),
-    staleTime: 1000 * 60 * 10,
-    gcTime: 1000 * 60 * 30,
+    staleTime: 10 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
   });
 
   return {
