@@ -8,7 +8,7 @@ import { type NewObject } from '@utils/types/utility';
 const INITIAL_PAGE_NUMBER = 1;
 const INITIAL_LIMIT_COUNT = 10;
 
-const useQueryPagination = () => {
+const useQueryParams = () => {
   const { replace } = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -76,7 +76,19 @@ const useQueryPagination = () => {
     changeSearchParams({ page: 1, limit: size });
   };
 
+  const handleSearchParamsChange = useCallback(
+    (params: NewObject) => {
+      changeSearchParams({
+        ...params,
+        page: String(INITIAL_PAGE_NUMBER),
+        limit: searchParams.get('limit'),
+      });
+    },
+    [changeSearchParams, searchParams],
+  );
+
   return {
+    handleSearchParamsChange,
     paginationProps: {
       onPageChange: handlePageChange,
       onPageSizeChange: handlePageSizeChange,
@@ -86,4 +98,4 @@ const useQueryPagination = () => {
   };
 };
 
-export default useQueryPagination;
+export default useQueryParams;

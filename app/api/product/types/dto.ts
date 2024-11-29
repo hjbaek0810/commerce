@@ -1,5 +1,6 @@
+import type { ProductSortType } from '@utils/constants/product';
+
 export type SearchProduct = {
-  category?: string;
-  subCategory?: string;
   name?: string;
+  sort?: ProductSortType;
 };

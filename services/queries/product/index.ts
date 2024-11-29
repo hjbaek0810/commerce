@@ -15,7 +15,7 @@ import { useSearchParams } from 'next/navigation';
 import { deleteImages, uploadImages } from '@services/upload';
 import { fetchData } from '@services/utils/fetch';
 import { API } from '@services/utils/path';
-import useQueryPagination from '@utils/hooks/useQueryPagination';
+import useQueryParams from '@utils/hooks/useQueryParams';
 import { createQueryString, parseQueryParams } from '@utils/query/helper';
 
 import type {
@@ -53,7 +53,7 @@ async function uploadImagesAndGetUrls(
 }
 
 export const useAdminProductListQuery = () => {
-  const { paginationProps } = useQueryPagination();
+  const { paginationProps } = useQueryParams();
 
   const { data, ...rest } = useQuery({
     queryKey: [
@@ -89,6 +89,7 @@ export const useAdminProductListQuery = () => {
 export const useProductListInfiniteQuery = () => {
   const searchParams = useSearchParams();
   const queryParams = parseQueryParams(searchParams);
+  const { handleSearchParamsChange } = useQueryParams();
 
   const LIMIT_ITEM = 10;
 
@@ -120,6 +121,7 @@ export const useProductListInfiniteQuery = () => {
   return {
     ...rest,
     products: data?.pages.flatMap(page => page.products) || [],
+    handleSearchParamsChange,
   };
 };
 

@@ -4,10 +4,18 @@ import connectDB from '@api/config/connectDB';
 import CategoryModel from '@api/models/category';
 import ProductModel from '@api/models/product';
 import SubCategoryModel from '@api/models/subCategory';
+import { ProductSortType } from '@utils/constants/product';
 
 import type { SearchProduct } from './types/dto';
-import type { FilterQuery } from 'mongoose';
+import type { FilterQuery, SortOrder } from 'mongoose';
 import type { NextRequest } from 'next/server';
+
+type SortCriteria = {
+  createdAt?: SortOrder;
+  views?: SortOrder;
+  price?: SortOrder;
+  salePrice?: SortOrder;
+};
 
 export async function GET(req: NextRequest) {
   try {
@@ -18,10 +26,33 @@ export async function GET(req: NextRequest) {
     const pageNumber = Number(searchParams.get('page'));
     const limitNumber = Number(searchParams.get('limit'));
 
+    const sort = searchParams.get('sort') || 'newest';
+
+    // 정렬 기준 처리
+    let sortCriteria: SortCriteria = { createdAt: -1 }; // 기본값: 최신 순
+
+    switch (sort) {
+      case ProductSortType.NEWEST:
+        sortCriteria = { createdAt: -1 };
+        break;
+      case ProductSortType.OLDEST:
+        sortCriteria = { createdAt: 1 };
+        break;
+      case ProductSortType.POPULARITY:
+        sortCriteria = { views: -1 };
+        break;
+      case ProductSortType.PRICE_HIGH:
+        sortCriteria = { salePrice: -1, price: -1 };
+        break;
+      case ProductSortType.PRICE_LOW:
+        sortCriteria = { salePrice: 1, price: 1 };
+        break;
+    }
+
     const filters: FilterQuery<SearchProduct> = {};
 
     searchParams.forEach((value, key) => {
-      if (value && key !== 'page' && key !== 'limit') {
+      if (value && key !== 'page' && key !== 'limit' && key !== 'sort') {
         switch (key) {
           case 'category':
             filters['categoryIds._id'] = value;
@@ -39,7 +70,7 @@ export async function GET(req: NextRequest) {
     const products = await ProductModel.find(filters)
       .limit(limitNumber)
       .skip((pageNumber - 1) * limitNumber)
-      .sort('-createdAt')
+      .sort(sortCriteria)
       .populate({
         path: 'categoryIds._id',
         select: 'name',
@@ -70,7 +101,7 @@ export async function GET(req: NextRequest) {
       };
     });
 
-    const count = await ProductModel.countDocuments();
+    const count = await ProductModel.countDocuments(filters);
 
     return NextResponse.json(
       {
