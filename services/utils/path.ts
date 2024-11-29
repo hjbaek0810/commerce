@@ -14,5 +14,6 @@ export const API = {
   PRODUCT: {
     BASE: 'product',
     DETAIL: (productId: string) => `product/${productId}`,
+    TOP_VIEWS: 'product/top-views',
   },
 };

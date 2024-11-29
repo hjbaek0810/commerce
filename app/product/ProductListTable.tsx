@@ -21,8 +21,6 @@ const ProductListTable = () => {
 
   return (
     <div className={css.productWrapper}>
-      {/* Best - 슬라이더 */}
-
       {/* 상품 사진 여러개 등록가능한데 첫번째 사진을 보여줄지? 대표사진 설정기능을 추가할지. */}
 
       {products.map(({ _id, images, name, price, salePrice }) => (

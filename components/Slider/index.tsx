@@ -10,6 +10,7 @@ import {
 } from 'react';
 
 import { assignInlineVars } from '@vanilla-extract/dynamic';
+import clsx from 'clsx';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -28,21 +29,24 @@ import { heightVar, itemIndexVar } from './slider.css';
 // TODO: dot, arrow button type
 type SliderRootPropsType = Pick<
   SliderValueContextType,
-  'showDot' | 'autoPlay' | 'type' | 'height'
+  'hideDot' | 'autoPlay' | 'type' | 'height'
 >;
 
 type SliderItemPropsType = {
   itemIndex?: number;
+  className?: string;
 };
 
 type SliderClickableImagePropsType = {
   src: string;
   alt?: string;
   redirectTo: string;
+  sizes?: string;
+  className?: string;
 };
 
 const SliderRoot = ({
-  showDot = true,
+  hideDot = false,
   autoPlay = true,
   height,
   type,
@@ -53,12 +57,12 @@ const SliderRoot = ({
   const values = useMemo(
     () => ({
       showIndex,
-      showDot,
+      hideDot,
       autoPlay,
       type,
       height,
     }),
-    [autoPlay, showDot, showIndex, type],
+    [autoPlay, hideDot, showIndex, type],
   );
 
   const actions = useMemo(
@@ -86,7 +90,7 @@ const SliderRoot = ({
 
 const SliderList = ({ children }: PropsWithChildren) => {
   const { updateShowIndex } = useSliderActionContext();
-  const { showIndex, showDot, autoPlay } = useSliderValueContext();
+  const { showIndex, hideDot, autoPlay } = useSliderValueContext();
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const modifiedChildren = Children.map(children, (child, index) =>
@@ -139,7 +143,7 @@ const SliderList = ({ children }: PropsWithChildren) => {
         {modifiedChildren}
       </ul>
 
-      {showDot && (
+      {!hideDot && (
         <ul className={css.sliderDotList}>
           {Array.from({ length: totalSliderItem }, (_, index) => {
             return (
@@ -160,11 +164,17 @@ const SliderList = ({ children }: PropsWithChildren) => {
 const SliderItem = ({
   itemIndex,
   children,
+  className,
 }: PropsWithChildren<SliderItemPropsType>) => {
   const { showIndex, type } = useSliderValueContext();
 
   return (
-    <li className={css.sliderItem({ active: itemIndex === showIndex, type })}>
+    <li
+      className={clsx(
+        css.sliderItem({ active: itemIndex === showIndex, type }),
+        className,
+      )}
+    >
       {children}
     </li>
   );
@@ -174,9 +184,11 @@ const SliderClickableImage = ({
   src,
   alt,
   redirectTo,
+  sizes,
+  className,
 }: SliderClickableImagePropsType) => {
   return (
-    <Link className={css.sliderLink} href={redirectTo}>
+    <Link className={clsx(css.sliderLink, className)} href={redirectTo}>
       <Image
         src={src}
         alt={alt || src}
@@ -186,6 +198,7 @@ const SliderClickableImage = ({
         style={{
           objectFit: 'cover',
         }}
+        sizes={sizes}
       />
     </Link>
   );

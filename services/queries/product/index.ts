@@ -4,6 +4,7 @@ import {
   keepPreviousData,
   useInfiniteQuery,
   useMutation,
+  useQueries,
   useQuery,
   useQueryClient,
   useSuspenseInfiniteQuery,
@@ -253,4 +254,37 @@ export const useAdminProductDeleteMutation = (id: string) => {
       toast.error('상품 삭제에 실패하였습니다. 잠시 후 시도해주시길 바랍니다.');
     },
   });
+};
+
+export const useProductTopViewsQuery = () =>
+  useQuery({
+    queryKey: ['products', { status: 'top-views' }],
+    queryFn: () => fetchData<ProductVO[]>(API.PRODUCT.TOP_VIEWS, 'GET'),
+  });
+
+export const useProductDetailWithTopViews = (id: string) => {
+  const [productDetail, topViews] = useQueries({
+    queries: [
+      {
+        queryKey: ['products', { scope: 'item' }, id],
+        queryFn: () =>
+          fetchData<ProductDetailVO>(API.PRODUCT.DETAIL(id), 'GET'),
+      },
+      {
+        queryKey: ['products', { status: 'top-views' }],
+        queryFn: () => fetchData<ProductVO[]>(API.PRODUCT.TOP_VIEWS, 'GET'),
+      },
+    ],
+  });
+
+  const { data, ...restProduct } = productDetail;
+  const isTop10 = topViews.data?.some(product => product._id === id);
+
+  return {
+    data: {
+      ...data,
+      isTop10,
+    },
+    ...restProduct,
+  };
 };

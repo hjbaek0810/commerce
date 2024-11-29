@@ -60,6 +60,7 @@ export const sliderItem = recipe({
 
 export const sliderList = style({
   display: 'flex',
+  height: '100%',
 
   selectors: {
     [`&:has(.${sliderItem.classNames.variants.type.carousel})`]: {

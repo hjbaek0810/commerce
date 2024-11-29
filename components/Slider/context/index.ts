@@ -11,7 +11,7 @@ export type SliderActionContextType = {
 
 export type SliderValueContextType = {
   showIndex: number;
-  showDot?: boolean;
+  hideDot?: boolean;
   autoPlay?: boolean;
   height: string;
 } & Required<Pick<SliderVariants, 'type'>>;

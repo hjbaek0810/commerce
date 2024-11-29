@@ -8,6 +8,7 @@ import { fetchData } from '@services/utils/fetch';
 import { API } from '@services/utils/path';
 import { createQueryString } from '@utils/query/helper';
 import { getQueryClient } from '@utils/query/queryClient';
+import BestProductSlider from 'app/product/BestProductSlider';
 
 import ProductListTable from './ProductListTable';
 
@@ -21,6 +22,8 @@ const ProductList = async ({
 }: {
   searchParams: Record<string, string>;
 }) => {
+  const allProductListPage = !('category' in searchParams);
+
   const queryClient = getQueryClient();
 
   const fetchProducts = async ({ pageParam = 1 }) => {
@@ -36,17 +39,29 @@ const ProductList = async ({
     return response;
   };
 
-  await queryClient.prefetchInfiniteQuery({
-    queryKey: ['products', { scope: 'list' }, searchParams],
-    queryFn: fetchProducts,
-    getNextPageParam: (lastPage: PaginatedResponse<'products', ProductVO>) => {
-      const { currentPage, totalCount } = lastPage;
-      if (currentPage * LIMIT_ITEM < totalCount) {
-        return lastPage.currentPage + 1;
-      }
-    },
-    initialPageParam: 1,
-  });
+  await Promise.all([
+    queryClient.prefetchInfiniteQuery({
+      queryKey: ['products', { scope: 'list' }, searchParams],
+      queryFn: fetchProducts,
+      getNextPageParam: (
+        lastPage: PaginatedResponse<'products', ProductVO>,
+      ) => {
+        const { currentPage, totalCount } = lastPage;
+        if (currentPage * LIMIT_ITEM < totalCount) {
+          return lastPage.currentPage + 1;
+        }
+      },
+      initialPageParam: 1,
+    }),
+    ...(allProductListPage
+      ? [
+          queryClient.prefetchQuery({
+            queryKey: ['products', { status: 'top-views' }],
+            queryFn: () => fetchData<ProductVO[]>(API.PRODUCT.TOP_VIEWS, 'GET'),
+          }),
+        ]
+      : []),
+  ]);
 
   return (
     <>
@@ -54,6 +69,7 @@ const ProductList = async ({
 
       <Suspense fallback={<LoadingSpinner />}>
         <HydrationBoundary state={dehydrate(queryClient)}>
+          {allProductListPage && <BestProductSlider />}
           <ProductListTable />
         </HydrationBoundary>
       </Suspense>
