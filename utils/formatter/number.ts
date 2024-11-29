@@ -1,7 +1,7 @@
 import { isNil } from 'lodash-es';
 
 export function formatNumber(
-  value: string | number,
+  value: string | number | undefined,
   locale = 'en-US',
   options: Intl.NumberFormatOptions = {},
 ) {
