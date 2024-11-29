@@ -15,7 +15,7 @@ export const layout = style({
 export const outlet = style([
   sprinkles({
     width: 'sizing-fill',
-    height: 'sizing-fill',
+    minHeight: 'sizing-fill',
     paddingRight: 'spacing-024',
     paddingY: 'spacing-032',
   }),

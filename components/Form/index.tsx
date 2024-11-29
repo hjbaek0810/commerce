@@ -26,6 +26,7 @@ export type CommonRHFPropsType<T, U extends FieldValues> = {
 type RHFFormPropsType<T extends FieldValues> = UseFormReturn<T> & {
   id?: string;
   onSubmit: SubmitHandler<T>;
+  className?: string;
 };
 
 export const RHFRules = <T extends FieldValues>(
@@ -40,10 +41,11 @@ const Form = <T extends FieldValues>({
   id,
   onSubmit,
   children,
+  className,
   ...form
 }: PropsWithChildren<RHFFormPropsType<T>>) => (
   <FormProvider {...form}>
-    <form id={id} onSubmit={form.handleSubmit(onSubmit)}>
+    <form id={id} onSubmit={form.handleSubmit(onSubmit)} className={className}>
       {children}
     </form>
   </FormProvider>
