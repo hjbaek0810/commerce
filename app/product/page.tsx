@@ -6,7 +6,7 @@ import LoadingSpinner from '@components/Loading';
 import Title from '@components/Title';
 import { fetchData } from '@services/utils/fetch';
 import { API } from '@services/utils/path';
-import { createQueryString, parseQueryParams } from '@utils/query/helper';
+import { createQueryString } from '@utils/query/helper';
 import { getQueryClient } from '@utils/query/queryClient';
 
 import ProductListTable from './ProductListTable';

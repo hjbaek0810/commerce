@@ -22,6 +22,16 @@ export const productImageWrapper = style({
   position: 'relative',
   width: '100%',
   height: '100%',
+  overflow: 'hidden',
+});
+
+export const productImage = style({
+  objectFit: 'cover',
+  transition: 'transform 0.3s ease-in-out',
+
+  ':hover': {
+    transform: 'scale(1.1)',
+  },
 });
 
 export const productName = style({
