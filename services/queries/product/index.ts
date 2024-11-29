@@ -163,7 +163,7 @@ export const useAdminProductMutation = () => {
       };
 
       return fetchData<AdminProductVO, CreateProduct>(
-        API.PRODUCT.BASE,
+        API.ADMIN.PRODUCT.BASE,
         'POST',
         {
           data: productData,
