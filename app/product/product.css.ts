@@ -75,8 +75,8 @@ export const notFoundProduct = style({
 
 // best product slider
 export const bestProductWrapper = style({
-  paddingBottom: tokens.spacing['spacing-096'],
-  marginBottom: tokens.spacing['spacing-096'],
+  paddingBottom: tokens.spacing['spacing-080'],
+  marginBottom: tokens.spacing['spacing-040'],
   borderBottom: '3px solid #d9d4cd',
 });
 
@@ -87,4 +87,13 @@ export const bestProductItemWrapper = style({
 
 export const bestProductItem = style({
   width: `${calc.subtract(calc.divide('100%', 4), '0.6rem')} !important`,
+});
+
+// search
+export const searchForm = style({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: tokens.spacing['spacing-012'],
+  width: '100%',
+  marginBottom: tokens.spacing['spacing-080'],
 });
