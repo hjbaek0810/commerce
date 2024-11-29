@@ -3,10 +3,12 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
+import { ProductSortType } from '@utils/constants/product';
 import { type NewObject } from '@utils/types/utility';
 
 const INITIAL_PAGE_NUMBER = 1;
 const INITIAL_LIMIT_COUNT = 10;
+const INITIAL_SORT_VALUE = ProductSortType.NEWEST;
 
 const useQueryParams = () => {
   const { replace } = useRouter();
@@ -19,10 +21,14 @@ const useQueryParams = () => {
   const [currentLimit, setCurrentLimit] = useState(
     Number(searchParams.get('limit')) || INITIAL_LIMIT_COUNT,
   );
+  const [currentSort, setCurrentSort] = useState(
+    searchParams.get('sort') || INITIAL_SORT_VALUE,
+  );
 
   useEffect(() => {
     const page = Number(searchParams.get('page')) || INITIAL_PAGE_NUMBER;
     const limit = Number(searchParams.get('limit')) || INITIAL_LIMIT_COUNT;
+    const sort = searchParams.get('sort') || INITIAL_SORT_VALUE;
 
     if (page !== currentPage) {
       setCurrentPage(page);
@@ -31,17 +37,23 @@ const useQueryParams = () => {
     if (limit !== currentLimit) {
       setCurrentLimit(limit);
     }
-  }, [currentLimit, currentPage, searchParams]);
+
+    if (sort !== currentSort) {
+      setCurrentSort(sort);
+    }
+  }, [currentLimit, currentPage, currentSort, searchParams]);
 
   // URL 파라미터가 없으면 기본값 설정 (초기화)
   useEffect(() => {
     const params = new URLSearchParams(searchParams);
     const page = params.get('page');
     const limit = params.get('limit');
+    const sort = params.get('sort');
 
-    if (!page || !limit) {
+    if (!page || !limit || !sort) {
       if (!page) params.set('page', String(INITIAL_PAGE_NUMBER));
       if (!limit) params.set('limit', String(INITIAL_LIMIT_COUNT));
+      if (!sort) params.set('sort', INITIAL_SORT_VALUE);
 
       replace(`${pathname}?${params.toString()}`);
     }
