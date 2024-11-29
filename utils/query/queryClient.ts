@@ -7,10 +7,11 @@ export function makeQueryClient() {
     defaultOptions: {
       queries: {
         retry: false,
-        refetchOnMount: true,
+        staleTime: 1 * 60 * 1000,
+        gcTime: 5 * 60 * 1000,
+        refetchOnMount: false,
         refetchOnWindowFocus: false,
         refetchOnReconnect: false,
-        staleTime: 0,
       },
       mutations: {
         retry: false,
