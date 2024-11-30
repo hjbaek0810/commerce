@@ -126,7 +126,7 @@ const useQueryParams = () => {
         ...params,
         page,
         limit: searchParams.get('limit') || limit,
-        sort: searchParams.get('sort') || sort,
+        sort: params?.sort || searchParams.get('sort') || sort,
       });
     },
     [changeSearchParams, searchParams],
