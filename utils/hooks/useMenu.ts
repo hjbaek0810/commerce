@@ -18,21 +18,6 @@ const useMenu = () => {
 
   const showSideBar = pathname.startsWith('/product');
 
-  // 현재 URL의 검색 파라미터 가져오기
-  const getBaseQuery = () => {
-    const baseQuery: Record<string, string> = {};
-    const page = searchParams.get('page');
-    const limit = searchParams.get('limit');
-    const sort = searchParams.get('sort');
-
-    if (page) baseQuery.page = page;
-    if (limit) baseQuery.limit = limit;
-    if (sort) baseQuery.sort = sort;
-
-    return baseQuery;
-  };
-
-  const baseQuery = getBaseQuery();
   const selectedCategory = searchParams.get('category');
 
   // 카테고리 메뉴 생성
@@ -41,14 +26,14 @@ const useMenu = () => {
       title: main.name,
       href: {
         path: PATH.PRODUCT.LIST,
-        query: { ...baseQuery, category: main._id },
+        query: { category: main._id },
       },
     },
     subMenus: main.subCategories.map(sub => ({
       title: sub.name,
       href: {
         path: PATH.PRODUCT.LIST,
-        query: { ...baseQuery, category: main._id, subCategory: sub._id },
+        query: { category: main._id, subCategory: sub._id },
       },
     })),
   }));
@@ -59,9 +44,9 @@ const useMenu = () => {
       title: 'ALL',
       href: {
         path: PATH.PRODUCT.LIST,
-        query: baseQuery,
       },
-      fullMatch: true,
+      customSelected:
+        !selectedCategory && pathname.startsWith(PATH.PRODUCT.LIST),
     },
     ...MENU_LIST.map(menu => menu.headers),
   ];
@@ -75,7 +60,7 @@ const useMenu = () => {
       title: 'All',
       href: {
         path: PATH.PRODUCT.LIST,
-        query: { ...baseQuery, category: activeCategory },
+        query: { category: activeCategory },
       },
     };
 
