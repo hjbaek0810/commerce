@@ -1,21 +1,14 @@
 import { NextResponse } from 'next/server';
 
 import connectDB from '@api/config/connectDB';
-import CategoryModel from '@api/models/category';
 import ProductModel from '@api/models/product';
-import SubCategoryModel from '@api/models/subCategory';
 import { ProductSortType } from '@utils/constants/product';
 
 import type { SearchProduct } from './types/dto';
-import type { FilterQuery, SortOrder } from 'mongoose';
+import type { FilterQuery } from 'mongoose';
 import type { NextRequest } from 'next/server';
 
-type SortCriteria = {
-  createdAt?: SortOrder;
-  views?: SortOrder;
-  price?: SortOrder;
-  salePrice?: SortOrder;
-};
+type SortCriteria = Record<string, 1 | -1>;
 
 export async function GET(req: NextRequest) {
   try {
@@ -42,10 +35,10 @@ export async function GET(req: NextRequest) {
         sortCriteria = { views: -1 };
         break;
       case ProductSortType.PRICE_HIGH:
-        sortCriteria = { salePrice: -1, price: -1 };
+        sortCriteria = { effectivePrice: -1 };
         break;
       case ProductSortType.PRICE_LOW:
-        sortCriteria = { salePrice: 1, price: 1 };
+        sortCriteria = { effectivePrice: 1 };
         break;
     }
 
@@ -70,45 +63,51 @@ export async function GET(req: NextRequest) {
       }
     });
 
-    const products = await ProductModel.find(filters)
-      .limit(limitNumber)
-      .skip((pageNumber - 1) * limitNumber)
-      .sort(sortCriteria)
-      .populate({
-        path: 'categoryIds._id',
-        select: 'name',
-        model: CategoryModel,
-      })
-      .populate({
-        path: 'categoryIds.subCategoryId',
-        select: 'name',
-        model: SubCategoryModel,
-      });
-
-    const response = products.map(product => {
-      const { categoryIds, ...productData } = product._doc;
-
-      const categoryId = {
-        _id: categoryIds?._id?._id ?? null,
-        name: categoryIds?._id?.name ?? null,
-        subCategory: {
-          _id: categoryIds?.subCategoryId?._id ?? null,
-          name: categoryIds?.subCategoryId?.name ?? null,
+    const products = await ProductModel.aggregate([
+      { $match: filters },
+      {
+        $addFields: {
+          effectivePrice: {
+            $cond: {
+              if: { $ne: ['$salePrice', null] }, // salePrice가 null이 아닌 경우
+              then: '$salePrice',
+              else: '$price', // salePrice가 null이면 price 사용
+            },
+          },
         },
-      };
-
-      return {
-        ...productData,
-        _id: product._id.toString(),
-        category: categoryId,
-      };
-    });
+      },
+      { $sort: sortCriteria },
+      { $skip: (pageNumber - 1) * limitNumber },
+      { $limit: limitNumber },
+      {
+        $lookup: {
+          from: 'categories',
+          localField: 'categoryIds._id',
+          foreignField: '_id',
+          as: 'category',
+        },
+      },
+      {
+        $lookup: {
+          from: 'subcategories',
+          localField: 'categoryIds.subCategoryId',
+          foreignField: '_id',
+          as: 'subCategory',
+        },
+      },
+      {
+        $project: {
+          categoryIds: 0,
+          effectivePrice: 0,
+        },
+      },
+    ]);
 
     const count = await ProductModel.countDocuments(filters);
 
     return NextResponse.json(
       {
-        products: response,
+        products,
         currentPage: pageNumber,
         currentLimit: limitNumber,
         totalCount: count,
