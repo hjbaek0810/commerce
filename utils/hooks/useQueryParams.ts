@@ -10,19 +10,26 @@ const INITIAL_PAGE_NUMBER = 1;
 const INITIAL_LIMIT_COUNT = 10;
 const INITIAL_SORT_VALUE = ProductSortType.NEWEST;
 
+const getDefaultParams = () => ({
+  page: String(INITIAL_PAGE_NUMBER),
+  limit: String(INITIAL_LIMIT_COUNT),
+  sort: INITIAL_SORT_VALUE,
+});
+
 const useQueryParams = () => {
   const { replace } = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
+  const { page, limit, sort } = getDefaultParams();
 
   const [currentPage, setCurrentPage] = useState(
-    Number(searchParams.get('page')) || INITIAL_PAGE_NUMBER,
+    Number(searchParams.get('page')) || page,
   );
   const [currentLimit, setCurrentLimit] = useState(
-    Number(searchParams.get('limit')) || INITIAL_LIMIT_COUNT,
+    Number(searchParams.get('limit')) || limit,
   );
   const [currentSort, setCurrentSort] = useState(
-    searchParams.get('sort') || INITIAL_SORT_VALUE,
+    searchParams.get('sort') || sort,
   );
 
   useEffect(() => {
@@ -43,26 +50,40 @@ const useQueryParams = () => {
     }
   }, [currentLimit, currentPage, currentSort, searchParams]);
 
+  // URL 파라미터 가져오기
+  const getQueryParams = useCallback(() => {
+    const params = new URLSearchParams(searchParams);
+
+    return {
+      params,
+      page: searchParams.get('page'),
+      limit: searchParams.get('limit'),
+      sort: searchParams.get('sort'),
+    };
+  }, [searchParams]);
+
   // URL 파라미터가 없으면 기본값 설정 (초기화)
   useEffect(() => {
-    const params = new URLSearchParams(searchParams);
-    const page = params.get('page');
-    const limit = params.get('limit');
-    const sort = params.get('sort');
+    const {
+      params,
+      page: pageParam,
+      limit: limitParam,
+      sort: sortParam,
+    } = getQueryParams();
 
-    if (!page || !limit || !sort) {
-      if (!page) params.set('page', String(INITIAL_PAGE_NUMBER));
-      if (!limit) params.set('limit', String(INITIAL_LIMIT_COUNT));
-      if (!sort) params.set('sort', INITIAL_SORT_VALUE);
+    if (!pageParam || !limitParam || !sortParam) {
+      if (!pageParam) params.set('page', page);
+      if (!limitParam) params.set('limit', limit);
+      if (!sortParam) params.set('sort', sort);
 
       replace(`${pathname}?${params.toString()}`);
     }
-  }, [pathname, replace, searchParams]);
+  }, [getQueryParams, limit, page, pathname, replace, searchParams, sort]);
 
   // searchParams 변경 시 URL을 갱신
   const changeSearchParams = useCallback(
     (newParams: NewObject) => {
-      const params = new URLSearchParams(searchParams);
+      const { params } = getQueryParams();
 
       Object.entries(newParams).forEach(([key, value]) => {
         if (value) {
@@ -74,26 +95,38 @@ const useQueryParams = () => {
 
       replace(`${pathname}?${params.toString()}`);
     },
-    [searchParams, pathname, replace],
+    [getQueryParams, pathname, replace],
   );
 
-  const handlePageChange = (page: SetStateAction<number>) => {
+  const handlePageChange = (pageNumber: SetStateAction<number>) => {
+    const { sort } = getDefaultParams();
+
     changeSearchParams({
-      page,
+      page: pageNumber,
       limit: currentLimit,
+      sort: searchParams.get('sort') || sort,
     });
   };
 
   const handlePageSizeChange = (size: SetStateAction<number>) => {
-    changeSearchParams({ page: 1, limit: size });
+    const { page, sort } = getDefaultParams();
+
+    changeSearchParams({
+      page,
+      limit: size,
+      sort: searchParams.get('sort') || sort,
+    });
   };
 
   const handleSearchParamsChange = useCallback(
     (params: NewObject) => {
+      const { page, limit, sort } = getDefaultParams();
+
       changeSearchParams({
         ...params,
-        page: String(INITIAL_PAGE_NUMBER),
-        limit: searchParams.get('limit'),
+        page,
+        limit: searchParams.get('limit') || limit,
+        sort: searchParams.get('sort') || sort,
       });
     },
     [changeSearchParams, searchParams],
