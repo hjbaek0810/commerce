@@ -2,22 +2,20 @@ import { toast } from 'react-toastify';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
+import {
+  getAdminCategoriesQueryOptions,
+  getCategoriesQueryOptions,
+} from '@services/queries/category/options';
 import { isApiError } from '@services/utils/error';
 import { fetchData } from '@services/utils/fetch';
 import { API } from '@services/utils/path';
 import { CategoryExceptionCode } from '@services/utils/types/exception';
 
 import type { AdminCreateCategory } from '@api/admin/category/types/dto';
-import type { AdminCategoryVO } from '@api/admin/category/types/vo';
 import type { CategoryVO } from '@api/category/types/vo';
 
 export const useCategoriesQuery = () => {
-  const { data, ...rest } = useQuery({
-    queryKey: ['categories'],
-    queryFn: () => fetchData<Array<CategoryVO>>(API.CATEGORY, 'GET'),
-    staleTime: 10 * 60 * 1000,
-    gcTime: 30 * 60 * 1000,
-  });
+  const { data, ...rest } = useQuery(getCategoriesQueryOptions());
 
   return {
     ...rest,
@@ -26,12 +24,7 @@ export const useCategoriesQuery = () => {
 };
 
 export const useAdminCategoriesQuery = () => {
-  const { data, ...rest } = useQuery({
-    queryKey: ['categories', 'admin'],
-    queryFn: () => fetchData<Array<AdminCategoryVO>>(API.ADMIN.CATEGORY, 'GET'),
-    staleTime: 10 * 60 * 1000,
-    gcTime: 30 * 60 * 1000,
-  });
+  const { data, ...rest } = useQuery(getAdminCategoriesQueryOptions());
 
   return {
     ...rest,
@@ -44,14 +37,18 @@ export const useAdminCategoriesMutation = () => {
 
   return useMutation({
     mutationFn: (categories: AdminCreateCategory[]) =>
-      fetchData<Array<CategoryVO>>(API.ADMIN.CATEGORY, 'PUT', {
-        data: categories.map(category => ({
-          ...category,
-          subCategories: category.subCategories?.filter(
-            sub => sub.name?.length > 0,
-          ),
-        })),
-      }),
+      fetchData<Array<CategoryVO>, AdminCreateCategory[]>(
+        API.ADMIN.CATEGORY,
+        'PUT',
+        {
+          data: categories.map(category => ({
+            ...category,
+            subCategories: category.subCategories?.filter(
+              sub => sub.name?.length > 0,
+            ),
+          })),
+        },
+      ),
     onSuccess: () =>
       queryClient.invalidateQueries({
         queryKey: ['categories'],

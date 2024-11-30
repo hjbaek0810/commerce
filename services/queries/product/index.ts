@@ -2,7 +2,6 @@ import { toast } from 'react-toastify';
 
 import {
   keepPreviousData,
-  useInfiniteQuery,
   useMutation,
   useQueries,
   useQuery,
@@ -12,6 +11,12 @@ import {
 import { isEmpty } from 'lodash-es';
 import { useSearchParams } from 'next/navigation';
 
+import {
+  getProductDetailQueryOptions,
+  getProductListInfiniteQueryOptions,
+  getProductTopViewsQueryOptions,
+} from '@services/queries/product/options';
+import { getWishListQueryOptions } from '@services/queries/wish-list/options';
 import { deleteImages, uploadImages } from '@services/upload';
 import { fetchData } from '@services/utils/fetch';
 import { API } from '@services/utils/path';
@@ -27,7 +32,6 @@ import type {
   AdminProductDetailVO,
   AdminProductVO,
 } from '@api/admin/product/types/vo';
-import type { ProductDetailVO, ProductVO } from '@api/product/types/vo';
 import type { PaginatedResponse } from '@services/utils/types/pagination';
 import type { ProductUseFormType } from 'app/admin/product/components/ProductForm/useProductForm';
 import type { UploadApiResponse } from 'cloudinary';
@@ -91,32 +95,9 @@ export const useProductListInfiniteQuery = () => {
   const queryParams = parseQueryParams(searchParams);
   const { handleSearchParamsChange } = useQueryParams();
 
-  const LIMIT_ITEM = 10;
-
-  const fetchProducts = async ({ pageParam = 1 }) => {
-    const response = await fetchData<PaginatedResponse<'products', ProductVO>>(
-      createQueryString(API.PRODUCT.BASE, {
-        page: pageParam,
-        limit: LIMIT_ITEM,
-        ...queryParams,
-      }),
-      'GET',
-    );
-
-    return response;
-  };
-
-  const { data, ...rest } = useSuspenseInfiniteQuery({
-    queryKey: ['products', { scope: 'list' }, queryParams],
-    queryFn: fetchProducts,
-    getNextPageParam: lastPage => {
-      const { currentPage, totalCount } = lastPage;
-      if (currentPage * LIMIT_ITEM < totalCount) {
-        return lastPage.currentPage + 1;
-      }
-    },
-    initialPageParam: 1,
-  });
+  const { data, ...rest } = useSuspenseInfiniteQuery(
+    getProductListInfiniteQueryOptions(queryParams),
+  );
 
   return {
     ...rest,
@@ -130,12 +111,6 @@ export const useAdminProductDetailQuery = (id: string) =>
     queryKey: ['products', 'admin', { scope: 'item' }, id],
     queryFn: () =>
       fetchData<AdminProductDetailVO>(API.ADMIN.PRODUCT.DETAIL(id), 'GET'),
-  });
-
-export const useProductDetailQuery = (id: string) =>
-  useQuery({
-    queryKey: ['products', { scope: 'item' }, id],
-    queryFn: () => fetchData<ProductDetailVO>(API.PRODUCT.DETAIL(id), 'GET'),
   });
 
 export const useAdminProductMutation = () => {
@@ -249,7 +224,7 @@ export const useAdminProductDeleteMutation = (id: string) => {
       ]),
     onSuccess: () =>
       queryClient.invalidateQueries({
-        queryKey: ['products'],
+        queryKey: ['products', 'wish-list'],
         refetchType: 'all',
       }),
     onError: () => {
@@ -259,34 +234,23 @@ export const useAdminProductDeleteMutation = (id: string) => {
 };
 
 export const useProductTopViewsQuery = () =>
-  useQuery({
-    queryKey: ['products', { status: 'top-views' }],
-    queryFn: () => fetchData<ProductVO[]>(API.PRODUCT.TOP_VIEWS, 'GET'),
-  });
+  useQuery(getProductTopViewsQueryOptions());
 
-export const useProductDetailWithTopViews = (id: string) => {
-  const [productDetail, topViews] = useQueries({
+export const useProductDetailQuery = (id: string) => {
+  const [productDetail, topViews, wish] = useQueries({
     queries: [
-      {
-        queryKey: ['products', { scope: 'item' }, id],
-        queryFn: () =>
-          fetchData<ProductDetailVO>(API.PRODUCT.DETAIL(id), 'GET'),
-      },
-      {
-        queryKey: ['products', { status: 'top-views' }],
-        queryFn: () => fetchData<ProductVO[]>(API.PRODUCT.TOP_VIEWS, 'GET'),
-      },
+      getProductDetailQueryOptions(id),
+      getProductTopViewsQueryOptions(),
+      getWishListQueryOptions(),
     ],
   });
 
-  const { data, ...restProduct } = productDetail;
   const isTop10 = topViews.data?.some(product => product._id === id);
+  const isWished = wish.data?.items?.some(item => item._id.toString() === id);
 
   return {
-    data: {
-      ...data,
-      isTop10,
-    },
-    ...restProduct,
+    ...productDetail,
+    isWished,
+    isTop10,
   };
 };
