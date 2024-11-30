@@ -1,3 +1,4 @@
+import { isBoolean } from 'lodash-es';
 import { usePathname, useSearchParams } from 'next/navigation';
 
 import type { ParsedUrlQueryInput } from 'querystring';
@@ -9,22 +10,21 @@ const useHeader = () => {
   const selected = (
     menuPath: string,
     query?: ParsedUrlQueryInput | string,
-    fullMatch?: boolean,
+    customSelected?: boolean,
   ) => {
-    if (!query && !fullMatch) {
+    if (isBoolean(customSelected)) return customSelected;
+
+    if (!query) {
       return pathname.startsWith(menuPath);
     }
 
     const queryParams = new URLSearchParams(query as string);
 
-    const currentFullPath = `${pathname}?${searchParams.toString()}`;
-    const menuFullPath = `${menuPath}?${queryParams}`;
+    const currentQuery = searchParams.toString();
 
-    if (fullMatch) {
-      return currentFullPath === menuFullPath;
-    }
+    const menuQuery = queryParams.toString();
 
-    return currentFullPath.startsWith(menuFullPath);
+    return pathname.startsWith(menuPath) && currentQuery.startsWith(menuQuery);
   };
 
   return { selected };

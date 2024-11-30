@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
+
+import useSideMenu from '@components/SideMenu/useSideMenu';
 
 import * as css from './sideMenu.css';
 
@@ -22,20 +23,7 @@ export type SideMenuListType = {
 };
 
 const SideMenu = ({ list, isHide }: SideMenuPropsType) => {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-
-  const selected = (menuPath: string, query?: ParsedUrlQueryInput | string) => {
-    if (!query) {
-      return menuPath === pathname;
-    }
-
-    const queryParams = new URLSearchParams(query as string);
-    const currentFullPath = `${pathname}?${searchParams.toString()}`;
-    const menuFullPath = `${pathname}?${queryParams}`;
-
-    return currentFullPath === menuFullPath;
-  };
+  const { selected } = useSideMenu();
 
   return (
     <aside data-hide={isHide} className={css.sideMenuWrapper}>

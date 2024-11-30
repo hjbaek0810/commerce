@@ -20,7 +20,7 @@ export type HeaderListType = {
     path: string;
     query?: ParsedUrlQueryInput | string;
   };
-  fullMatch?: boolean;
+  customSelected?: boolean;
 };
 
 type HeaderPropsType = {
@@ -39,11 +39,11 @@ const Header = ({ list }: HeaderPropsType) => {
 
       <nav className={css.bar}>
         <ul className={css.menu}>
-          {list.map(({ title, href, fullMatch }) => (
+          {list.map(({ title, href, customSelected }) => (
             <li
               key={title}
               className={css.menuItem({
-                selected: selected(href.path, href?.query, fullMatch),
+                selected: selected(href.path, href?.query, customSelected),
               })}
             >
               <Link
