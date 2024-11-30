@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Link from 'next/link';
 
 import useHeader from '@components/Header/useHeader';
+import { PATH } from '@utils/path';
 
 import * as css from './header.css';
 
@@ -70,7 +71,7 @@ const Header = ({ list }: HeaderPropsType) => {
             </Link>
           </li>
           <li>
-            <Link href="/like">
+            <Link href={PATH.WISH_LIST}>
               <FontAwesomeIcon icon={faHeart} />
             </Link>
           </li>

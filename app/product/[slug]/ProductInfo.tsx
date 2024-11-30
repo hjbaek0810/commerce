@@ -1,28 +1,46 @@
 'use client';
 
-import { faCartShopping, faHeart } from '@fortawesome/free-solid-svg-icons';
+import { faHeart as faHeartRegular } from '@fortawesome/free-regular-svg-icons';
+import {
+  faCartShopping,
+  faHeart as faHeartSolid,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { isNil } from 'lodash-es';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 import Button from '@components/Button';
-import { useProductDetailWithTopViews } from '@services/queries/product';
+import { useProductDetailQuery } from '@services/queries/product';
+import { useWishListMutation } from '@services/queries/wish-list';
 import { formatNumber } from '@utils/formatter/number';
 import { calculateSaleRate } from '@utils/math/rate';
+import { PATH } from '@utils/path';
 
 import * as css from './productDetail.css';
 
 const ProductInfo = ({ id }: { id: string }) => {
-  const { data: product } = useProductDetailWithTopViews(id);
+  const { data: product, isTop10, isWished } = useProductDetailQuery(id);
+  const { name, images, price, salePrice, description } = product || {};
+
+  const { mutate: updateWish } = useWishListMutation();
+
+  const router = useRouter();
+
+  const handleWishButtonClick = () => {
+    if (isNil(isWished)) router.push(PATH.WISH_LIST);
+
+    updateWish({ productId: id });
+  };
 
   return (
     <div className={css.infoWrapper}>
       <figure className={css.imageWrapper}>
         <Image
           src={
-            product?.images?.[0]?.secureUrl ??
-            'https://placehold.co/200x300/png?text=X'
+            images?.[0]?.secureUrl ?? 'https://placehold.co/200x300/png?text=X'
           }
-          alt={product?.name ?? ''}
+          alt={name ?? ''}
           fill
           priority
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
@@ -33,31 +51,31 @@ const ProductInfo = ({ id }: { id: string }) => {
       </figure>
 
       <div className={css.infoText}>
-        <p className={css.productName}>{product?.name}</p>
-        {product?.price && (
+        <p className={css.productName}>{name}</p>
+        {price && (
           <div className={css.productPriceWrapper}>
             <span
               className={css.price({
-                hasDiscount: !!product?.salePrice,
+                hasDiscount: !!salePrice,
               })}
             >
-              {formatNumber(product?.price)}
+              {formatNumber(price)}
             </span>
-            {!!product?.salePrice && (
+            {salePrice && (
               <>
                 <span className={css.saleRate}>
-                  {calculateSaleRate(product.price, product.salePrice)}
+                  {calculateSaleRate(price, salePrice)}
                 </span>
                 <span className={css.price({ hasDiscount: false })}>
-                  {formatNumber(product.salePrice)}
+                  {formatNumber(salePrice)}
                 </span>
               </>
             )}
           </div>
         )}
-        {product?.isTop10 && <span className={css.bestBadge}>BEST</span>}
+        {isTop10 && <span className={css.bestBadge}>BEST</span>}
 
-        <div className={css.productDesc}>{product?.description}</div>
+        <div className={css.productDesc}>{description}</div>
 
         <div className={css.buttonWrapper}>
           <Button size="large" fill fullWidth>
@@ -66,8 +84,11 @@ const ProductInfo = ({ id }: { id: string }) => {
           <Button size="medium">
             <FontAwesomeIcon className={css.cartIcon} icon={faCartShopping} />
           </Button>
-          <Button size="medium">
-            <FontAwesomeIcon className={css.likeIcon} icon={faHeart} />
+          <Button size="medium" onClick={handleWishButtonClick}>
+            <FontAwesomeIcon
+              className={css.likeIcon}
+              icon={isWished ? faHeartSolid : faHeartRegular}
+            />
           </Button>
         </div>
       </div>
