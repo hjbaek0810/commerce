@@ -34,7 +34,9 @@ const useProductListTable = () => {
   const debouncedKeyword = useDebounce<string>(keyword ?? '', 600);
 
   useEffect(() => {
-    handleSearchParamsChange({ name: keyword });
+    if (debouncedKeyword) {
+      handleSearchParamsChange({ name: keyword });
+    }
   }, [debouncedKeyword, handleSearchParamsChange, keyword]);
 
   const handleSortChange = () => {
