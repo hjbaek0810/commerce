@@ -11,7 +11,11 @@ import type { SearchProduct } from '@api/product/types/dto';
 
 const useProductListTable = () => {
   const { products, handleSearchParamsChange } = useProductListInfiniteQuery();
+
   const searchParams = useSearchParams();
+  const categoryParam = searchParams.get('category');
+  const subCategoryParam = searchParams.get('subCategory');
+
   const productsUseForm = useForm<SearchProduct>({
     values: {
       name: searchParams.get('name') || '',
@@ -39,7 +43,15 @@ const useProductListTable = () => {
     handleSearchParamsChange({ sort });
   };
 
-  return { products, productsUseForm, handleSortChange, searchParams };
+  return {
+    products,
+    productsUseForm,
+    handleSortChange,
+    productDetailQuery: {
+      ...(categoryParam && { category: categoryParam }),
+      ...(subCategoryParam && { subCategory: subCategoryParam }),
+    },
+  };
 };
 
 export default useProductListTable;

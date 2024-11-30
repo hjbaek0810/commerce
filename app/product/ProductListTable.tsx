@@ -14,7 +14,7 @@ import useProductListTable from 'app/product/useProductListTable';
 import * as css from './product.css';
 
 const ProductListTable = () => {
-  const { products, productsUseForm, handleSortChange, searchParams } =
+  const { products, productsUseForm, handleSortChange, productDetailQuery } =
     useProductListTable();
 
   return (
@@ -50,7 +50,10 @@ const ProductListTable = () => {
             <Link
               className={css.productItem}
               key={_id}
-              href={`${PATH.PRODUCT.DETAIL(_id)}?${searchParams.toString()}`}
+              href={{
+                pathname: PATH.PRODUCT.DETAIL(_id),
+                query: productDetailQuery,
+              }}
             >
               <figure className={css.productImageWrapper}>
                 <Image
