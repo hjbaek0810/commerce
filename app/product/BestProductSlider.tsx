@@ -1,7 +1,5 @@
 'use client';
 
-import Image from 'next/image';
-
 import Slider from '@components/Slider';
 import Title from '@components/Title';
 import { useProductTopViewsQuery } from '@services/queries/product';
