@@ -16,4 +16,7 @@ export const API = {
     DETAIL: (productId: string) => `product/${productId}`,
     TOP_VIEWS: 'product/top-views',
   },
+  WISH_LIST: {
+    BASE: 'wish-list',
+  },
 };

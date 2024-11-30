@@ -15,4 +15,5 @@ export const PATH = {
     LIST: PRODUCT,
     DETAIL: (productId: string) => PRODUCT + `/${productId}`,
   },
+  WISH_LIST: '/wish-list',
 };

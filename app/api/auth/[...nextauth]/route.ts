@@ -4,7 +4,9 @@ import GoogleProvider from 'next-auth/providers/google';
 
 import client from '@api/config/client';
 
-const handler = NextAuth({
+import type { NextAuthOptions } from 'next-auth';
+
+export const authOptions: NextAuthOptions = {
   adapter: MongoDBAdapter(client),
   providers: [
     GoogleProvider({
@@ -17,9 +19,17 @@ const handler = NextAuth({
     strategy: 'database',
     maxAge: 60 * 60 * 24,
   },
-  // pages: {
-  //   signIn: '/auth/sign-in',
-  // },
-});
+  callbacks: {
+    session: ({ session, user }) => ({
+      ...session,
+      user: {
+        ...user,
+        id: user.id,
+      },
+    }),
+  },
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
