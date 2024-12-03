@@ -50,8 +50,8 @@ const useProductListTable = () => {
     productsUseForm,
     handleSortChange,
     productDetailQuery: {
-      ...(categoryParam && { category: categoryParam }),
-      ...(subCategoryParam && { subCategory: subCategoryParam }),
+      categoryParam,
+      subCategoryParam,
     },
   };
 };

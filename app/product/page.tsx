@@ -1,8 +1,5 @@
-import { Suspense } from 'react';
-
 import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
 
-import LoadingSpinner from '@components/Loading';
 import Title from '@components/Title';
 import {
   getProductListInfiniteQueryOptions,
