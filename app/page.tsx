@@ -1,5 +1,4 @@
 import Outlet from '@components/Layout/Outlet';
-import { sprinkles } from '@styles/sprinkles.css';
 
 import Banner from './sections/Banner';
 

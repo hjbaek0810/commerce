@@ -10,8 +10,13 @@ import useProductListTable from 'app/product/useProductListTable';
 import * as css from './product.css';
 
 const ProductListTable = () => {
-  const { products, productsUseForm, handleSortChange, productDetailQuery } =
-    useProductListTable();
+  const {
+    keyword,
+    products,
+    productsUseForm,
+    handleSortChange,
+    productDetailQuery,
+  } = useProductListTable();
 
   return (
     <>
@@ -39,7 +44,9 @@ const ProductListTable = () => {
       </Rhf.Form>
 
       {isEmpty(products) ? (
-        <p className={css.notFoundProduct}>준비 중 입니다.</p>
+        <p className={css.notFoundProduct}>
+          {keyword ? '검색 결과를 찾을 수 없습니다.' : '상품 준비 중입니다.'}
+        </p>
       ) : (
         <ProductCard.Group>
           {products.map(({ _id, images, name, price, salePrice }) => (

@@ -14,9 +14,9 @@ export const getProductListInfiniteQueryOptions = (
   queryFn: ({ pageParam = 1 }) =>
     fetchData<PaginatedResponse<'products', ProductVO>>(
       createQueryString(API.PRODUCT.BASE, {
+        ...searchParams,
         page: pageParam,
         limit: PRODUCT_LIST_LIMIT_ITEM,
-        ...searchParams,
       }),
       'GET',
     ),
@@ -27,7 +27,6 @@ export const getProductListInfiniteQueryOptions = (
     }
   },
   initialPageParam: 1,
-  staleTime: 0,
 });
 
 export const getProductTopViewsQueryOptions = () => ({
