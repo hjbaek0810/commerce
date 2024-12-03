@@ -5,9 +5,8 @@ import { authOptions } from '@api/auth/[...nextauth]/route';
 import connectDB from '@api/config/connectDB';
 import ProductModel from '@api/models/product';
 import WishListModel from '@api/models/wishList';
-import { WishListVO } from '@api/wish-list/types/vo';
 
-import type { UpdateWishItem } from '@api/wish-list/types/dto';
+import type { DeleteWishItem, UpdateWishItem } from '@api/wish-list/types/dto';
 import type { NextRequest } from 'next/server';
 
 enum WishListErrorType {
@@ -33,7 +32,6 @@ export async function GET() {
       model: ProductModel,
       select: '_id name images price salePrice',
     });
-    console.log('get wish', wishList);
 
     const { productIds, ...rest } = wishList?._doc || {};
 
@@ -103,6 +101,52 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       {
         message: `Failed to update wish list.`,
+      },
+      { status: 400 },
+    );
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  const { productId }: DeleteWishItem = await req.json();
+
+  try {
+    await connectDB();
+
+    const session = await getServerSession(authOptions);
+
+    const userId = session?.user?.id;
+
+    if (session === null || !userId) {
+      return NextResponse.json({
+        status: 200,
+        message: 'No active session or user ID not found.',
+      });
+    }
+
+    const wishList = await WishListModel.findOneAndUpdate(
+      { _id: userId },
+      { $pull: { productIds: productId } },
+      { new: true },
+    );
+
+    if (!wishList) {
+      return NextResponse.json({
+        status: 200,
+        message: 'No wishlist found for this user.',
+      });
+    }
+
+    return NextResponse.json({
+      message: 'success',
+      status: 200,
+    });
+  } catch (error) {
+    console.error(error);
+
+    return NextResponse.json(
+      {
+        message: `Failed to delete wish list.`,
       },
       { status: 400 },
     );

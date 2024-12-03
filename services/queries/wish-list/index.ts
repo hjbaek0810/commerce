@@ -6,7 +6,8 @@ import { getWishListQueryOptions } from '@services/queries/wish-list/options';
 import { fetchData } from '@services/utils/fetch';
 import { API } from '@services/utils/path';
 
-import type { UpdateWishItem } from '@api/wish-list/types/dto';
+import type { DeleteWishItem, UpdateWishItem } from '@api/wish-list/types/dto';
+import type { WishListVO } from '@api/wish-list/types/vo';
 
 export const useWishListQuery = () => useQuery(getWishListQueryOptions());
 
@@ -26,5 +27,25 @@ export const useWishListMutation = () => {
       toast.error('잠시 후 시도해주시길 바랍니다.');
     },
     onMutate: () => {},
+  });
+};
+
+export const useDeleteWishListMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: DeleteWishItem) =>
+      fetchData<WishListVO, DeleteWishItem>(API.WISH_LIST.BASE, 'DELETE', {
+        data,
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['wish-list'],
+        refetchType: 'all',
+      });
+    },
+    onError: () => {
+      toast.error('잠시 후 시도해주시길 바랍니다.');
+    },
   });
 };
