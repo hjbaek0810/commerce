@@ -6,21 +6,19 @@ import { tokens } from '@styles/token.css';
 
 export const SIDE_MENU_WIDTH = tokens.sizing['sizing-160'];
 
-export const sideMenuWrapper = style({
-  selectors: {
-    '&[data-hide="true"]': {
-      display: 'none',
-    },
-  },
-});
-
 export const sideMenu = style({
   position: 'fixed',
   width: SIDE_MENU_WIDTH,
   minWidth: SIDE_MENU_WIDTH,
   height: '100%',
-  backgroundColor: ColorPalettes.Grey['95'],
   zIndex: tokens.zIndex['z-index-sticky'],
+  backgroundColor: ColorPalettes.Grey['95'],
+
+  selectors: {
+    '&[data-hide="true"]': {
+      display: 'none',
+    },
+  },
 });
 
 export const sideMenuItem = style({

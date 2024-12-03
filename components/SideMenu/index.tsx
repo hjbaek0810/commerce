@@ -26,8 +26,8 @@ const SideMenu = ({ list, isHide = false }: SideMenuPropsType) => {
   const { selected } = useSideMenu();
 
   return (
-    <aside data-hide={isHide} className={css.sideMenuWrapper}>
-      <ul className={css.sideMenu}>
+    <aside data-hide={isHide} className={css.sideMenu}>
+      <ul>
         {list.map(item => (
           <li
             key={item.title}

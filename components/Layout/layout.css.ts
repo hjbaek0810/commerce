@@ -10,8 +10,8 @@ import { tokens } from '@styles/token.css';
 import type { RecipeVariants } from '@vanilla-extract/recipes';
 
 export const layout = style({
-  marginTop: HEADER_BAR_HEIGHT,
-  height: calc.subtract('100%', HEADER_BAR_HEIGHT),
+  paddingTop: HEADER_BAR_HEIGHT,
+  height: '100%',
 });
 
 export const outlet = recipe({
