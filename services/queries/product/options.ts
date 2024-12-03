@@ -27,6 +27,7 @@ export const getProductListInfiniteQueryOptions = (
     }
   },
   initialPageParam: 1,
+  staleTime: 0,
 });
 
 export const getProductTopViewsQueryOptions = () => ({

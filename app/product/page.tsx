@@ -4,7 +4,10 @@ import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
 
 import LoadingSpinner from '@components/Loading';
 import Title from '@components/Title';
-import { getProductListInfiniteQueryOptions } from '@services/queries/product/options';
+import {
+  getProductListInfiniteQueryOptions,
+  getProductTopViewsQueryOptions,
+} from '@services/queries/product/options';
 import { getQueryClient } from '@utils/query/queryClient';
 import BestProductSlider from 'app/product/BestProductSlider';
 
@@ -19,20 +22,24 @@ const ProductList = async ({
 
   const queryClient = getQueryClient();
 
-  await queryClient.prefetchInfiniteQuery(
+  await Promise.all([
     getProductListInfiniteQueryOptions(searchParams),
-  );
+    ...(allProductListPage ? [getProductTopViewsQueryOptions()] : []),
+  ]);
 
   return (
     <>
       <Title>상품 목록</Title>
 
-      <Suspense fallback={<LoadingSpinner />}>
+      {allProductListPage && (
         <HydrationBoundary state={dehydrate(queryClient)}>
-          {allProductListPage && <BestProductSlider />}
-          <ProductListTable />
+          <BestProductSlider />
         </HydrationBoundary>
-      </Suspense>
+      )}
+
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <ProductListTable />
+      </HydrationBoundary>
     </>
   );
 };

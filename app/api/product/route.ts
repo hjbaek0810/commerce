@@ -1,3 +1,5 @@
+import { ObjectId } from 'mongodb';
+import mongoose from 'mongoose';
 import { NextResponse } from 'next/server';
 
 import connectDB from '@api/config/connectDB';
@@ -48,10 +50,12 @@ export async function GET(req: NextRequest) {
       if (value && key !== 'page' && key !== 'limit' && key !== 'sort') {
         switch (key) {
           case 'category':
-            filters['categoryIds._id'] = value;
+            filters['categoryIds._id'] = new mongoose.Types.ObjectId(value);
             break;
           case 'subCategory':
-            filters['categoryIds.subCategoryId'] = value;
+            filters['categoryIds.subCategoryId'] = new mongoose.Types.ObjectId(
+              value,
+            );
             break;
           case 'name':
             filters[key] = { $regex: `^${value}`, $options: 'i' }; // 이름으로 시작하는 항목, 대소문자 구분 없음
@@ -64,7 +68,9 @@ export async function GET(req: NextRequest) {
     });
 
     const products = await ProductModel.aggregate([
-      { $match: filters },
+      {
+        $match: filters,
+      },
       {
         $addFields: {
           effectivePrice: {
