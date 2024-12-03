@@ -1,5 +1,6 @@
 'use client';
 
+import LoadingSpinner from '@components/Loading';
 import Slider from '@components/Slider';
 import Title from '@components/Title';
 import { useProductTopViewsQuery } from '@services/queries/product';
@@ -8,7 +9,7 @@ import { PATH } from '@utils/path';
 import * as css from './product.css';
 
 const BestProductSlider = () => {
-  const { data: bestProducts } = useProductTopViewsQuery();
+  const { data: bestProducts, isLoading } = useProductTopViewsQuery();
 
   const itemsPerPage = 4;
 
@@ -25,6 +26,8 @@ const BestProductSlider = () => {
       <Title size="medium">BEST TOP 10</Title>
       <Slider type="carousel" height="30vw" hideDot>
         <Slider.List>
+          {/* refactor.. */}
+          {isLoading && <LoadingSpinner />}
           {groupedProducts.map((group, groupIndex) => (
             <Slider.Item
               key={groupIndex}
