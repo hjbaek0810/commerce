@@ -1,3 +1,4 @@
+import Outlet from '@components/Layout/Outlet';
 import { sprinkles } from '@styles/sprinkles.css';
 
 import Banner from './sections/Banner';
@@ -8,16 +9,9 @@ const Home = () => {
       <article>
         <Banner />
       </article>
-      <section
-        className={sprinkles({
-          width: 'sizing-fill',
-          height: 'sizing-auto',
-          paddingX: 'spacing-024',
-          paddingY: 'spacing-032',
-        })}
-      >
+      <Outlet>
         <h1>Home!!</h1>
-      </section>
+      </Outlet>
     </>
   );
 };

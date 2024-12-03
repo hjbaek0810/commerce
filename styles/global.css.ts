@@ -30,10 +30,6 @@ globalStyle('html, body', {
   height: '100%',
 });
 
-globalStyle('body', {
-  overflow: 'scroll',
-});
-
 globalStyle('img, picture, video, canvas, svg', {
   display: 'block',
   maxWidth: '100%',

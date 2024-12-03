@@ -25,7 +25,7 @@ const UserLayout = async ({ children }: PropsWithChildren) => {
           <UserSideMenu />
         </HydrationBoundary>
 
-        <Outlet>{children}</Outlet>
+        <Outlet fullHeight>{children}</Outlet>
       </main>
     </>
   );

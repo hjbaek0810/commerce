@@ -22,7 +22,7 @@ export type SideMenuListType = {
   show?: boolean;
 };
 
-const SideMenu = ({ list, isHide }: SideMenuPropsType) => {
+const SideMenu = ({ list, isHide = false }: SideMenuPropsType) => {
   const { selected } = useSideMenu();
 
   return (

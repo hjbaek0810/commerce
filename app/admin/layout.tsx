@@ -37,7 +37,7 @@ const AdminLayout = ({ children }: PropsWithChildren) => {
     >
       <SideMenu list={ADMIN_LIST} />
 
-      <Outlet>{children}</Outlet>
+      <Outlet fullHeight>{children}</Outlet>
     </main>
   );
 };
