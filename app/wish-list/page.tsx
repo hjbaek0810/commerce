@@ -1,6 +1,5 @@
 import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
 
-import Title from '@components/Title';
 import { getWishListQueryOptions } from '@services/queries/wish-list/options';
 import { getQueryClient } from '@utils/query/queryClient';
 

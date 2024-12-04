@@ -1,10 +1,6 @@
 'use client';
 
-import {
-  faHeart as faHeartSolid,
-  faRightToBracket,
-  faShoppingBag,
-} from '@fortawesome/free-solid-svg-icons';
+import { faHeart as faHeartSolid } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { isEmpty } from 'lodash-es';
 
