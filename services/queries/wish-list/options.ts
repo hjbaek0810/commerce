@@ -3,7 +3,7 @@ import { API } from '@services/utils/path';
 
 import type { WishListVO } from '@api/wish-list/types/vo';
 
-export const getWishListQueryOptions = () => ({
+export const getWishListQueryOptions = (headers?: HeadersInit) => ({
   queryKey: ['wish-list', 'product'],
-  queryFn: () => fetchData<WishListVO>(API.WISH_LIST.BASE, 'GET'),
+  queryFn: () => fetchData<WishListVO>(API.WISH_LIST.BASE, 'GET', { headers }),
 });

@@ -3,7 +3,10 @@ import { API } from '@services/utils/path';
 
 import type { CartListVO } from '@api/cart/types/vo';
 
-export const getCartListQueryOptions = () => ({
+export const getCartListQueryOptions = (headers?: HeadersInit) => ({
   queryKey: ['cart', 'product'],
-  queryFn: () => fetchData<CartListVO>(API.CART.BASE, 'GET'),
+  queryFn: () =>
+    fetchData<CartListVO>(API.CART.BASE, 'GET', {
+      headers,
+    }),
 });
