@@ -23,7 +23,6 @@ export const th = style([
     fontSize: 'font-size-012',
   }),
   {
-    width: '20%',
     textAlign: 'left',
     backgroundColor: '#eae5dd',
     verticalAlign: 'top',

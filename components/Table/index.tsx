@@ -2,11 +2,16 @@ import type { PropsWithChildren } from 'react';
 
 import clsx from 'clsx';
 
+import { sprinkles } from '@styles/sprinkles.css';
+
 import * as css from './table.css';
+
+import type { sizing } from '@styles/tokens';
 
 type TableThPropsType = {
   className?: string;
   scope?: 'col' | 'row'; // ++ colgroup | rowgroup
+  width?: keyof typeof sizing;
 };
 
 type TableTdPropsType = Pick<TableThPropsType, 'className'> & {
@@ -31,11 +36,12 @@ const TableHeader = ({ children }: PropsWithChildren) => (
 );
 
 const TableTh = ({
-  scope,
+  scope = 'col',
   className,
+  width,
   children,
 }: PropsWithChildren<TableThPropsType>) => (
-  <th scope={scope} className={clsx(css.th, className)}>
+  <th scope={scope} className={clsx(css.th, className, sprinkles({ width }))}>
     {children}
   </th>
 );
