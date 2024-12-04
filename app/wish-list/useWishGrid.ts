@@ -2,6 +2,7 @@
 
 import type { MouseEvent } from 'react';
 
+import { isEmpty } from 'lodash-es';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import {
@@ -10,7 +11,7 @@ import {
 } from '@services/queries/wish-list';
 import { PATH } from '@utils/path';
 
-const useWishList = () => {
+const useWishGrid = () => {
   const { data } = useWishListQuery();
   const { mutate: deleteWishItem } = useDeleteWishListMutation();
 
@@ -29,6 +30,7 @@ const useWishList = () => {
   const handleGoToProductButtonClick = () => router.push(PATH.PRODUCT.LIST);
 
   return {
+    isEmptyWishList: data?.items && isEmpty(data?.items),
     wishList: data?.items || [],
     productDetailQuery: {
       categoryParam,
@@ -39,4 +41,4 @@ const useWishList = () => {
   };
 };
 
-export default useWishList;
+export default useWishGrid;

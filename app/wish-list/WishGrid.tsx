@@ -2,24 +2,24 @@
 
 import { faHeart as faHeartSolid } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { isEmpty } from 'lodash-es';
 
+import useWishGrid from '@app/wish-list/useWishGrid';
 import Button from '@components/Button';
 import ProductCard from '@components/ProductCard';
 import Title from '@components/Title';
-import useWishList from 'app/wish-list/useWishList';
 
 import * as css from './wishList.css';
 
 const WishGrid = () => {
   const {
+    isEmptyWishList,
     wishList,
     productDetailQuery,
     handleGoToProductButtonClick,
     handleDeleteWishButtonClick,
-  } = useWishList();
+  } = useWishGrid();
 
-  if (isEmpty(wishList))
+  if (isEmptyWishList)
     return (
       <div className={css.emptyWishListWrapper}>
         <div className={css.emptyWishList}>
