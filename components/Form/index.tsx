@@ -8,6 +8,10 @@ import type {
 } from 'react-hook-form';
 import { FormProvider } from 'react-hook-form';
 
+import {
+  RHFCheckbox,
+  RHFCheckboxGroup,
+} from '@components/Form/Checkbox/RHFCheckbox';
 import RHFErrorMessage from '@components/Form/ErrorMessage';
 import RHFInput from '@components/Form/Input/RHFInput';
 import RHFLabel from '@components/Form/Label/RHFLabel';
@@ -57,6 +61,8 @@ const Rhf = {
   Input: RHFInput,
   Select: RHFSelect,
   SelectOption: Select.Option,
+  CheckboxGroup: RHFCheckboxGroup,
+  Checkbox: RHFCheckbox,
   Radio: RHFRadioGroup,
   RadioOption: RHFRadio,
   TextArea: RHFTextArea,
