@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 
+import { PATH } from '@utils/path';
+
 import type { NextRequest } from 'next/server';
 
 export async function middleware(request: NextRequest) {
@@ -11,10 +13,10 @@ export async function middleware(request: NextRequest) {
   requestHeaders.set('x-current-path', pathname);
 
   const accessPage = pathname.startsWith('/product') || pathname === '/';
-  const signInPage = pathname === '/auth/sign-in';
+  const signInPage = pathname === PATH.SIGN_IN;
 
   if (!hasToken && !signInPage && !accessPage) {
-    return NextResponse.redirect(new URL('/auth/sign-in', request.url));
+    return NextResponse.redirect(new URL(PATH.SIGN_IN, request.url));
   }
 
   if (hasToken && signInPage) {
