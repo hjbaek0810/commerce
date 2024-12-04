@@ -29,6 +29,7 @@ const ProductInfo = ({ id }: { id: string }) => {
     quantity: addedQuantity,
     showRemainingQuantity,
     handleWishButtonClick,
+    handleCartButtonClick,
     handleAddQuantityClick,
     handleMinusQuantityClick,
   } = useProductInfo(id);
@@ -115,7 +116,11 @@ const ProductInfo = ({ id }: { id: string }) => {
           <Button size="large" fill fullWidth disabled={soldOut}>
             {soldOut ? 'SOLD OUT' : '구매하기'}
           </Button>
-          <Button size="medium" disabled={soldOut}>
+          <Button
+            size="medium"
+            onClick={handleCartButtonClick}
+            disabled={soldOut}
+          >
             <FontAwesomeIcon className={css.cartIcon} icon={faCartShopping} />
           </Button>
           <Button size="medium" onClick={handleWishButtonClick}>

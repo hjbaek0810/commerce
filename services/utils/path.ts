@@ -19,4 +19,7 @@ export const API = {
   WISH_LIST: {
     BASE: 'wish-list',
   },
+  CART: {
+    BASE: 'cart',
+  },
 };

@@ -66,7 +66,7 @@ const Header = ({ list }: HeaderPropsType) => {
             </Link>
           </li>
           <li>
-            <Link href="/cart">
+            <Link href={PATH.CART}>
               <FontAwesomeIcon icon={faCartShopping} />
             </Link>
           </li>

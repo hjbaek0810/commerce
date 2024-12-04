@@ -2,6 +2,7 @@ const ADMIN_HOME = '/admin';
 const PRODUCT = '/product';
 
 export const PATH = {
+  SIGN_IN: '/auth/sign-in',
   ADMIN: {
     HOME: ADMIN_HOME,
     CATEGORY: ADMIN_HOME + '/category',
@@ -16,4 +17,5 @@ export const PATH = {
     DETAIL: (productId: string) => PRODUCT + `/${productId}`,
   },
   WISH_LIST: '/wish-list',
+  CART: '/cart',
 };
