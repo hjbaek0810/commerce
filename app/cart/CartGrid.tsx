@@ -1,9 +1,12 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
-
-import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCartShopping,
+  faMinus,
+  faPlus,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { isEmpty } from 'lodash-es';
 import Image from 'next/image';
 
 import useCartGrid from '@app/cart/useCartGrid';
@@ -17,12 +20,31 @@ import * as css from './cart.css';
 
 const CartGrid = () => {
   const {
+    isEmptyCartList,
+    cartList,
     cartForm,
     quantity,
     minusQuantityButtonDisabled,
     handleAddQuantityClick,
     handleMinusQuantityClick,
+    handleGoToWishListButtonClick,
   } = useCartGrid();
+
+  if (isEmptyCartList)
+    return (
+      <div className={css.emptyCartListWrapper}>
+        <div className={css.emptyCartList}>
+          <FontAwesomeIcon
+            className={css.emptyCartIcon}
+            icon={faCartShopping}
+          />
+          <p className={css.emptyText}>장바구니 목록이 비어있습니다.</p>
+          <Button size="large" fill onClick={handleGoToWishListButtonClick}>
+            찜한 상품 보기
+          </Button>
+        </div>
+      </div>
+    );
 
   return (
     <Rhf.Form
