@@ -64,10 +64,12 @@ export const productDesc = style({
 
 export const bestBadge = style([
   sprinkles({
+    display: 'inline-block',
     paddingX: 'spacing-004',
     paddingY: 'spacing-002',
     fontSize: 'font-size-014',
     fontWeight: 'bold',
+    marginLeft: 'spacing-008',
   }),
   {
     color: 'white',
@@ -92,4 +94,54 @@ export const cartIcon = style({
 export const likeIcon = style({
   fontSize: tokens.sizing['sizing-024'],
   color: '#ff7878',
+});
+
+export const quantityWrapper = style({
+  display: 'flex',
+  width: '100%',
+  height: tokens.sizing['sizing-032'],
+  border: `1px solid ${ColorPalettes.Grey['60']}`,
+});
+
+export const quantityButton = style({
+  width: tokens.sizing['sizing-048'],
+  backgroundColor: 'white',
+  borderRight: `1px solid ${ColorPalettes.Grey['60']}`,
+  ':last-child': {
+    borderRight: 0,
+  },
+  ':hover': {
+    backgroundColor: ColorPalettes.Grey['90'],
+  },
+  ':active': {
+    backgroundColor: ColorPalettes.Grey['80'],
+  },
+  ':disabled': {
+    pointerEvents: 'none',
+    opacity: 0.4,
+  },
+});
+
+export const quantityIcon = style({
+  color: ColorPalettes.Grey['20'],
+  fontSize: tokens.fontSize['font-size-012'],
+});
+
+export const quantity = style({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: '100%',
+  color: ColorPalettes.Grey['10'],
+  fontSize: tokens.fontSize['font-size-014'],
+  fontWeight: 600,
+  backgroundColor: 'white',
+  borderRight: `1px solid ${ColorPalettes.Grey['60']}`,
+});
+
+export const remainingQuantity = style({
+  marginTop: tokens.spacing['spacing-002'],
+  display: 'inline-block',
+  color: '#FCA429',
+  fontSize: tokens.fontSize['font-size-012'],
 });

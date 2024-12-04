@@ -4,34 +4,36 @@ import { faHeart as faHeartRegular } from '@fortawesome/free-regular-svg-icons';
 import {
   faCartShopping,
   faHeart as faHeartSolid,
+  faMinus,
+  faPlus,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { isNil } from 'lodash-es';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 
+import useProductInfo from '@app/product/[slug]/useProductInfo';
 import Button from '@components/Button';
-import { useProductDetailQuery } from '@services/queries/product';
-import { useWishListMutation } from '@services/queries/wish-list';
+import { sprinkles } from '@styles/sprinkles.css';
 import { formatNumber } from '@utils/formatter/number';
 import { calculateSaleRate } from '@utils/math/rate';
-import { PATH } from '@utils/path';
 
 import * as css from './productDetail.css';
 
 const ProductInfo = ({ id }: { id: string }) => {
-  const { data: product, isTop10, isWished } = useProductDetailQuery(id);
-  const { name, images, price, salePrice, description } = product || {};
-
-  const { mutate: updateWish } = useWishListMutation();
-
-  const router = useRouter();
-
-  const handleWishButtonClick = () => {
-    if (isNil(isWished)) router.push(PATH.WISH_LIST);
-
-    updateWish({ productId: id });
-  };
+  const {
+    product,
+    isTop10,
+    isWished,
+    minusQuantityButtonDisabled,
+    addQuantityButtonDisabled,
+    soldOut,
+    quantity: addedQuantity,
+    showRemainingQuantity,
+    handleWishButtonClick,
+    handleAddQuantityClick,
+    handleMinusQuantityClick,
+  } = useProductInfo(id);
+  const { name, images, price, salePrice, description, quantity } =
+    product || {};
 
   return (
     <div className={css.infoWrapper}>
@@ -51,7 +53,11 @@ const ProductInfo = ({ id }: { id: string }) => {
       </figure>
 
       <div className={css.infoText}>
-        <p className={css.productName}>{name}</p>
+        <p className={css.productName}>
+          {name}
+          {isTop10 && <span className={css.bestBadge}>BEST</span>}
+        </p>
+
         {price && (
           <div className={css.productPriceWrapper}>
             <span
@@ -73,15 +79,43 @@ const ProductInfo = ({ id }: { id: string }) => {
             )}
           </div>
         )}
-        {isTop10 && <span className={css.bestBadge}>BEST</span>}
 
-        <div className={css.productDesc}>{description}</div>
+        <div
+          className={sprinkles({
+            width: 'sizing-half',
+          })}
+        >
+          <div className={css.quantityWrapper}>
+            <button
+              className={css.quantityButton}
+              disabled={minusQuantityButtonDisabled}
+              onClick={handleMinusQuantityClick}
+            >
+              <FontAwesomeIcon icon={faMinus} className={css.quantityIcon} />
+            </button>
+            <span className={css.quantity}>{formatNumber(addedQuantity)}</span>
+            <button
+              className={css.quantityButton}
+              disabled={addQuantityButtonDisabled}
+              onClick={handleAddQuantityClick}
+            >
+              <FontAwesomeIcon icon={faPlus} className={css.quantityIcon} />
+            </button>
+          </div>
+          {showRemainingQuantity && (
+            <span
+              className={css.remainingQuantity}
+            >{`서두르세요! 남은 수량: ${quantity}`}</span>
+          )}
+        </div>
+
+        {description && <div className={css.productDesc}>{description}</div>}
 
         <div className={css.buttonWrapper}>
-          <Button size="large" fill fullWidth>
-            구매하기
+          <Button size="large" fill fullWidth disabled={soldOut}>
+            {soldOut ? 'SOLD OUT' : '구매하기'}
           </Button>
-          <Button size="medium">
+          <Button size="medium" disabled={soldOut}>
             <FontAwesomeIcon className={css.cartIcon} icon={faCartShopping} />
           </Button>
           <Button size="medium" onClick={handleWishButtonClick}>
