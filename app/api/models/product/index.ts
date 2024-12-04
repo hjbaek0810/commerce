@@ -30,7 +30,7 @@ const ProductSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ['IN_PROGRESS', 'STOPPED', 'PENDING'],
+      enum: ['IN_PROGRESS', 'STOPPED', 'PENDING', 'HIDDEN'],
       required: true,
     },
     description: {

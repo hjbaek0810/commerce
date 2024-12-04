@@ -2,6 +2,7 @@ export enum ProductStatusType {
   PENDING = 'PENDING',
   IN_PROGRESS = 'IN_PROGRESS',
   STOPPED = 'STOPPED',
+  HIDDEN = 'HIDDEN',
 }
 
 export enum ProductSortType {

@@ -15,7 +15,9 @@ const useAdminProductList = () => {
       case ProductStatusType.IN_PROGRESS:
         return '진행';
       case ProductStatusType.STOPPED:
-        return '정지';
+        return '판매 중지';
+      case ProductStatusType.HIDDEN:
+        return '상품 숨김';
       default:
         return '';
     }

@@ -66,6 +66,8 @@ export async function GET(req: NextRequest) {
       }
     });
 
+    filters['status'] = { $ne: 'HIDDEN' };
+
     const products = await ProductModel.aggregate([
       {
         $match: filters,

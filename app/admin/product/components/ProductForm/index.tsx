@@ -161,7 +161,10 @@ const ProductForm = ({ savedImages, editable = true }: ProductFormType) => {
                 진행
               </Rhf.RadioOption>
               <Rhf.RadioOption value={ProductStatusType.STOPPED}>
-                정지
+                판매 중지
+              </Rhf.RadioOption>
+              <Rhf.RadioOption value={ProductStatusType.HIDDEN}>
+                상품 숨김
               </Rhf.RadioOption>
             </Rhf.Radio>
           </Table.Td>
