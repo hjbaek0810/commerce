@@ -17,17 +17,17 @@ export type GetCheckboxPropsReturnType = {
   onChange: CheckboxChangeHandlerType;
 };
 
-export type GetIndeterminateCheckboxPropsReturnType = Omit<
+export type getPartiallyCheckedCheckboxPropsReturnType = Omit<
   GetCheckboxPropsReturnType,
   'value'
 > & {
   value?: CheckboxValueType;
-  indeterminate: boolean | null;
+  partiallyChecked: boolean | null;
 };
 
 export type GetCheckboxPropsType =
   | GetCheckboxPropsReturnType
-  | GetIndeterminateCheckboxPropsReturnType;
+  | getPartiallyCheckedCheckboxPropsReturnType;
 
 export type UseCheckboxPropsType = {
   name?: string;
@@ -60,7 +60,7 @@ const useCheckbox = ({
     [checkedValues, options],
   );
 
-  const isIndeterminate = () => {
+  const isPartiallyChecked = () => {
     if (ListController(checkedValues).isEmpty()) return null;
 
     return !isAllChecked();
@@ -99,7 +99,7 @@ const useCheckbox = ({
       callback?.(updatedCheckedValues);
     };
 
-  const handleIndeterminateCheckboxChange: CheckboxChangeHandlerType =
+  const handlepartiallyCheckedCheckboxChange: CheckboxChangeHandlerType =
     callback => {
       const updatedCheckedValues = toggleAllChecked();
       setCheckedValues(updatedCheckedValues);
@@ -115,14 +115,14 @@ const useCheckbox = ({
     onChange: handleCheckboxChange(value),
   });
 
-  const getIndeterminateCheckboxProps = (
+  const getPartiallyCheckedCheckboxProps = (
     value?: CheckboxValueType,
-  ): GetIndeterminateCheckboxPropsReturnType => ({
+  ): getPartiallyCheckedCheckboxPropsReturnType => ({
     name,
     value,
     checked: isAllChecked(),
-    onChange: handleIndeterminateCheckboxChange,
-    indeterminate: isIndeterminate(),
+    onChange: handlepartiallyCheckedCheckboxChange,
+    partiallyChecked: isPartiallyChecked(),
   });
 
   return {
@@ -132,7 +132,7 @@ const useCheckbox = ({
     updateCheckedValue,
     resetCheckedValues,
     getCheckboxProps,
-    getIndeterminateCheckboxProps,
+    getPartiallyCheckedCheckboxProps,
   };
 };
 

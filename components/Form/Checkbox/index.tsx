@@ -17,7 +17,7 @@ export type CheckboxPropsType = Omit<
   label?: string;
   value?: CheckboxValueType;
   error?: boolean;
-  indeterminate?: boolean | null;
+  partiallyChecked?: boolean | null;
   onChange?: () => void;
 };
 
@@ -27,7 +27,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxPropsType>(
       name,
       label,
       value,
-      indeterminate,
+      partiallyChecked,
       error = false,
       checked = false,
       disabled = false,
@@ -76,7 +76,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxPropsType>(
             ref={ref}
             {...restProps}
           />
-          {(checked || indeterminate) && (
+          {(checked || partiallyChecked) && (
             <FontAwesomeIcon icon={faCheck} className={css.checkboxIcon} />
           )}
         </div>

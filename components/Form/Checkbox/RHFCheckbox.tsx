@@ -73,19 +73,19 @@ export const RHFCheckboxGroup = ({
 type RHFCheckboxPropsType = {
   label?: string;
   value?: CheckboxValueType;
-  indeterminate?: boolean;
+  partiallyChecked?: boolean;
 };
 
 export const RHFCheckbox = ({
   label,
   value,
-  indeterminate = false,
+  partiallyChecked = false,
 }: RHFCheckboxPropsType) => {
   const {
     controller,
     updateCheckedValue,
     getCheckboxProps,
-    getIndeterminateCheckboxProps,
+    getPartiallyCheckedCheckboxProps,
   } = useCheckboxContext();
 
   const {
@@ -95,8 +95,8 @@ export const RHFCheckbox = ({
 
   let checkboxProps: GetCheckboxPropsType;
 
-  if (indeterminate) {
-    checkboxProps = getIndeterminateCheckboxProps();
+  if (partiallyChecked) {
+    checkboxProps = getPartiallyCheckedCheckboxProps();
   } else {
     checkboxProps = getCheckboxProps(value ?? '');
   }
