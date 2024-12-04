@@ -29,6 +29,7 @@ const sizing = {
   'sizing-auto': 'auto',
   'sizing-fill': '100%',
   'sizing-full-screen': '100vh',
+  'sizing-half': '50%',
 } as const;
 
 export default sizing;
