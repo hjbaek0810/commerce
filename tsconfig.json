@@ -24,7 +24,8 @@
       "@components/*": ["components/*"],
       "@styles/*": ["styles/*"],
       "@utils/*": ["utils/*"],
-      "@api/*": ["app/api/*"]
+      "@api/*": ["app/api/*"],
+      "@app/*": ["app/*"]
     }
   },
   "include": [

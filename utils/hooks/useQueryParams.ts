@@ -11,8 +11,8 @@ const INITIAL_LIMIT_COUNT = 10;
 const INITIAL_SORT_VALUE = ProductSortType.NEWEST;
 
 const getDefaultParams = () => ({
-  page: String(INITIAL_PAGE_NUMBER),
-  limit: String(INITIAL_LIMIT_COUNT),
+  page: Number(INITIAL_PAGE_NUMBER),
+  limit: Number(INITIAL_LIMIT_COUNT),
   sort: INITIAL_SORT_VALUE,
 });
 
@@ -72,8 +72,8 @@ const useQueryParams = () => {
     } = getQueryParams();
 
     if (!pageParam || !limitParam || !sortParam) {
-      if (!pageParam) params.set('page', page);
-      if (!limitParam) params.set('limit', limit);
+      if (!pageParam) params.set('page', String(page));
+      if (!limitParam) params.set('limit', String(limit));
       if (!sortParam) params.set('sort', sort);
 
       replace(`${pathname}?${params.toString()}`);

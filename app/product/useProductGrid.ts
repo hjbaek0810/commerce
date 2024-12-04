@@ -9,7 +9,7 @@ import useDebounce from '@utils/hooks/useDebounce';
 
 import type { SearchProduct } from '@api/product/types/dto';
 
-const useProductListTable = () => {
+const useProductGrid = () => {
   const { products, handleSearchParamsChange } = useProductListInfiniteQuery();
 
   const searchParams = useSearchParams();
@@ -56,4 +56,4 @@ const useProductListTable = () => {
   };
 };
 
-export default useProductListTable;
+export default useProductGrid;

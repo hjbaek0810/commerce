@@ -8,7 +8,7 @@ import {
 import { getQueryClient } from '@utils/query/queryClient';
 import BestProductSlider from 'app/product/BestProductSlider';
 
-import ProductListTable from './ProductListTable';
+import ProductGrid from './ProductGrid';
 
 const ProductList = async ({
   searchParams,
@@ -35,7 +35,7 @@ const ProductList = async ({
       )}
 
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <ProductListTable />
+        <ProductGrid />
       </HydrationBoundary>
     </>
   );

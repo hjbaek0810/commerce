@@ -5,18 +5,18 @@ import { isEmpty } from 'lodash-es';
 import Rhf from '@components/Form';
 import ProductCard from '@components/ProductCard';
 import { ProductSortType } from '@utils/constants/product';
-import useProductListTable from 'app/product/useProductListTable';
 
 import * as css from './product.css';
+import useProductGrid from './useProductGrid';
 
-const ProductListTable = () => {
+const ProductGrid = () => {
   const {
     keyword,
     products,
     productsUseForm,
     handleSortChange,
     productDetailQuery,
-  } = useProductListTable();
+  } = useProductGrid();
 
   return (
     <>
@@ -62,4 +62,4 @@ const ProductListTable = () => {
   );
 };
 
-export default ProductListTable;
+export default ProductGrid;

@@ -9,7 +9,7 @@ import { formatNumber } from '@utils/formatter/number';
 
 import useAdminProductList from './useProductList';
 
-const AdminProductListTable = () => {
+const AdminProductGrid = () => {
   const { products, paginationProps, getStatusLabel, handleTableRowClick } =
     useAdminProductList();
 
@@ -89,4 +89,4 @@ const AdminProductListTable = () => {
   );
 };
 
-export default AdminProductListTable;
+export default AdminProductGrid;

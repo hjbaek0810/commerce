@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import * as css from './checkbox.css';
 
-import type { ListValueType } from '@components/Form/Checkbox/controller';
+import type { ListValueType } from '@utils/controller/list';
 
 export type CheckboxValueType = ListValueType;
 
