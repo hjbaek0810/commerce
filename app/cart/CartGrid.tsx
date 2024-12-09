@@ -6,7 +6,6 @@ import {
   faPlus,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { isEmpty } from 'lodash-es';
 import Image from 'next/image';
 
 import useCartGrid from '@app/cart/useCartGrid';
@@ -23,11 +22,16 @@ const CartGrid = () => {
     isEmptyCartList,
     cartList,
     cartForm,
-    quantity,
-    minusQuantityButtonDisabled,
+    checkedCarts,
+    selectedCartItems,
+    calculatePrice,
+    calculateTotalPrice,
+    showRemainingQuantity,
     handleAddQuantityClick,
     handleMinusQuantityClick,
+    handleDeleteCartList,
     handleGoToWishListButtonClick,
+    handleGoToProductDetailButtonClick,
   } = useCartGrid();
 
   if (isEmptyCartList)
@@ -49,16 +53,19 @@ const CartGrid = () => {
   return (
     <Rhf.Form
       {...cartForm}
-      onSubmit={data => {
-        console.log(data);
-      }}
+      onSubmit={handleDeleteCartList}
       className={css.cartGrid}
     >
       <div className={css.deleteButtonWrapper}>
-        <Button size="small">선택 삭제</Button>
+        <Button size="small" type="submit">
+          선택 삭제
+        </Button>
       </div>
       <Table>
-        <Rhf.CheckboxGroup options={['childA']} name="selected">
+        <Rhf.CheckboxGroup
+          options={cartList.map(({ product }) => product._id)}
+          name="productIds"
+        >
           <Table.Header>
             <Table.Tr>
               <Table.Th width="sizing-056">
@@ -71,65 +78,86 @@ const CartGrid = () => {
             </Table.Tr>
           </Table.Header>
           <Table.Body>
-            <Table.Tr
-              onClick={() => {
-                // TODO: 상세 페이지 이동
-              }}
-            >
-              <Table.Td>
-                <Rhf.Checkbox value="childA" />
-              </Table.Td>
-              <Table.Td>
-                <figure className={css.imageWrapper}>
-                  <Image
-                    src="https://placehold.co/200x300/png?text=X"
-                    alt="name"
-                    fill
-                    priority
-                    sizes="15vw"
-                    style={{
-                      objectFit: 'cover',
-                    }}
+            {cartList.map(({ product, quantity }) => (
+              <Table.Tr
+                key={product._id}
+                onClick={() => handleGoToProductDetailButtonClick(product._id)}
+              >
+                <Table.Td>
+                  <Rhf.Checkbox
+                    value={product._id}
+                    onChange={e => e.stopPropagation()}
                   />
-                </figure>
-              </Table.Td>
-              <Table.Td>name</Table.Td>
-              <Table.Td>
-                <div className={productDetailCss.quantityWrapper}>
-                  <button
-                    className={productDetailCss.quantityButton}
-                    disabled={minusQuantityButtonDisabled}
-                    onClick={handleMinusQuantityClick}
-                  >
-                    <FontAwesomeIcon
-                      icon={faMinus}
-                      className={productDetailCss.quantityIcon}
+                </Table.Td>
+                <Table.Td>
+                  <figure className={css.imageWrapper}>
+                    <Image
+                      src={
+                        product?.images?.[0]?.secureUrl ||
+                        'https://placehold.co/200x300/png?text=X'
+                      }
+                      alt="name"
+                      fill
+                      priority
+                      sizes="15vw"
+                      style={{
+                        objectFit: 'cover',
+                      }}
                     />
-                  </button>
-                  <span className={productDetailCss.quantity}>
-                    {formatNumber(quantity)}
-                  </span>
-                  <button
-                    className={productDetailCss.quantityButton}
-                    onClick={handleAddQuantityClick}
-                  >
-                    <FontAwesomeIcon
-                      icon={faPlus}
-                      className={productDetailCss.quantityIcon}
-                    />
-                  </button>
-                </div>
-              </Table.Td>
-              <Table.Td>3000</Table.Td>
-            </Table.Tr>
+                  </figure>
+                </Table.Td>
+                <Table.Td>{product.name}</Table.Td>
+                <Table.Td>
+                  <div className={productDetailCss.quantityWrapper}>
+                    <button
+                      className={productDetailCss.quantityButton}
+                      disabled={quantity === 1}
+                      onClick={e => handleMinusQuantityClick(product._id, e)}
+                    >
+                      <FontAwesomeIcon
+                        icon={faMinus}
+                        className={productDetailCss.quantityIcon}
+                      />
+                    </button>
+                    <span className={productDetailCss.quantity}>
+                      {formatNumber(quantity)}
+                    </span>
+                    <button
+                      className={productDetailCss.quantityButton}
+                      onClick={e => handleAddQuantityClick(product._id, e)}
+                      disabled={product.quantity <= quantity}
+                    >
+                      <FontAwesomeIcon
+                        icon={faPlus}
+                        className={productDetailCss.quantityIcon}
+                      />
+                    </button>
+                  </div>
+                  {showRemainingQuantity(product.quantity) && (
+                    <span
+                      className={productDetailCss.remainingQuantity}
+                    >{`서두르세요! 남은 수량: ${product.quantity}`}</span>
+                  )}
+                </Table.Td>
+                <Table.Td>
+                  {formatNumber(
+                    calculatePrice(product.price, product.salePrice, quantity),
+                  )}
+                </Table.Td>
+              </Table.Tr>
+            ))}
           </Table.Body>
         </Rhf.CheckboxGroup>
       </Table>
 
-      {/* TODO: 선택 항목 가격 total */}
       <div className={css.buyButtonWrapper}>
         <Button type="submit" size="large" fill>
-          1,000원 구매하기(n)
+          {`${formatNumber(
+            calculateTotalPrice(
+              selectedCartItems.map(({ product }) => product),
+              selectedCartItems.map(({ quantity }) => quantity),
+            ),
+          )}원(${checkedCarts.length}) 구매하기`}
         </Button>
       </div>
     </Rhf.Form>

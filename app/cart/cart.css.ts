@@ -12,7 +12,6 @@ export const cartGrid = style({
 
 export const imageWrapper = style({
   position: 'relative',
-  width: '15vw',
   height: '15vw',
 });
 
