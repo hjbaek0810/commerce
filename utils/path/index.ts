@@ -18,4 +18,6 @@ export const PATH = {
   },
   WISH_LIST: '/wish-list',
   CART: '/cart',
+  NEW_ORDER: '/new-order',
+  ORDER: '/order',
 };

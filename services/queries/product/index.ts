@@ -254,3 +254,31 @@ export const useProductDetailQuery = (id: string) => {
     isTop10,
   };
 };
+
+export const useProductDetailWhenNewOrderQuery = (
+  id: string,
+  quantity: number,
+  fromCart: boolean,
+) =>
+  useQuery({
+    ...getProductDetailQueryOptions(id),
+    select: data => {
+      return {
+        _id: data._id,
+        items: [
+          {
+            product: {
+              _id: data._id,
+              name: data.name,
+              images: data.images,
+              price: data.price,
+              salePrice: data.salePrice,
+              quantity: data.quantity,
+            },
+            quantity,
+          },
+        ],
+      };
+    },
+    enabled: !fromCart,
+  });

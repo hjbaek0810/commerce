@@ -11,6 +11,25 @@ import type { CartListVO } from '@api/cart/types/vo';
 
 export const useCartListQuery = () => useQuery(getCartListQueryOptions());
 
+export const useCartListWhenNewOrderQuery = (
+  selectedProductIds: string[],
+  fromCart: boolean,
+) =>
+  useQuery({
+    ...getCartListQueryOptions(),
+    select: data => {
+      const filteredItems = data.items.filter(item =>
+        selectedProductIds.includes(item.product._id),
+      );
+
+      return {
+        _id: data._id,
+        items: filteredItems || [],
+      };
+    },
+    enabled: fromCart,
+  });
+
 export const useCartListMutation = () => {
   const queryClient = useQueryClient();
 

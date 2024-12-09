@@ -22,4 +22,7 @@ export const API = {
   CART: {
     BASE: 'cart',
   },
+  ORDER: {
+    BASE: 'order',
+  },
 };
