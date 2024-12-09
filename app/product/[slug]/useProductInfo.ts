@@ -1,8 +1,6 @@
 import { useState } from 'react';
-import { toast } from 'react-toastify';
 
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
 
 import PromptModal from '@components/Modal/templates/PromptModal';
 import { useCartListMutation } from '@services/queries/cart';
@@ -10,12 +8,13 @@ import { useProductDetailQuery } from '@services/queries/product';
 import { useWishListMutation } from '@services/queries/wish-list';
 import { ProductStatusType } from '@utils/constants/product';
 import useModals from '@utils/hooks/useModals';
+import useSessionHandler from '@utils/hooks/useSessionHandler';
 import { PATH } from '@utils/path';
 
-const SHOW_REMAINING_QUANTITY_COUNT = 10;
+export const SHOW_REMAINING_QUANTITY_COUNT = 10;
 
 const useProductInfo = (id: string) => {
-  const { data: session } = useSession();
+  const { checkSession } = useSessionHandler();
 
   const { data: product, isTop10, isWished } = useProductDetailQuery(id);
   const { mutate: updateWish } = useWishListMutation();
@@ -37,37 +36,27 @@ const useProductInfo = (id: string) => {
   const addQuantityButtonDisabled = productQuantity <= quantity;
 
   const handleWishButtonClick = () => {
-    if (!session) {
-      toast('세션이 만료되었습니다. 다시 로그인해주세요.');
-      router.push(PATH.SIGN_IN);
-
-      return;
+    if (checkSession()) {
+      updateWish({ productId: id });
     }
-
-    updateWish({ productId: id });
   };
 
   const handleCartButtonClick = () => {
-    if (!session) {
-      toast('세션이 만료되었습니다. 다시 로그인해주세요.');
-      router.push(PATH.SIGN_IN);
-
-      return;
-    }
-
-    updateCart(
-      { productId: id, quantity },
-      {
-        onSuccess: () => {
-          openModal(PromptModal, {
-            message: '장바구니 목록으로 이동하시겠습니까?',
-            onSubmit: () => {
-              router.push(PATH.CART);
-            },
-          });
+    if (checkSession()) {
+      updateCart(
+        { productId: id, quantity },
+        {
+          onSuccess: () => {
+            openModal(PromptModal, {
+              message: '장바구니 목록으로 이동하시겠습니까?',
+              onSubmit: () => {
+                router.push(PATH.CART);
+              },
+            });
+          },
         },
-      },
-    );
+      );
+    }
   };
 
   const handleAddQuantityClick = () => setQuantity(prev => prev + 1);
