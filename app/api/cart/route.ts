@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
 
 import { authOptions } from '@api/auth/[...nextauth]/route';
 import connectDB from '@api/config/connectDB';
+import { checkSession } from '@api/helper/session';
 import CartModel from '@api/models/cart';
 import ProductModel from '@api/models/product';
 
@@ -18,16 +18,17 @@ enum CartListErrorType {
 export async function GET() {
   try {
     await connectDB();
-    const session = await getServerSession(authOptions);
+    const sessionCheck = await checkSession(authOptions);
 
-    const userId = session?.user?.id;
-
-    if (session === null || !userId) {
+    if (!sessionCheck.isValid) {
       return NextResponse.json({
-        status: 200,
-        message: 'No active session or user ID not found.',
+        message: sessionCheck.message,
+        code: sessionCheck.code,
+        status: sessionCheck.status,
       });
     }
+
+    const { userId } = sessionCheck;
 
     const cartList = await CartModel.findById(userId).populate({
       path: 'productIds.productId',
@@ -69,17 +70,17 @@ export async function POST(req: NextRequest) {
 
   try {
     await connectDB();
+    const sessionCheck = await checkSession(authOptions);
 
-    const session = await getServerSession(authOptions);
-
-    const userId = session?.user?.id;
-
-    if (session === null || !userId) {
+    if (!sessionCheck.isValid) {
       return NextResponse.json({
-        status: 200,
-        message: 'No active session or user ID not found.',
+        message: sessionCheck.message,
+        code: sessionCheck.code,
+        status: sessionCheck.status,
       });
     }
+
+    const { userId } = sessionCheck;
 
     let cartList = await CartModel.findById(userId);
 
@@ -128,20 +129,21 @@ export async function DELETE(req: NextRequest) {
   try {
     await connectDB();
 
-    const session = await getServerSession(authOptions);
+    const sessionCheck = await checkSession(authOptions);
 
-    const userId = session?.user?.id;
-
-    if (session === null || !userId) {
+    if (!sessionCheck.isValid) {
       return NextResponse.json({
-        status: 200,
-        message: 'No active session or user ID not found.',
+        message: sessionCheck.message,
+        code: sessionCheck.code,
+        status: sessionCheck.status,
       });
     }
 
+    const { userId } = sessionCheck;
+
     const cartList = await CartModel.findOneAndUpdate(
       { _id: userId },
-      { $pull: { productIds: { $in: productIds } } },
+      { $pull: { productIds: { productId: { $in: productIds } } } },
       { new: true },
     );
 

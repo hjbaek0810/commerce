@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
 
 import { authOptions } from '@api/auth/[...nextauth]/route';
 import connectDB from '@api/config/connectDB';
+import { checkSession } from '@api/helper/session';
 import ProductModel from '@api/models/product';
 import WishListModel from '@api/models/wishList';
 
@@ -16,16 +16,17 @@ enum WishListErrorType {
 export async function GET() {
   try {
     await connectDB();
-    const session = await getServerSession(authOptions);
+    const sessionCheck = await checkSession(authOptions);
 
-    const userId = session?.user?.id;
-
-    if (session === null || !userId) {
+    if (!sessionCheck.isValid) {
       return NextResponse.json({
-        status: 200,
-        message: 'No active session or user ID not found.',
+        message: sessionCheck.message,
+        code: sessionCheck.code,
+        status: sessionCheck.status,
       });
     }
+
+    const { userId } = sessionCheck;
 
     const wishList = await WishListModel.findById(userId).populate({
       path: 'productIds',
@@ -61,16 +62,18 @@ export async function POST(req: NextRequest) {
   try {
     await connectDB();
 
-    const session = await getServerSession(authOptions);
+    const sessionCheck = await checkSession(authOptions);
 
-    const userId = session?.user?.id;
-
-    if (session === null || !userId) {
+    if (!sessionCheck.isValid) {
       return NextResponse.json({
-        status: 200,
-        message: 'No active session or user ID not found.',
+        message: sessionCheck.message,
+        code: sessionCheck.code,
+        status: sessionCheck.status,
       });
     }
+
+    const { userId } = sessionCheck;
+
     let wishList = await WishListModel.findById(userId);
 
     if (!wishList) {
@@ -113,16 +116,17 @@ export async function DELETE(req: NextRequest) {
   try {
     await connectDB();
 
-    const session = await getServerSession(authOptions);
+    const sessionCheck = await checkSession(authOptions);
 
-    const userId = session?.user?.id;
-
-    if (session === null || !userId) {
+    if (!sessionCheck.isValid) {
       return NextResponse.json({
-        status: 200,
-        message: 'No active session or user ID not found.',
+        message: sessionCheck.message,
+        code: sessionCheck.code,
+        status: sessionCheck.status,
       });
     }
+
+    const { userId } = sessionCheck;
 
     const wishList = await WishListModel.findOneAndUpdate(
       { _id: userId },
