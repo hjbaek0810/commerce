@@ -55,10 +55,13 @@ const useCheckbox = ({
     [checkedValues],
   );
 
-  const isAllChecked = useCallback(
-    () => ListController(checkedValues).equal(options),
-    [checkedValues, options],
-  );
+  const isAllChecked = useCallback(() => {
+    if (options.length === 0 && checkedValues.length === 0) {
+      return false;
+    }
+
+    return ListController(checkedValues).equal(options);
+  }, [checkedValues, options]);
 
   const isPartiallyChecked = () => {
     if (ListController(checkedValues).isEmpty()) return null;
@@ -99,7 +102,7 @@ const useCheckbox = ({
       callback?.(updatedCheckedValues);
     };
 
-  const handlepartiallyCheckedCheckboxChange: CheckboxChangeHandlerType =
+  const handlePartiallyCheckedCheckboxChange: CheckboxChangeHandlerType =
     callback => {
       const updatedCheckedValues = toggleAllChecked();
       setCheckedValues(updatedCheckedValues);
@@ -121,7 +124,7 @@ const useCheckbox = ({
     name,
     value,
     checked: isAllChecked(),
-    onChange: handlepartiallyCheckedCheckboxChange,
+    onChange: handlePartiallyCheckedCheckboxChange,
     partiallyChecked: isPartiallyChecked(),
   });
 

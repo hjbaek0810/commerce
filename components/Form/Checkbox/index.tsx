@@ -1,4 +1,9 @@
-import type { InputHTMLAttributes, KeyboardEvent } from 'react';
+import type {
+  ChangeEvent,
+  InputHTMLAttributes,
+  KeyboardEvent,
+  MouseEvent,
+} from 'react';
 import { forwardRef } from 'react';
 
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
@@ -10,6 +15,11 @@ import type { ListValueType } from '@utils/controller/list';
 
 export type CheckboxValueType = ListValueType;
 
+export type CheckboxChangeEvent =
+  | MouseEvent<HTMLDivElement>
+  | KeyboardEvent
+  | ChangeEvent<HTMLInputElement>;
+
 export type CheckboxPropsType = Omit<
   InputHTMLAttributes<HTMLInputElement>,
   'onChange' | 'value'
@@ -18,7 +28,7 @@ export type CheckboxPropsType = Omit<
   value?: CheckboxValueType;
   error?: boolean;
   partiallyChecked?: boolean | null;
-  onChange?: () => void;
+  onChange?: (event: CheckboxChangeEvent) => void;
 };
 
 const Checkbox = forwardRef<HTMLInputElement, CheckboxPropsType>(
@@ -38,9 +48,9 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxPropsType>(
   ) => {
     const labelId = `${name}-label`;
 
-    const handleLabelClick = () => {
+    const handleLabelClick = (event: MouseEvent<HTMLDivElement>) => {
       if (disabled) return;
-      onChange?.();
+      onChange?.(event);
     };
 
     const handleLabelKeyDown = (event: KeyboardEvent) => {
@@ -48,7 +58,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxPropsType>(
 
       if (!event.defaultPrevented) {
         if (event.key === 'Enter') {
-          onChange?.();
+          onChange?.(event);
         }
       }
     };

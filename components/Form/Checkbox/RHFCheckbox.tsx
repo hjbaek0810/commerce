@@ -9,7 +9,10 @@ import { RHFRules } from '@components/Form';
 import Checkbox from '@components/Form/Checkbox';
 import useCheckbox from '@components/Form/Checkbox/useCheckbox';
 
-import type { CheckboxValueType } from '@components/Form/Checkbox';
+import type {
+  CheckboxChangeEvent,
+  CheckboxPropsType,
+} from '@components/Form/Checkbox';
 import type {
   GetCheckboxPropsType,
   UseCheckboxPropsType,
@@ -70,16 +73,16 @@ export const RHFCheckboxGroup = ({
   );
 };
 
-type RHFCheckboxPropsType = {
-  label?: string;
-  value?: CheckboxValueType;
-  partiallyChecked?: boolean;
-};
+type RHFCheckboxPropsType = Pick<
+  CheckboxPropsType,
+  'label' | 'value' | 'partiallyChecked' | 'onChange'
+>;
 
 export const RHFCheckbox = ({
   label,
   value,
   partiallyChecked = false,
+  onChange,
 }: RHFCheckboxPropsType) => {
   const {
     controller,
@@ -103,10 +106,12 @@ export const RHFCheckbox = ({
 
   const isFieldChecked = field.value?.includes(checkboxProps.value) ?? false;
 
-  const handleCheckboxChange = () => {
+  const handleCheckboxChange = (event: CheckboxChangeEvent) => {
     checkboxProps.onChange(updatedCheckedValues => {
       field.onChange(updatedCheckedValues);
     });
+
+    onChange?.(event);
   };
 
   useEffect(() => {

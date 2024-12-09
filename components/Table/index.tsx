@@ -65,14 +65,7 @@ const TableTr = ({
   onClick,
   children,
 }: PropsWithChildren<TableTrPropsType>) => (
-  <tr
-    onClick={e => {
-      e.preventDefault();
-
-      onClick?.();
-    }}
-    className={css.tr({ clickable: !!onClick })}
-  >
+  <tr onClick={onClick} className={css.tr({ clickable: !!onClick })}>
     {children}
   </tr>
 );
