@@ -6,7 +6,9 @@ import {
   faPlus,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { isEmpty } from 'lodash-es';
 import Image from 'next/image';
+import Link from 'next/link';
 
 import useCartGrid from '@app/cart/useCartGrid';
 import * as productDetailCss from '@app/product/[slug]/productDetail.css';
@@ -14,6 +16,7 @@ import Button from '@components/Button';
 import Rhf from '@components/Form';
 import { Table } from '@components/Table';
 import { formatNumber } from '@utils/formatter/number';
+import { PATH } from '@utils/path';
 
 import * as css from './cart.css';
 
@@ -96,7 +99,7 @@ const CartGrid = () => {
                         product?.images?.[0]?.secureUrl ||
                         'https://placehold.co/200x300/png?text=X'
                       }
-                      alt="name"
+                      alt={product.name}
                       fill
                       priority
                       sizes="15vw"
@@ -151,7 +154,15 @@ const CartGrid = () => {
       </Table>
 
       <div className={css.buyButtonWrapper}>
-        <Button type="submit" size="large" fill>
+        <Button
+          size="large"
+          fill
+          disabled={isEmpty(checkedCarts)}
+          href={{
+            pathname: PATH.NEW_ORDER,
+            query: { fromCart: true, productId: checkedCarts },
+          }}
+        >
           {`${formatNumber(
             calculateTotalPrice(
               selectedCartItems.map(({ product }) => product),

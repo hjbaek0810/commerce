@@ -9,12 +9,14 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Image from 'next/image';
+import Link from 'next/link';
 
 import useProductInfo from '@app/product/[slug]/useProductInfo';
 import Button from '@components/Button';
 import { sprinkles } from '@styles/sprinkles.css';
 import { formatNumber } from '@utils/formatter/number';
 import { calculateSaleRate } from '@utils/math/rate';
+import { PATH } from '@utils/path';
 
 import * as css from './productDetail.css';
 
@@ -113,7 +115,20 @@ const ProductInfo = ({ id }: { id: string }) => {
         {description && <div className={css.productDesc}>{description}</div>}
 
         <div className={css.buttonWrapper}>
-          <Button size="large" fill fullWidth disabled={soldOut}>
+          <Button
+            size="large"
+            fill
+            fullWidth
+            disabled={soldOut}
+            href={{
+              pathname: PATH.NEW_ORDER,
+              query: {
+                productId: id,
+                quantity: addedQuantity,
+                fromCart: false,
+              },
+            }}
+          >
             {soldOut ? 'SOLD OUT' : '구매하기'}
           </Button>
           <Button

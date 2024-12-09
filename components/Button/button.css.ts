@@ -19,11 +19,6 @@ export const button = recipe({
       outline: '0 solid white',
       transition: 'all 100ms cubic-bezier(0.4, 0, 0.2, 1)',
       lineHeight: '1.4',
-
-      ':disabled': {
-        opacity: '0.4',
-        cursor: 'default',
-      },
     },
   ],
   variants: {
@@ -92,6 +87,14 @@ export const button = recipe({
     fullWidth: {
       true: {
         width: '100%',
+      },
+      false: {},
+    },
+    disabled: {
+      true: {
+        opacity: '0.4',
+        cursor: 'default',
+        pointerEvents: 'none',
       },
       false: {},
     },
