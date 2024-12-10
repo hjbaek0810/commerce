@@ -1,5 +1,6 @@
 import type { PropsWithChildren } from 'react';
 
+import clsx from 'clsx';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -23,6 +24,7 @@ type ProductPricePropsType = {
 type ProductImagePropsType = {
   src?: string;
   alt: string;
+  className?: string;
 };
 
 const ProductCardGroup = ({ children }: PropsWithChildren) => (
@@ -32,6 +34,7 @@ const ProductCardGroup = ({ children }: PropsWithChildren) => (
 const ProductImage = ({
   src,
   alt,
+  className,
   children,
 }: PropsWithChildren<ProductImagePropsType>) => (
   <figure className={css.productImageWrapper}>
@@ -41,7 +44,7 @@ const ProductImage = ({
       fill
       priority
       sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw"
-      className={css.productImage}
+      className={clsx(css.productImage, className)}
     />
     {children}
   </figure>
