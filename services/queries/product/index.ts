@@ -150,7 +150,8 @@ export const useAdminProductMutation = () => {
     },
     onSuccess: () =>
       queryClient.invalidateQueries({
-        queryKey: ['products'],
+        predicate: query =>
+          (query?.queryKey?.[0] as string).startsWith('products'),
         refetchType: 'all',
       }),
     onError: () => {
@@ -204,7 +205,11 @@ export const useAdminProductDetailMutation = (id: string) => {
     },
     onSuccess: () =>
       queryClient.invalidateQueries({
-        queryKey: ['products'],
+        predicate: query =>
+          query.queryKey.includes('order') ||
+          (query?.queryKey?.[0] as string).startsWith('products') ||
+          query.queryKey.includes('wish-list') ||
+          query.queryKey.includes('cart'),
         refetchType: 'all',
       }),
     onError: () => {
@@ -224,7 +229,11 @@ export const useAdminProductDeleteMutation = (id: string) => {
       ]),
     onSuccess: () =>
       queryClient.invalidateQueries({
-        queryKey: ['products', 'wish-list'],
+        predicate: query =>
+          query.queryKey.includes('order') ||
+          (query?.queryKey?.[0] as string).startsWith('products') ||
+          query.queryKey.includes('wish-list') ||
+          query.queryKey.includes('cart'),
         refetchType: 'all',
       }),
     onError: () => {
