@@ -11,7 +11,6 @@ export function formatPhoneNumber(value: string) {
 }
 
 export const telephoneRules = {
-  require: true,
   maxLength: PHONE_MAX_LENGTH,
   pattern: {
     value: REG_PHONE_PATTERN,
