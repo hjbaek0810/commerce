@@ -33,7 +33,7 @@ export async function GET() {
     const cartList = await CartModel.findById(userId).populate({
       path: 'productIds.productId',
       model: ProductModel,
-      select: '_id name images price salePrice quantity',
+      select: '_id name images price salePrice quantity status',
     });
 
     const { productIds, ...rest } = cartList?._doc || {};

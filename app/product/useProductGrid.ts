@@ -4,7 +4,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import { useSearchParams } from 'next/navigation';
 
 import { useProductListInfiniteQuery } from '@services/queries/product';
-import { ProductSortType } from '@utils/constants/product';
+import { ProductSortType, ProductStatusType } from '@utils/constants/product';
 import useDebounce from '@utils/hooks/useDebounce';
 
 import type { SearchProduct } from '@api/product/types/dto';
@@ -44,6 +44,9 @@ const useProductGrid = () => {
     handleSearchParamsChange({ sort });
   };
 
+  const isSoldOut = (status: ProductStatusType) =>
+    status === ProductStatusType.STOPPED;
+
   return {
     keyword,
     products,
@@ -53,6 +56,7 @@ const useProductGrid = () => {
       categoryParam,
       subCategoryParam,
     },
+    isSoldOut,
   };
 };
 

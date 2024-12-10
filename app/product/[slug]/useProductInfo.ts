@@ -30,7 +30,7 @@ const useProductInfo = (id: string) => {
     productQuantity <= 0 || product?.status === ProductStatusType.STOPPED;
 
   const showRemainingQuantity =
-    productQuantity <= SHOW_REMAINING_QUANTITY_COUNT;
+    productQuantity <= SHOW_REMAINING_QUANTITY_COUNT && !soldOut;
 
   const minusQuantityButtonDisabled = quantity === 1;
   const addQuantityButtonDisabled = productQuantity <= quantity;

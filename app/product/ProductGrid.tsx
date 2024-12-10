@@ -16,6 +16,7 @@ const ProductGrid = () => {
     productsUseForm,
     handleSortChange,
     productDetailQuery,
+    isSoldOut,
   } = useProductGrid();
 
   return (
@@ -49,9 +50,17 @@ const ProductGrid = () => {
         </p>
       ) : (
         <ProductCard.Group>
-          {products.map(({ _id, images, name, price, salePrice }) => (
+          {products.map(({ _id, images, name, price, salePrice, status }) => (
             <ProductCard.Item key={_id} productId={_id} {...productDetailQuery}>
-              <ProductCard.Image src={images?.[0]?.secureUrl} alt={name} />
+              <ProductCard.Image
+                src={images?.[0]?.secureUrl}
+                alt={name}
+                className={isSoldOut(status) ? css.soldOutImage : undefined}
+              >
+                {isSoldOut(status) && (
+                  <span className={css.soldOutImageText}>SOLD OUT</span>
+                )}
+              </ProductCard.Image>
               <ProductCard.Title>{name}</ProductCard.Title>
               <ProductCard.Price price={price} salePrice={salePrice} />
             </ProductCard.Item>

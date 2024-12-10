@@ -2,7 +2,7 @@ import type { ProductVO } from '@api/product/types/vo';
 
 export type CartProductVO = Pick<
   ProductVO,
-  '_id' | 'name' | 'images' | 'price' | 'salePrice' | 'quantity'
+  '_id' | 'name' | 'images' | 'price' | 'salePrice' | 'quantity' | 'status'
 >;
 
 export interface CartListVO {

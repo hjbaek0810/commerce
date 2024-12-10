@@ -34,3 +34,14 @@ export const searchForm = style({
   width: '100%',
   marginBottom: tokens.spacing['spacing-080'],
 });
+
+export const soldOutImage = style({ opacity: 0.4 });
+
+export const soldOutImageText = style({
+  position: 'absolute',
+  right: '1rem',
+  top: '1rem',
+  fontSize: tokens.fontSize['font-size-012'],
+  fontWeight: 700,
+  color: ColorPalettes.Red['20'],
+});
