@@ -35,3 +35,9 @@ export const postCodeWrapper = style({
   display: 'flex',
   gap: tokens.spacing['spacing-004'],
 });
+
+export const paymentTypeRadioWrapper = style({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: tokens.spacing['spacing-008'],
+});
