@@ -51,3 +51,9 @@ export const emptyText = style({
   fontSize: tokens.fontSize['font-size-016'],
   color: ColorPalettes.Grey['50'],
 });
+
+export const soldOutText = style({
+  color: ColorPalettes.Red['20'],
+  fontSize: tokens.fontSize['font-size-012'],
+  fontWeight: 700,
+});

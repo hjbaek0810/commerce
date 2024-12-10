@@ -8,7 +8,6 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { isEmpty } from 'lodash-es';
 import Image from 'next/image';
-import Link from 'next/link';
 
 import useCartGrid from '@app/cart/useCartGrid';
 import * as productDetailCss from '@app/product/[slug]/productDetail.css';
@@ -25,8 +24,9 @@ const CartGrid = () => {
     isEmptyCartList,
     cartList,
     cartForm,
-    checkedCarts,
+    selectedCartIds,
     selectedCartItems,
+    isSoldOut,
     calculatePrice,
     calculateTotalPrice,
     showRemainingQuantity,
@@ -111,11 +111,14 @@ const CartGrid = () => {
                 </Table.Td>
                 <Table.Td>{product.name}</Table.Td>
                 <Table.Td>
-                  <div className={productDetailCss.quantityWrapper}>
+                  <div
+                    className={productDetailCss.quantityWrapper}
+                    onClick={e => e.stopPropagation()}
+                  >
                     <button
                       className={productDetailCss.quantityButton}
                       disabled={quantity === 1}
-                      onClick={e => handleMinusQuantityClick(product._id, e)}
+                      onClick={() => handleMinusQuantityClick(product._id)}
                     >
                       <FontAwesomeIcon
                         icon={faMinus}
@@ -127,7 +130,7 @@ const CartGrid = () => {
                     </span>
                     <button
                       className={productDetailCss.quantityButton}
-                      onClick={e => handleAddQuantityClick(product._id, e)}
+                      onClick={() => handleAddQuantityClick(product._id)}
                       disabled={product.quantity <= quantity}
                     >
                       <FontAwesomeIcon
@@ -136,10 +139,15 @@ const CartGrid = () => {
                       />
                     </button>
                   </div>
-                  {showRemainingQuantity(product.quantity) && (
+                  {showRemainingQuantity(product.quantity, product.status) && (
                     <span
                       className={productDetailCss.remainingQuantity}
                     >{`서두르세요! 남은 수량: ${product.quantity}`}</span>
+                  )}
+                  {isSoldOut(product.status) && (
+                    <span className={css.soldOutText}>
+                      SOLD OUT - 현재 해당 상품은 주문 불가능합니다.
+                    </span>
                   )}
                 </Table.Td>
                 <Table.Td>
@@ -157,10 +165,10 @@ const CartGrid = () => {
         <Button
           size="large"
           fill
-          disabled={isEmpty(checkedCarts)}
+          disabled={isEmpty(selectedCartIds)}
           href={{
             pathname: PATH.NEW_ORDER,
-            query: { fromCart: true, productId: checkedCarts },
+            query: { fromCart: true, productId: selectedCartIds },
           }}
         >
           {`${formatNumber(
@@ -168,7 +176,7 @@ const CartGrid = () => {
               selectedCartItems.map(({ product }) => product),
               selectedCartItems.map(({ quantity }) => quantity),
             ),
-          )}원(${checkedCarts.length}) 구매하기`}
+          )}원(${selectedCartIds.length}) 구매하기`}
         </Button>
       </div>
     </Rhf.Form>

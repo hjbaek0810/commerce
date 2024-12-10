@@ -10,6 +10,7 @@ import {
   useCartListQuery,
   useDeleteCartListMutation,
 } from '@services/queries/cart';
+import { ProductStatusType } from '@utils/constants/product';
 import useSessionHandler from '@utils/hooks/useSessionHandler';
 import { PATH } from '@utils/path';
 
@@ -33,8 +34,17 @@ const useCartGrid = () => {
 
   const router = useRouter();
 
-  const showRemainingQuantity = (quantity: number) =>
-    quantity <= SHOW_REMAINING_QUANTITY_COUNT;
+  const isSoldOut = (status: ProductStatusType) =>
+    status === ProductStatusType.STOPPED;
+
+  const selectedCartItems = cartList.filter(
+    ({ product }) =>
+      checkedCarts.some(checkedCartId => checkedCartId === product._id) &&
+      !isSoldOut(product.status),
+  );
+
+  const showRemainingQuantity = (quantity: number, status: ProductStatusType) =>
+    quantity <= SHOW_REMAINING_QUANTITY_COUNT && !isSoldOut(status);
 
   const calculatePrice = (
     price: number,
@@ -59,23 +69,13 @@ const useCartGrid = () => {
       .reduce((total, price) => total + price, 0);
   };
 
-  const handleAddQuantityClick = (
-    id: string,
-    event: MouseEvent<HTMLButtonElement>,
-  ) => {
-    event.stopPropagation();
-
+  const handleAddQuantityClick = (id: string) => {
     if (checkSession()) {
       updateCart({ productId: id, quantity: 1 });
     }
   };
 
-  const handleMinusQuantityClick = (
-    id: string,
-    event: MouseEvent<HTMLButtonElement>,
-  ) => {
-    event.stopPropagation();
-
+  const handleMinusQuantityClick = (id: string) => {
     if (checkSession()) {
       updateCart({ productId: id, quantity: -1 });
     }
@@ -96,10 +96,9 @@ const useCartGrid = () => {
     isEmptyCartList: data?.items && isEmpty(data?.items),
     cartList,
     cartForm,
-    checkedCarts,
-    selectedCartItems: cartList.filter(({ product }) =>
-      checkedCarts.some(checkedCartId => checkedCartId === product._id),
-    ),
+    selectedCartIds: selectedCartItems.map(({ product }) => product._id),
+    selectedCartItems,
+    isSoldOut,
     calculatePrice,
     calculateTotalPrice,
     showRemainingQuantity,
