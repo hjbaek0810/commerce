@@ -3,7 +3,7 @@ import { createContext, useContext, useMemo } from 'react';
 import type { FieldValues, Path, UseControllerReturn } from 'react-hook-form';
 import { useController, useFormContext } from 'react-hook-form';
 
-import { isEmpty } from 'lodash-es';
+import { isEmpty, isUndefined } from 'lodash-es';
 
 import Radio from '.';
 import { RHFRules } from '..';
@@ -66,9 +66,9 @@ export const RHFRadioGroup = <T extends FieldValues>({
 };
 
 export const RHFRadio = (props: RHFRadioPropsType) => {
-  const { value, onChange, ...restProps } = props;
+  const { value, onChange, disabled, ...restProps } = props;
 
-  const { controller, disabled } = useRadioContext();
+  const { controller, disabled: groupDisabled } = useRadioContext();
   const {
     field,
     fieldState: { error },
@@ -88,7 +88,7 @@ export const RHFRadio = (props: RHFRadioPropsType) => {
       value={value}
       onChange={handleChange}
       checked={field.value === value}
-      disabled={disabled}
+      disabled={isUndefined(groupDisabled) ? disabled : groupDisabled}
       error={!isEmpty(error)}
     />
   );
