@@ -1,16 +1,24 @@
 import type { FormEvent } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { useSearchParams } from 'next/navigation';
+import { isEmpty } from 'lodash-es';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import FindPostCodeModal from '@components/Modal/templates/FindPostCodeModal';
 import { useCartListWhenNewOrderQuery } from '@services/queries/cart';
+import { useOrderListMutation } from '@services/queries/order';
 import { useProductDetailWhenNewOrderQuery } from '@services/queries/product';
+import { OrderStatus, PaymentType } from '@utils/constants/order';
 import useModals from '@utils/hooks/useModals';
+import { PATH } from '@utils/path';
 import { formatPhoneNumber } from '@utils/validation';
 
-import type { CartProductVO } from '@api/cart/types/vo';
 import type { CreateOrder } from '@api/order/types/dto';
+
+type NewOrderUseFormType = Omit<
+  CreateOrder,
+  'products' | 'status' | 'fromCart'
+>;
 
 const useNewOrder = () => {
   const searchParams = useSearchParams();
@@ -27,34 +35,18 @@ const useNewOrder = () => {
     fromCart,
   );
 
+  const { mutate: orderRequest } = useOrderListMutation();
+
   const newOrderList = fromCart ? fromCartList : fromProductDetail;
 
-  const orderForm = useForm<CreateOrder>();
+  const router = useRouter();
+  const orderForm = useForm<NewOrderUseFormType>({
+    defaultValues: {
+      paymentType: PaymentType.BANK_TRANSFER,
+    },
+  });
   const { setValue } = orderForm;
   const { openModal } = useModals();
-
-  const calculatePrice = (
-    price: number,
-    salePrice: number | null,
-    quantity: number,
-  ) => {
-    const realPrice = salePrice || price;
-
-    return realPrice * quantity;
-  };
-
-  const calculateTotalPrice = (
-    products: CartProductVO[],
-    quantities: number[],
-  ): number => {
-    return products
-      .map((product, index) => {
-        const realPrice = product.salePrice ?? product.price;
-
-        return realPrice * quantities[index];
-      })
-      .reduce((total, price) => total + price, 0);
-  };
 
   const handleFindPostCodeButtonClick = () => {
     openModal(FindPostCodeModal, {
@@ -70,13 +62,33 @@ const useNewOrder = () => {
     setValue('telephone', formattedPhoneNumber);
   };
 
+  const handleSubmitOrder = (data: NewOrderUseFormType) => {
+    if (!newOrderList || isEmpty(newOrderList)) return;
+
+    const requestData: CreateOrder = {
+      ...data,
+      products: newOrderList.items.map(({ product, quantity }) => ({
+        _id: product._id,
+        quantity,
+        price: product.salePrice ?? product.price,
+      })),
+      status: OrderStatus.PAYMENT_PENDING,
+      fromCart,
+    };
+
+    orderRequest(requestData, {
+      onSuccess: () => {
+        router.push(PATH.ORDER);
+      },
+    });
+  };
+
   return {
     newOrderList,
     orderForm,
-    calculatePrice,
-    calculateTotalPrice,
     handleFindPostCodeButtonClick,
     handleTelephoneInput,
+    handleSubmitOrder,
   };
 };
 

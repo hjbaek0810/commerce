@@ -7,7 +7,9 @@ import Button from '@components/Button';
 import Rhf from '@components/Form';
 import { Table } from '@components/Table';
 import Title from '@components/Title';
+import { PaymentType } from '@utils/constants/order';
 import { formatNumber } from '@utils/formatter/number';
+import { calculatePrice, calculateTotalPrice } from '@utils/math/price';
 import { telephoneRules } from '@utils/validation';
 import { PHONE_MAX_LENGTH } from '@utils/validation/telephone';
 
@@ -17,16 +19,19 @@ const NewOrder = () => {
   const {
     newOrderList,
     orderForm,
-    calculatePrice,
-    calculateTotalPrice,
     handleFindPostCodeButtonClick,
     handleTelephoneInput,
+    handleSubmitOrder,
   } = useNewOrder();
 
   return (
     <>
       <Title>ORDER</Title>
-      <Rhf.Form className={css.orderWrapper} {...orderForm}>
+      <Rhf.Form
+        className={css.orderWrapper}
+        {...orderForm}
+        onSubmit={handleSubmitOrder}
+      >
         <Table>
           <Table.Header>
             <Table.Tr>
@@ -71,7 +76,10 @@ const NewOrder = () => {
                   <span className={css.totalPrice}>
                     {`Total: ${formatNumber(
                       calculateTotalPrice(
-                        newOrderList.items.map(({ product }) => product),
+                        newOrderList.items.map(({ product }) => product.price),
+                        newOrderList.items.map(
+                          ({ product }) => product.salePrice,
+                        ),
                         newOrderList.items.map(({ quantity }) => quantity),
                       ),
                     )}`}
@@ -131,7 +139,25 @@ const NewOrder = () => {
                   onInput={handleTelephoneInput}
                   maxLength={PHONE_MAX_LENGTH}
                   rules={telephoneRules}
+                  required
                 />
+              </Table.Td>
+            </Table.Tr>
+            <Table.Tr>
+              <Table.Th scope="row">
+                <Rhf.Label required>결제 방법</Rhf.Label>
+              </Table.Th>
+              <Table.Td colSpan={2}>
+                <Rhf.Radio name="paymentType">
+                  <div className={css.paymentTypeRadioWrapper}>
+                    <Rhf.RadioOption value={PaymentType.BANK_TRANSFER}>
+                      무통장 입금
+                    </Rhf.RadioOption>
+                    <Rhf.RadioOption value={PaymentType.CARD} disabled>
+                      카드 (준비중)
+                    </Rhf.RadioOption>
+                  </div>
+                </Rhf.Radio>
               </Table.Td>
             </Table.Tr>
           </Table.Body>

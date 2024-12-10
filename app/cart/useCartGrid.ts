@@ -15,7 +15,6 @@ import useSessionHandler from '@utils/hooks/useSessionHandler';
 import { PATH } from '@utils/path';
 
 import type { DeleteCartItems } from '@api/cart/types/dto';
-import type { CartProductVO } from '@api/cart/types/vo';
 
 const useCartGrid = () => {
   const { checkSession } = useSessionHandler();
@@ -45,29 +44,6 @@ const useCartGrid = () => {
 
   const showRemainingQuantity = (quantity: number, status: ProductStatusType) =>
     quantity <= SHOW_REMAINING_QUANTITY_COUNT && !isSoldOut(status);
-
-  const calculatePrice = (
-    price: number,
-    salePrice: number | null,
-    quantity: number,
-  ) => {
-    const realPrice = salePrice || price;
-
-    return realPrice * quantity;
-  };
-
-  const calculateTotalPrice = (
-    products: CartProductVO[],
-    quantities: number[],
-  ): number => {
-    return products
-      .map((product, index) => {
-        const realPrice = product.salePrice ?? product.price;
-
-        return realPrice * quantities[index];
-      })
-      .reduce((total, price) => total + price, 0);
-  };
 
   const handleAddQuantityClick = (id: string) => {
     if (checkSession()) {
@@ -99,8 +75,6 @@ const useCartGrid = () => {
     selectedCartIds: selectedCartItems.map(({ product }) => product._id),
     selectedCartItems,
     isSoldOut,
-    calculatePrice,
-    calculateTotalPrice,
     showRemainingQuantity,
     handleMinusQuantityClick,
     handleAddQuantityClick,

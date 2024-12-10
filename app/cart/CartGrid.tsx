@@ -15,6 +15,7 @@ import Button from '@components/Button';
 import Rhf from '@components/Form';
 import { Table } from '@components/Table';
 import { formatNumber } from '@utils/formatter/number';
+import { calculatePrice, calculateTotalPrice } from '@utils/math/price';
 import { PATH } from '@utils/path';
 
 import * as css from './cart.css';
@@ -27,8 +28,6 @@ const CartGrid = () => {
     selectedCartIds,
     selectedCartItems,
     isSoldOut,
-    calculatePrice,
-    calculateTotalPrice,
     showRemainingQuantity,
     handleAddQuantityClick,
     handleMinusQuantityClick,
@@ -173,7 +172,8 @@ const CartGrid = () => {
         >
           {`${formatNumber(
             calculateTotalPrice(
-              selectedCartItems.map(({ product }) => product),
+              selectedCartItems.map(({ product }) => product.price),
+              selectedCartItems.map(({ product }) => product.salePrice),
               selectedCartItems.map(({ quantity }) => quantity),
             ),
           )}원(${selectedCartIds.length}) 구매하기`}
