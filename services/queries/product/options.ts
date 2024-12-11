@@ -10,7 +10,12 @@ export const PRODUCT_LIST_LIMIT_ITEM = 10;
 export const getProductListInfiniteQueryOptions = (
   searchParams: Record<string, string>,
 ) => ({
-  queryKey: ['products', { scope: 'list' }, searchParams],
+  queryKey: [
+    'products',
+    { scope: 'list' },
+    searchParams,
+    { categories: ['product', 'order'], action: 'update' },
+  ],
   queryFn: ({ pageParam = 1 }) =>
     fetchData<PaginatedResponse<'products', ProductVO>>(
       createQueryString(API.PRODUCT.BASE, {
@@ -21,7 +26,8 @@ export const getProductListInfiniteQueryOptions = (
       'GET',
     ),
   getNextPageParam: (lastPage: PaginatedResponse<'products', ProductVO>) => {
-    const { currentPage, totalCount } = lastPage;
+    const { currentPage, totalCount } = lastPage || {};
+
     if (currentPage * PRODUCT_LIST_LIMIT_ITEM < totalCount) {
       return lastPage.currentPage + 1;
     }
@@ -30,11 +36,20 @@ export const getProductListInfiniteQueryOptions = (
 });
 
 export const getProductTopViewsQueryOptions = () => ({
-  queryKey: ['products', { status: 'top-views' }],
+  queryKey: [
+    'products',
+    { scope: 'list' },
+    { status: 'top-views' },
+    { categories: ['product', 'order'], action: 'update' },
+  ],
   queryFn: () => fetchData<ProductVO[]>(API.PRODUCT.TOP_VIEWS, 'GET'),
 });
 
 export const getProductDetailQueryOptions = (id: string) => ({
-  queryKey: ['products', { scope: 'item' }, id],
+  queryKey: [
+    'products',
+    { scope: 'item', id },
+    { categories: ['product', 'order'], action: 'update' },
+  ],
   queryFn: () => fetchData<ProductDetailVO>(API.PRODUCT.DETAIL(id), 'GET'),
 });

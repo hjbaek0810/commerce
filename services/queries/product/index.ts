@@ -2,11 +2,11 @@ import { toast } from 'react-toastify';
 
 import {
   keepPreviousData,
+  useInfiniteQuery,
   useMutation,
   useQueries,
   useQuery,
   useQueryClient,
-  useSuspenseInfiniteQuery,
 } from '@tanstack/react-query';
 import { isEmpty } from 'lodash-es';
 import { useSearchParams } from 'next/navigation';
@@ -68,6 +68,7 @@ export const useAdminProductListQuery = () => {
         page: paginationProps.currentPage,
         limit: paginationProps.currentLimit,
       },
+      { categories: ['product', 'order'], action: 'update' },
     ],
     queryFn: () =>
       fetchData<PaginatedResponse<'products', AdminProductVO>>(
@@ -95,7 +96,7 @@ export const useProductListInfiniteQuery = () => {
   const queryParams = parseQueryParams(searchParams);
   const { handleSearchParamsChange } = useQueryParams();
 
-  const { data, ...rest } = useSuspenseInfiniteQuery(
+  const { data, ...rest } = useInfiniteQuery(
     getProductListInfiniteQueryOptions(queryParams),
   );
 
@@ -108,7 +109,12 @@ export const useProductListInfiniteQuery = () => {
 
 export const useAdminProductDetailQuery = (id: string) =>
   useQuery({
-    queryKey: ['products', 'admin', { scope: 'item' }, id],
+    queryKey: [
+      'products',
+      'admin',
+      { scope: 'item', id },
+      { categories: ['product', 'order'], action: 'update' },
+    ],
     queryFn: () =>
       fetchData<AdminProductDetailVO>(API.ADMIN.PRODUCT.DETAIL(id), 'GET'),
   });
@@ -150,8 +156,7 @@ export const useAdminProductMutation = () => {
     },
     onSuccess: () =>
       queryClient.invalidateQueries({
-        predicate: query =>
-          (query?.queryKey?.[0] as string).startsWith('products'),
+        queryKey: ['products'],
         refetchType: 'all',
       }),
     onError: () => {
@@ -203,15 +208,16 @@ export const useAdminProductDetailMutation = (id: string) => {
 
       return await Promise.all([updateProductPromise, deleteImagesPromise]);
     },
-    onSuccess: () =>
+    onSuccess: () => {
       queryClient.invalidateQueries({
-        predicate: query =>
-          query.queryKey.includes('order') ||
-          (query?.queryKey?.[0] as string).startsWith('products') ||
-          query.queryKey.includes('wish-list') ||
-          query.queryKey.includes('cart'),
+        queryKey: ['wish-list'],
         refetchType: 'all',
-      }),
+      });
+      queryClient.invalidateQueries({
+        queryKey: [{ categories: ['product', 'order'], action: 'update' }],
+        refetchType: 'all',
+      });
+    },
     onError: () => {
       toast.error('상품 수정에 실패하였습니다. 잠시 후 시도해주시길 바랍니다.');
     },
@@ -227,15 +233,16 @@ export const useAdminProductDeleteMutation = (id: string) => {
         fetchData(API.ADMIN.PRODUCT.DETAIL(id), 'DELETE'),
         ...(images ? images.map(({ publicId }) => deleteImages(publicId)) : []),
       ]),
-    onSuccess: () =>
+    onSuccess: () => {
       queryClient.invalidateQueries({
-        predicate: query =>
-          query.queryKey.includes('order') ||
-          (query?.queryKey?.[0] as string).startsWith('products') ||
-          query.queryKey.includes('wish-list') ||
-          query.queryKey.includes('cart'),
+        queryKey: ['wish-list'],
         refetchType: 'all',
-      }),
+      });
+      queryClient.invalidateQueries({
+        queryKey: [{ categories: ['product', 'order'], action: 'update' }],
+        refetchType: 'all',
+      });
+    },
     onError: () => {
       toast.error('상품 삭제에 실패하였습니다. 잠시 후 시도해주시길 바랍니다.');
     },

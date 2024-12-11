@@ -10,6 +10,7 @@ import {
 import { useSearchParams } from 'next/navigation';
 
 import {
+  getAdminOrderDetailQueryOptions,
   getAdminOrderListQueryOptions,
   getOrderListInfiniteQueryOptions,
 } from '@services/queries/order/options';
@@ -67,10 +68,7 @@ export const useOrderListMutation = () => {
       fetchData<unknown, CreateOrder>(API.ORDER.BASE, 'POST', { data }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        predicate: query =>
-          query.queryKey.includes('order') ||
-          (query?.queryKey?.[0] as string).startsWith('products') ||
-          query.queryKey.includes('cart'),
+        queryKey: [{ categories: ['product', 'order'], action: 'update' }],
         refetchType: 'all',
       });
     },
@@ -97,3 +95,6 @@ export const useOrderStatusMutation = () => {
     },
   });
 };
+
+export const useAdminOrderDetailQuery = (id: string) =>
+  useQuery(getAdminOrderDetailQueryOptions(id));
