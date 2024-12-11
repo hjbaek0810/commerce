@@ -15,11 +15,13 @@ import * as css from './select.css';
 import type { SelectVariants } from './select.css';
 
 type SelectOptionsType = {
-  value: any;
+  value: string | number;
 };
 
 export type SelectPropsType = SelectHTMLAttributes<HTMLSelectElement> &
-  SelectVariants;
+  SelectVariants & {
+    hiddenPlaceholder?: boolean;
+  };
 
 const SelectComponent = forwardRef<HTMLSelectElement, SelectPropsType>(
   (
@@ -29,6 +31,7 @@ const SelectComponent = forwardRef<HTMLSelectElement, SelectPropsType>(
       disabled = false,
       error = false,
       hidden = false,
+      hiddenPlaceholder = false,
       children,
       ...restProps
     },
@@ -50,9 +53,12 @@ const SelectComponent = forwardRef<HTMLSelectElement, SelectPropsType>(
           defaultValue=""
           {...restProps}
         >
-          <option value="" disabled hidden>
-            Please select type
-          </option>
+          {!hiddenPlaceholder && (
+            <option value="" disabled hidden>
+              Please select type
+            </option>
+          )}
+
           {children}
         </select>
 
