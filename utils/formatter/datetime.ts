@@ -1,6 +1,6 @@
 import { isNil } from 'lodash-es';
 
-export function formatDateTime(dateTime: string) {
+export function formatDateTime(dateTime?: string) {
   if (isNil(dateTime)) return '';
 
   const date = new Date(dateTime);
