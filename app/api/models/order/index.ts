@@ -1,5 +1,8 @@
 import { Schema, model, models } from 'mongoose';
 
+import type { UserModelType } from '@api/models/user';
+import type { InferSchemaType } from 'mongoose';
+
 const OrderItemSchema = new Schema({
   productId: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
   quantity: { type: Number, required: true, min: 1 },
@@ -12,7 +15,8 @@ const OrderSchema = new Schema(
       type: [OrderItemSchema],
     },
     userId: {
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: 'User',
       required: true,
     },
     telephone: {
@@ -60,5 +64,10 @@ const OrderSchema = new Schema(
 );
 
 const OrderModel = models.Order || model('Order', OrderSchema);
+
+export type OrderModelType = InferSchemaType<typeof OrderSchema> & {
+  _id: string;
+  userId: UserModelType;
+};
 
 export default OrderModel;

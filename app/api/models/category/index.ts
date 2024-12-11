@@ -1,5 +1,8 @@
 import { Schema, model, models } from 'mongoose';
 
+import type { SubCategoryModelType } from '@api/models/subCategory';
+import type { InferSchemaType } from 'mongoose';
+
 const CategorySchema = new Schema(
   {
     name: {
@@ -18,5 +21,10 @@ const CategorySchema = new Schema(
 );
 
 const CategoryModel = models.Category || model('Category', CategorySchema);
+
+export type CategoryModelType = InferSchemaType<typeof CategorySchema> & {
+  _id: string;
+  subCategories: SubCategoryModelType[];
+};
 
 export default CategoryModel;
