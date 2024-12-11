@@ -6,10 +6,12 @@ import { checkSession } from '@api/helper/session';
 import CartModel from '@api/models/cart';
 import OrderModel from '@api/models/order';
 import ProductModel from '@api/models/product';
+import UserModel from '@api/models/user';
 import { ProductStatusType } from '@utils/constants/product';
 
+import type { OrderModelType } from '@api/models/order';
 import type { CreateOrder, UpdateOrder } from '@api/order/types/dto';
-import type { OrderListVO, OrderProductVO } from '@api/order/types/vo';
+import type { OrderProductVO } from '@api/order/types/vo';
 import type { NextRequest } from 'next/server';
 
 enum OrderListErrorType {
@@ -22,7 +24,7 @@ type ProductItemType = {
   price: number;
 };
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
     await connectDB();
     const sessionCheck = await checkSession(authOptions);
@@ -35,35 +37,54 @@ export async function GET() {
       });
     }
 
-    const { userId } = sessionCheck;
+    const { userId: sessionUserId } = sessionCheck;
 
-    const orderList = await OrderModel.find({ userId })
+    const { searchParams } = req.nextUrl;
+
+    const pageNumber = Number(searchParams.get('page')) || 1;
+    const limitNumber = Number(searchParams.get('limit')) || 10;
+
+    const orderList = await OrderModel.find({ userId: sessionUserId })
+      .limit(limitNumber)
+      .skip((pageNumber - 1) * limitNumber)
+      .sort({ createdAt: -1 })
       .populate({
         path: 'productIds.productId',
         model: ProductModel,
         select: '_id name images',
       })
-      .sort({ createdAt: -1 });
+      .populate({
+        path: 'userId',
+        model: UserModel,
+        select: 'name',
+      })
+      .lean<OrderModelType[]>();
 
-    const ordersDoc = orderList.map(({ _doc }) => _doc);
+    const orders = orderList.map(({ _id, productIds, userId, ...order }) => ({
+      _id: _id.toString(),
+      userId: userId._id,
+      userName: userId.name,
+      items: productIds.map(item => ({
+        product: item.productId,
+        quantity: item.quantity,
+        price: item.price,
+      })),
+      ...order,
+      totalPrice: productIds
+        .map(item => item.price * item.quantity)
+        .reduce((total: number, price: number) => total + price, 0),
+    }));
 
-    const orders: OrderListVO[] = ordersDoc.map(
-      ({ _id, productIds, ...order }) => ({
-        _id: _id.toString(),
-        userId,
-        items: productIds.map((item: ProductItemType) => ({
-          product: item.productId,
-          quantity: item.quantity,
-          price: item.price,
-        })),
-        ...order,
-        totalPrice: productIds
-          .map((item: ProductItemType) => item.price * item.quantity)
-          .reduce((total: number, price: number) => total + price, 0),
-      }),
-    );
+    const count = await OrderModel.countDocuments();
 
-    return NextResponse.json(orders, {
+    const response = {
+      orders,
+      currentPage: pageNumber,
+      currentLimit: limitNumber,
+      totalCount: count,
+    };
+
+    return NextResponse.json(response, {
       status: 200,
     });
   } catch (error) {
