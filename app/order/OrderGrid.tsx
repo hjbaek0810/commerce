@@ -7,37 +7,14 @@ import Image from 'next/image';
 import useOrderGrid from '@app/order/useOrderGrid';
 import Button from '@components/Button';
 import Radio from '@components/Form/Radio';
+import OrderStatusBadge from '@components/OrderStatusBadge';
 import { Table } from '@components/Table';
 import Title from '@components/Title';
-import {
-  OrderStatus,
-  PaymentType,
-  getOrderStatusText,
-} from '@utils/constants/order';
+import { PaymentType } from '@utils/constants/order';
 import { formatNumber } from '@utils/formatter/number';
 import { calculatePrice } from '@utils/math/price';
 
 import * as css from './order.css';
-
-// const UserButton = ({ status }: { status: OrderStatus }) => {
-//   const renderButton = () => {
-//     switch (status) {
-//       // 결제 대기, 결제 완료
-//       case OrderStatus.PAYMENT_PENDING:
-//       case OrderStatus.PAYMENT_COMPLETED:
-//         return <Button>취소 요청</Button>; // -> REFUND_PENDING 환불 대기
-//       // 배송 대기, 배송 진행, 배송 완료
-//       case OrderStatus.SHIPPING_PENDING:
-//       case OrderStatus.SHIPPING_IN_PROGRESS:
-//       case OrderStatus.SHIPPING_COMPLETED:
-//         return <Button>반품 요청</Button>; // -> RETURN_PENDING 반품 대기
-//       default:
-//         return null;
-//     }
-//   };
-
-//   return renderButton();
-// };
 
 const OrderGrid = () => {
   const {
@@ -85,9 +62,7 @@ const OrderGrid = () => {
               <div className={css.orderProductWrapper}>
                 <div className={css.orderInfoWrapper}>
                   <Title size="medium">주문번호: {_id}</Title>
-                  <span className={css.statusBadge({ status })}>
-                    {getOrderStatusText(status)}
-                  </span>
+                  <OrderStatusBadge status={status} size="large" />
                 </div>
 
                 <Table>

@@ -1,12 +1,8 @@
 import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
 
 import Title from '@components/Title';
-import {
-  getProductListInfiniteQueryOptions,
-  getProductTopViewsQueryOptions,
-} from '@services/queries/product/options';
+import { getProductListInfiniteQueryOptions } from '@services/queries/product/options';
 import { getQueryClient } from '@utils/query/queryClient';
-import BestProductSlider from 'app/product/BestProductSlider';
 
 import ProductGrid from './ProductGrid';
 
@@ -15,25 +11,16 @@ const ProductList = async ({
 }: {
   searchParams: Record<string, string>;
 }) => {
-  const allProductListPage = !('category' in searchParams);
-
   const queryClient = getQueryClient();
 
-  await Promise.all([
-    ...(allProductListPage ? [getProductTopViewsQueryOptions()] : []),
+  await queryClient.prefetchInfiniteQuery(
     getProductListInfiniteQueryOptions(searchParams),
-  ]);
+  );
 
   return (
     <>
       <Title>상품 목록</Title>
-
-      {allProductListPage && (
-        <HydrationBoundary state={dehydrate(queryClient)}>
-          <BestProductSlider />
-        </HydrationBoundary>
-      )}
-
+      {/* TODO : best slider home에 작성 */}
       <HydrationBoundary state={dehydrate(queryClient)}>
         <ProductGrid />
       </HydrationBoundary>

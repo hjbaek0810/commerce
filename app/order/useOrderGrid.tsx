@@ -3,14 +3,19 @@ import { useRouter } from 'next/navigation';
 
 import Button from '@components/Button';
 import {
-  useOrderListQuery,
+  useOrderListInfiniteQuery,
   useOrderStatusMutation,
 } from '@services/queries/order';
 import { OrderStatus } from '@utils/constants/order';
 import { PATH } from '@utils/path';
 
 const useOrderGrid = () => {
-  const { data: orderInfo } = useOrderListQuery();
+  // TODO: 무한 스크롤
+  const {
+    orders: orderInfo,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useOrderListInfiniteQuery();
 
   const { mutate: updateOrderStatus } = useOrderStatusMutation();
   const router = useRouter();
@@ -19,32 +24,39 @@ const useOrderGrid = () => {
   const handleGoToProductDetailButton = (id: string) =>
     router.push(PATH.PRODUCT.DETAIL(id));
 
-  const handleRequestCancel = (orderId: string) => {
+  const handleRequestStatusButton = (orderId: string, status: OrderStatus) => {
     updateOrderStatus({
       _id: orderId,
-      status: OrderStatus.REFUND_PENDING, // 환불 대기
-    });
-  };
-
-  const handleRequestReturn = (orderId: string) => {
-    updateOrderStatus({
-      _id: orderId,
-      status: OrderStatus.RETURN_PENDING, // 반품 대기
+      status,
     });
   };
 
   const renderButton = (orderId: string, status: OrderStatus) => {
     switch (status) {
-      // 결제 대기, 결제 완료
+      // 결제 대기
       case OrderStatus.PAYMENT_PENDING:
+        return (
+          <Button
+            size="large"
+            fill
+            onClick={() =>
+              handleRequestStatusButton(orderId, OrderStatus.ORDER_CANCELLED)
+            }
+          >
+            취소 요청
+          </Button>
+        );
+      // 결제 완료
       case OrderStatus.PAYMENT_COMPLETED:
         return (
           <Button
             size="large"
             fill
-            onClick={() => handleRequestCancel(orderId)}
+            onClick={() =>
+              handleRequestStatusButton(orderId, OrderStatus.REFUND_PENDING)
+            }
           >
-            취소 요청
+            환불 요청
           </Button>
         );
       // 배송 대기, 배송 진행, 배송 완료
@@ -55,7 +67,9 @@ const useOrderGrid = () => {
           <Button
             size="large"
             fill
-            onClick={() => handleRequestReturn(orderId)}
+            onClick={() =>
+              handleRequestStatusButton(orderId, OrderStatus.RETURN_PENDING)
+            }
           >
             반품 요청
           </Button>
@@ -67,8 +81,7 @@ const useOrderGrid = () => {
 
   return {
     orderInfo: orderInfo || [],
-    isEmptyOrderList:
-      orderInfo && isEmpty(orderInfo?.map(order => order.items)),
+    isEmptyOrderList: orderInfo && isEmpty(orderInfo),
     renderButton,
     handleGoToCartListButtonClick,
     handleGoToProductDetailButton,
