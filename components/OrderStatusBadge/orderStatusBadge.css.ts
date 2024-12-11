@@ -75,13 +75,21 @@ export const statusBadge = recipe({
         fontWeight: 'bold',
       }),
     },
+    full: {
+      true: {
+        width: '100%',
+        textAlign: 'center',
+      },
+      false: {},
+    },
   },
   defaultVariants: {
     size: 'large',
+    full: false,
   },
 });
 
 export type OrderStatusBadgeVariants = Pick<
   NonNullable<RecipeVariants<typeof statusBadge>>,
-  'size'
+  'size' | 'full'
 >;

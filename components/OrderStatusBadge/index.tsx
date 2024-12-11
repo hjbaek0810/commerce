@@ -9,9 +9,13 @@ type OrderStatusBadgePropsType = {
   status: OrderStatus;
 } & OrderStatusBadgeVariants;
 
-const OrderStatusBadge = ({ status }: OrderStatusBadgePropsType) => {
+const OrderStatusBadge = ({
+  status,
+  size,
+  full,
+}: OrderStatusBadgePropsType) => {
   return (
-    <span className={css.statusBadge({ status, size: 'large' })}>
+    <span className={css.statusBadge({ status, size, full })}>
       {getOrderStatusText(status)}
     </span>
   );
