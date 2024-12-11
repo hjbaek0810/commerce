@@ -1,3 +1,3 @@
-import type { OrderListVO } from '@api/order/types/vo';
+import type { OrderVO } from '@api/order/types/vo';
 
-export type AdminOrderListVO = OrderListVO;
+export type AdminOrderVO = OrderVO;

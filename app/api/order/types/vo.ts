@@ -3,7 +3,7 @@ import type { OrderStatus, PaymentType } from '@utils/constants/order';
 
 export type OrderProductVO = Pick<ProductVO, '_id' | 'name' | 'images'>;
 
-export interface OrderListVO {
+export interface OrderVO {
   _id: string;
   userId: string;
   userName: string;

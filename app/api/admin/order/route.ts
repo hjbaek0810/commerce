@@ -7,19 +7,13 @@ import UserModel from '@api/models/user';
 import { OrderSortType } from '@utils/constants/order';
 
 import type { SearchAdminOrder } from '@api/admin/order/types/dto';
-import type { OrderProductVO } from '@api/order/types/vo';
+import type { OrderModelType } from '@api/models/order';
 import type { FilterQuery } from 'mongoose';
 import type { NextRequest } from 'next/server';
 
 enum AdminOrderListErrorType {
   ORDER_LIST_NOT_FOUND = 'AOI-001',
 }
-
-type ProductItemType = {
-  productId: OrderProductVO;
-  quantity: number;
-  price: number;
-};
 
 export async function GET(req: NextRequest) {
   try {
@@ -74,7 +68,7 @@ export async function GET(req: NextRequest) {
       .skip((pageNumber - 1) * limitNumber)
       .sort(sortOptions)
       .populate(populateOptions)
-      .lean();
+      .lean<OrderModelType[]>();
 
     const count = await OrderModel.find(filters)
       .populate(populateOptions)
@@ -82,17 +76,17 @@ export async function GET(req: NextRequest) {
 
     const orders = adminOrderList.map(
       ({ _id, userId, productIds, ...order }) => ({
-        _id: (_id as string).toString(),
+        _id: _id.toString(),
         userId: userId._id,
         userName: userId.name,
-        items: productIds.map((item: ProductItemType) => ({
+        items: productIds?.map(item => ({
           product: item.productId,
           quantity: item.quantity,
           price: item.price,
         })),
         ...order,
         totalPrice: productIds
-          .map((item: ProductItemType) => item.price * item.quantity)
+          .map(item => item.price * item.quantity)
           .reduce((total: number, price: number) => total + price, 0),
       }),
     );

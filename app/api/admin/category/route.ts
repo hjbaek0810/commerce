@@ -6,7 +6,8 @@ import ProductModel from '@api/models/product';
 import SubCategoryModel from '@api/models/subCategory';
 
 import type { AdminCreateCategory } from './types/dto';
-import type { AdminCategoryVO } from './types/vo';
+import type { CategoryModelType } from '@api/models/category';
+import type { ProductModelType } from '@api/models/product';
 import type { NextRequest } from 'next/server';
 
 enum AdminCategoryErrorType {
@@ -25,7 +26,7 @@ export async function GET() {
         select: '_id name',
         model: SubCategoryModel,
       })
-      .lean<AdminCategoryVO[]>();
+      .lean<CategoryModelType[]>();
 
     if (!categories.length) {
       return NextResponse.json([], { status: 200 });
@@ -46,7 +47,7 @@ export async function GET() {
         ],
       },
       'categoryIds',
-    ).lean();
+    ).lean<ProductModelType[]>();
 
     const notDeletableCategoryMap = new Map();
     const notDeletableSubCategoryMap = new Map();
