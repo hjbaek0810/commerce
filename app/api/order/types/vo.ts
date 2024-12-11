@@ -6,6 +6,7 @@ export type OrderProductVO = Pick<ProductVO, '_id' | 'name' | 'images'>;
 export interface OrderListVO {
   _id: string;
   userId: string;
+  userName: string;
   items: Array<{
     product: OrderProductVO;
     quantity: number;
@@ -18,4 +19,6 @@ export interface OrderListVO {
   status: OrderStatus;
   paymentType: PaymentType;
   totalPrice: number;
+  createdAt: string;
+  updatedAt: string;
 }

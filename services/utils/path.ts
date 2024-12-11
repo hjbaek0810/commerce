@@ -9,6 +9,10 @@ export const API = {
       BASE: 'admin/product',
       DETAIL: (productId: string) => `admin/product/${productId}`,
     },
+    ORDER: {
+      BASE: 'admin/order',
+      DETAIL: (orderId: string) => `admin/order/${orderId}`,
+    },
   },
   CATEGORY: 'category',
   PRODUCT: {

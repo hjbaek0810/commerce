@@ -17,6 +17,11 @@ export enum PaymentType {
   CARD = 'CARD',
 }
 
+export enum OrderSortType {
+  NEWEST = 'NEWEST',
+  OLDEST = 'OLDEST',
+}
+
 export const getOrderStatusText = (status: OrderStatus) => {
   switch (status) {
     case OrderStatus.ORDER_CANCELLED:

@@ -26,6 +26,12 @@ const ADMIN_LIST: Array<SideMenuListType> = [
       path: PATH.ADMIN.PRODUCT.LIST,
     },
   },
+  {
+    title: 'Orders',
+    href: {
+      path: PATH.ADMIN.ORDER.LIST,
+    },
+  },
 ];
 
 const AdminLayout = ({ children }: PropsWithChildren) => {

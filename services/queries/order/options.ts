@@ -34,3 +34,29 @@ export const getOrderListInfiniteQueryOptions = (headers?: HeadersInit) => ({
   },
   initialPageParam: 1,
 });
+
+export const getAdminOrderListQueryOptions = ({
+  searchParams,
+  page,
+  limit,
+}: {
+  searchParams: Record<string, string>;
+  page: number;
+  limit: number;
+}) => ({
+  queryKey: [
+    'order',
+    { scope: 'list' },
+    searchParams,
+    { categories: ['product', 'order'], action: 'update' },
+  ],
+  queryFn: () =>
+    fetchData<PaginatedResponse<'orders', AdminOrderListVO>>(
+      createQueryString(API.ADMIN.ORDER.BASE, {
+        ...searchParams,
+        page,
+        limit,
+      }),
+      'GET',
+    ),
+});
