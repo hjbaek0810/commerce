@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import { useAdminOrderListQuery } from '@services/queries/order';
 import {
@@ -8,6 +8,7 @@ import {
   OrderStatus,
   getOrderStatusText,
 } from '@utils/constants/order';
+import { PATH } from '@utils/path';
 
 import type { SearchAdminOrder } from '@api/admin/order/types/dto';
 
@@ -25,6 +26,8 @@ const orderStatusOptions = [
 ];
 
 const useAdminOrder = () => {
+  const router = useRouter();
+
   const {
     data: orderList,
     paginationProps,
@@ -72,6 +75,9 @@ const useAdminOrder = () => {
     });
   };
 
+  const handleGoToOrderDetail = (id: string) =>
+    router.push(PATH.ADMIN.ORDER.DETAIL(id));
+
   return {
     orderList,
     paginationProps,
@@ -80,6 +86,7 @@ const useAdminOrder = () => {
     handleSearchOrder,
     handleSortChange,
     handleFilterResetButtonClick,
+    handleGoToOrderDetail,
   };
 };
 
