@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
     const pageNumber = Number(searchParams.get('page'));
     const limitNumber = Number(searchParams.get('limit'));
 
-    const sort = searchParams.get('sort') || 'newest';
+    const sort = searchParams.get('sort') || ProductSortType.NEWEST;
 
     // 정렬 기준 처리
     let sortCriteria: SortCriteria = { createdAt: -1 }; // 기본값: 최신 순
