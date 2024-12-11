@@ -18,7 +18,10 @@ const useSideMenu = () => {
 
   const selected = (menuPath: string, query?: ParsedUrlQueryInput | string) => {
     if (!query) {
-      return menuPath === pathname;
+      if (menuPath === '/' || menuPath === '/admin')
+        return menuPath === pathname;
+
+      return pathname.startsWith(menuPath);
     }
 
     const newParams = removeParams(['page', 'limit', 'sort']);
