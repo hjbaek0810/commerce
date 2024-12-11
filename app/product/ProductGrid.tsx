@@ -25,7 +25,7 @@ const ProductGrid = () => {
       <Rhf.Form {...productsUseForm} className={css.searchForm}>
         <Rhf.Input name="name" placeholder="Please enter the product name." />
 
-        <Rhf.Select name="sort" onChange={handleSortChange}>
+        <Rhf.Select name="sort" onChange={handleSortChange} hiddenPlaceholder>
           <Rhf.SelectOption value={ProductSortType.NEWEST}>
             최신 순
           </Rhf.SelectOption>
