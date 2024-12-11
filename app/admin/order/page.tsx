@@ -23,6 +23,7 @@ const AdminOrder = () => {
     handleSearchOrder,
     handleFilterResetButtonClick,
     handleSortChange,
+    handleGoToOrderDetail,
   } = useAdminOrder();
 
   return (
@@ -125,7 +126,7 @@ const AdminOrder = () => {
 
             {orderList.map(
               ({ _id, userId, userName, items, status, createdAt }) => (
-                <Table.Tr key={_id} onClick={() => {}}>
+                <Table.Tr key={_id} onClick={() => handleGoToOrderDetail(_id)}>
                   <Table.Td>{_id}</Table.Td>
                   <Table.Td>{userId}</Table.Td>
                   <Table.Td>{userName}</Table.Td>

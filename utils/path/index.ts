@@ -14,6 +14,7 @@ export const PATH = {
     },
     ORDER: {
       LIST: ADMIN_HOME + ORDER,
+      DETAIL: (orderId: string) => ADMIN_HOME + ORDER + `/${orderId}`,
     },
   },
   PRODUCT: {
