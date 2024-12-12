@@ -6,6 +6,7 @@ import OrderModel from '@api/models/order';
 import ProductModel from '@api/models/product';
 import UserModel from '@api/models/user';
 import { OrderSortType, OrderStatus } from '@utils/constants/order';
+import { ProductStatusType } from '@utils/constants/product';
 
 import type {
   SearchAdminOrder,
@@ -146,10 +147,20 @@ export async function PUT(req: NextRequest) {
       const { productIds } = order;
 
       for (const product of productIds) {
-        await ProductModel.updateOne(
-          { _id: product.productId },
-          { $inc: { quantity: product.quantity } }, // 지정된 필드의 값을 증가시키거나 감소
-        );
+        await ProductModel.updateOne({ _id: product.productId }, [
+          {
+            $set: {
+              quantity: { $add: ['$quantity', product.quantity] }, // quantity 값을 증가시킴
+              status: {
+                $cond: {
+                  if: { $gte: [{ $add: ['$quantity', product.quantity] }, 0] }, // quantity가 0 이상이면
+                  then: ProductStatusType.IN_PROGRESS,
+                  else: '$status', // 그렇지 않으면 기존 status 유지
+                },
+              },
+            },
+          },
+        ]);
       }
     }
 

@@ -135,7 +135,7 @@ export async function POST(req: NextRequest) {
       const currentQuantityInCart =
         cartList.productIds[existingCartIndex].quantity;
 
-      if (currentQuantityInCart + data.quantity < product.quantity) {
+      if (currentQuantityInCart + data.quantity <= product.quantity) {
         cartList.productIds[existingCartIndex].quantity += data.quantity;
       }
     }

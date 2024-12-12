@@ -69,7 +69,7 @@ export const useAdminProductListQuery = () => {
         page: paginationProps.currentPage,
         limit: paginationProps.currentLimit,
       },
-      { categories: ['product', 'order'], action: 'update' },
+      'update-product-order',
     ],
     queryFn: () =>
       fetchData<PaginatedResponse<'products', AdminProductVO>>(
@@ -115,7 +115,7 @@ export const useAdminProductDetailQuery = (id: string) =>
       'products',
       'admin',
       { scope: 'item', id },
-      { categories: ['product', 'order'], action: 'update' },
+      'update-product-order',
     ],
     queryFn: () =>
       fetchData<AdminProductDetailVO>(API.ADMIN.PRODUCT.DETAIL(id), 'GET'),
@@ -212,11 +212,9 @@ export const useAdminProductDetailMutation = (id: string) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['wish-list'],
-        refetchType: 'all',
-      });
-      queryClient.invalidateQueries({
-        queryKey: [{ categories: ['product', 'order'], action: 'update' }],
+        predicate: query =>
+          query.queryHash.includes('update-product-order') ||
+          query.queryHash.includes('wish-list'),
         refetchType: 'all',
       });
     },
@@ -237,11 +235,9 @@ export const useAdminProductDeleteMutation = (id: string) => {
       ]),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['wish-list'],
-        refetchType: 'all',
-      });
-      queryClient.invalidateQueries({
-        queryKey: [{ categories: ['product', 'order'], action: 'update' }],
+        predicate: query =>
+          query.queryHash.includes('update-product-order') ||
+          query.queryHash.includes('wish-list'),
         refetchType: 'all',
       });
     },

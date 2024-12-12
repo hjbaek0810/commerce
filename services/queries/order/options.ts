@@ -9,11 +9,7 @@ import type { PaginatedResponse } from '@services/utils/types/pagination';
 export const ORDER_LIST_LIMIT_ITEM = 4;
 
 export const getOrderListInfiniteQueryOptions = (headers?: HeadersInit) => ({
-  queryKey: [
-    'order',
-    { scope: 'list' },
-    { categories: ['product', 'order'], action: 'update' },
-  ],
+  queryKey: ['order', { scope: 'list' }, 'update-product-order'],
   queryFn: ({ pageParam = 1 }) =>
     fetchData<PaginatedResponse<'orders', OrderVO>>(
       createQueryString(API.ORDER.BASE, {
@@ -41,12 +37,7 @@ export const getAdminOrderListQueryOptions = ({
   page: number;
   limit: number;
 }) => ({
-  queryKey: [
-    'order',
-    { scope: 'list' },
-    searchParams,
-    { categories: ['product', 'order'], action: 'update' },
-  ],
+  queryKey: ['order', { scope: 'list' }, searchParams, 'update-product-order'],
   queryFn: () =>
     fetchData<PaginatedResponse<'orders', AdminOrderVO>>(
       createQueryString(API.ADMIN.ORDER.BASE, {
@@ -59,11 +50,6 @@ export const getAdminOrderListQueryOptions = ({
 });
 
 export const getAdminOrderDetailQueryOptions = (id: string) => ({
-  queryKey: [
-    'order',
-    'admin',
-    { scope: 'item', id },
-    { categories: ['product', 'order'], action: 'update' },
-  ],
+  queryKey: ['order', 'admin', { scope: 'item', id }, 'update-product-order'],
   queryFn: () => fetchData<OrderVO>(API.ADMIN.ORDER.DETAIL(id), 'GET'),
 });

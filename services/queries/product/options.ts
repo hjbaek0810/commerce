@@ -14,7 +14,7 @@ export const getProductListInfiniteQueryOptions = (
     'products',
     { scope: 'list' },
     searchParams,
-    { categories: ['product', 'order'], action: 'update' },
+    'update-product-order',
   ],
   queryFn: ({ pageParam = 1 }) =>
     fetchData<PaginatedResponse<'products', ProductVO>>(
@@ -40,16 +40,12 @@ export const getProductTopViewsQueryOptions = () => ({
     'products',
     { scope: 'list' },
     { status: 'top-views' },
-    { categories: ['product', 'order'], action: 'update' },
+    'update-product-order',
   ],
   queryFn: () => fetchData<ProductVO[]>(API.PRODUCT.TOP_VIEWS, 'GET'),
 });
 
 export const getProductDetailQueryOptions = (id: string) => ({
-  queryKey: [
-    'products',
-    { scope: 'item', id },
-    { categories: ['product', 'order'], action: 'update' },
-  ],
+  queryKey: ['products', { scope: 'item', id }, 'update-product-order'],
   queryFn: () => fetchData<ProductDetailVO>(API.PRODUCT.DETAIL(id), 'GET'),
 });

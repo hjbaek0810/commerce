@@ -65,7 +65,7 @@ export const useOrderListMutation = () => {
       fetchData<unknown, CreateOrder>(API.ORDER.BASE, 'POST', { data }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: [{ categories: ['product', 'order'], action: 'update' }],
+        predicate: query => query.queryHash.includes('update-product-order'),
         refetchType: 'all',
       });
     },
@@ -80,7 +80,13 @@ export const useOrderStatusMutation = () => {
       fetchData<unknown, UpdateOrder>(API.ORDER.BASE, 'PUT', { data }),
     onSuccess: () => {
       queryClient.invalidateQueries({
+        // predicate: query => query.queryHash.includes('update-product-order'),
         queryKey: ['order'],
+        refetchType: 'all',
+      });
+
+      queryClient.invalidateQueries({
+        predicate: query => query.queryHash.includes('update-product-order'),
         refetchType: 'all',
       });
     },
@@ -100,7 +106,7 @@ export const useAdminOrderStatusMutation = () => {
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['order'],
+        predicate: query => query.queryHash.includes('update-product-order'),
         refetchType: 'all',
       });
     },
