@@ -46,6 +46,7 @@ const SelectComponent = forwardRef<HTMLSelectElement, SelectPropsType>(
         )}
       >
         <select
+          id={name}
           name={name}
           className={inputCss.input({ error })}
           disabled={disabled}
