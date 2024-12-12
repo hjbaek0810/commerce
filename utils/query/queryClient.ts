@@ -23,6 +23,9 @@ export function makeQueryClient() {
         onSettled: () => {
           toast.dismiss();
         },
+        onError: () => {
+          toast.error('잠시 후 시도해주시기 바랍니다.');
+        },
       },
     },
   });
