@@ -34,6 +34,7 @@ export type CheckboxPropsType = Omit<
 const Checkbox = forwardRef<HTMLInputElement, CheckboxPropsType>(
   (
     {
+      id,
       name,
       label,
       value,
@@ -46,7 +47,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxPropsType>(
     },
     ref,
   ) => {
-    const labelId = `${name}-label`;
+    const labelId = `${name}-${label}`;
 
     const handleLabelClick = (event: MouseEvent<HTMLDivElement>) => {
       if (disabled) return;
@@ -76,7 +77,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxPropsType>(
         <div className={css.checkbox({ checked, error })}>
           <input
             className={css.input}
-            id={name}
+            id={id || `${name}-${value}`}
             name={name}
             type="checkbox"
             tabIndex={-1}

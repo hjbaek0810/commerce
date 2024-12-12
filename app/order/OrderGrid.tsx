@@ -141,6 +141,7 @@ const OrderGrid = () => {
                     <Table.Td colSpan={2}>
                       <div className={css.paymentTypeWrapper}>
                         <Radio
+                          id={`${_id}-${PaymentType.BANK_TRANSFER}`}
                           value={PaymentType.BANK_TRANSFER}
                           checked={paymentType === PaymentType.BANK_TRANSFER}
                           disabled
@@ -148,6 +149,7 @@ const OrderGrid = () => {
                           무통장 입금
                         </Radio>
                         <Radio
+                          id={`${_id}-${PaymentType.CARD}`}
                           value={PaymentType.CARD}
                           checked={paymentType === PaymentType.CARD}
                           disabled

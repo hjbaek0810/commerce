@@ -18,6 +18,7 @@ export type RadioPropsType = Omit<
 const Radio = forwardRef<HTMLInputElement, RadioPropsType>(
   (
     {
+      id,
       name,
       children,
       value,
@@ -56,7 +57,7 @@ const Radio = forwardRef<HTMLInputElement, RadioPropsType>(
         <input
           {...restProps}
           className={css.radio({ error })}
-          id={`${name}-${value}`}
+          id={id ?? `${name}-${value}`}
           name={name}
           type="radio"
           tabIndex={-1}

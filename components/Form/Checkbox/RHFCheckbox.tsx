@@ -125,7 +125,7 @@ export const RHFCheckbox = ({
       {...checkboxProps}
       error={!isEmpty(error)}
       onChange={handleCheckboxChange}
-      value={field.value}
+      value={value}
     />
   );
 };
