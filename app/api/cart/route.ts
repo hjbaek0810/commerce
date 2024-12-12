@@ -8,11 +8,13 @@ import ProductModel from '@api/models/product';
 
 import type { DeleteCartItems, UpdateCartItem } from '@api/cart/types/dto';
 import type { CartModelType } from '@api/models/cart';
+import type { ProductModelType } from '@api/models/product';
 import type { Schema } from 'mongoose';
 import type { NextRequest } from 'next/server';
 
 enum CartListErrorType {
   CART_LIST_NOT_FOUND = 'CI-001',
+  CART_PRODUCT_NOT_FOUND = 'CI-002',
 }
 
 export async function GET() {
@@ -106,6 +108,19 @@ export async function POST(req: NextRequest) {
       });
     }
 
+    const product = await ProductModel.findById(
+      data.productId,
+    ).lean<ProductModelType>();
+    if (!product) {
+      return NextResponse.json(
+        {
+          message: 'Product not found.',
+          code: CartListErrorType.CART_PRODUCT_NOT_FOUND,
+        },
+        { status: 400 },
+      );
+    }
+
     const existingCartIndex = cartList.productIds.findIndex(
       (item: { productId: Schema.Types.ObjectId }) =>
         item.productId.toString() === data.productId,
@@ -117,7 +132,12 @@ export async function POST(req: NextRequest) {
         quantity: data.quantity,
       });
     } else {
-      cartList.productIds[existingCartIndex].quantity += data.quantity;
+      const currentQuantityInCart =
+        cartList.productIds[existingCartIndex].quantity;
+
+      if (currentQuantityInCart + data.quantity < product.quantity) {
+        cartList.productIds[existingCartIndex].quantity += data.quantity;
+      }
     }
 
     await cartList.save();
