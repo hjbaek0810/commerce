@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 
 import Rhf from '@components/Form';
 import {
@@ -8,6 +8,7 @@ import {
   useAdminOrderStatusMutation,
 } from '@services/queries/order';
 import { OrderStatus } from '@utils/constants/order';
+import { PATH } from '@utils/path';
 
 import type { UpdateAdminOrder } from '@api/admin/order/types/dto';
 
@@ -16,6 +17,7 @@ type AdminOrderStatusUseForm = Pick<UpdateAdminOrder, 'status'>;
 const useAdminOrderDetail = () => {
   const params = useParams();
   const id = params.slug as string;
+  const router = useRouter();
 
   const { data: orderInfo } = useAdminOrderDetailQuery(id);
   const { mutate: updateOrderStatus } = useAdminOrderStatusMutation();
@@ -67,6 +69,10 @@ const useAdminOrderDetail = () => {
     }
   };
 
+  const handleGoToProductDetail = (id: string) => {
+    router.push(PATH.ADMIN.PRODUCT.DETAIL(id));
+  };
+
   const handleOrderStatusUpdate = (data: AdminOrderStatusUseForm) => {
     if (id && data.status !== orderInfo?.status) {
       updateOrderStatus({
@@ -80,6 +86,7 @@ const useAdminOrderDetail = () => {
     adminOrderUseForm,
     orderInfo,
     getRadioOptions,
+    handleGoToProductDetail,
     handleOrderStatusUpdate,
   };
 };

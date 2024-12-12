@@ -33,6 +33,7 @@ const AdminOrderDetail = () => {
     adminOrderUseForm,
     orderInfo,
     getRadioOptions,
+    handleGoToProductDetail,
     handleOrderStatusUpdate,
   } = useAdminOrderDetail();
   const {
@@ -104,7 +105,10 @@ const AdminOrderDetail = () => {
           </Table.Header>
           <Table.Body>
             {items?.map(({ product, quantity, price }) => (
-              <Table.Tr key={product._id}>
+              <Table.Tr
+                key={product._id}
+                onClick={() => handleGoToProductDetail(product._id)}
+              >
                 <Table.Td>
                   <figure className={css.imageWrapper}>
                     <Image
