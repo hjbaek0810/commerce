@@ -7,15 +7,21 @@ import {
   useOrderStatusMutation,
 } from '@services/queries/order';
 import { OrderStatus } from '@utils/constants/order';
+import useIntersectionObserver from '@utils/hooks/useIntersectionObserver';
 import { PATH } from '@utils/path';
 
 const useOrderGrid = () => {
-  // TODO: 무한 스크롤
   const {
     orders: orderInfo,
     fetchNextPage,
+    hasNextPage,
     isFetchingNextPage,
   } = useOrderListInfiniteQuery();
+
+  const { setTarget } = useIntersectionObserver({
+    hasNextPage,
+    fetchNextPage,
+  });
 
   const { mutate: updateOrderStatus } = useOrderStatusMutation();
   const router = useRouter();
@@ -83,6 +89,8 @@ const useOrderGrid = () => {
     orderInfo: orderInfo || [],
     isEmptyOrderList: orderInfo && isEmpty(orderInfo),
     renderButton,
+    setTarget,
+    isFetchingNextPage,
     handleGoToCartListButtonClick,
     handleGoToProductDetailButton,
   };

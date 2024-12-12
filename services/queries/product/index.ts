@@ -20,6 +20,7 @@ import { getWishListQueryOptions } from '@services/queries/wish-list/options';
 import { deleteImages, uploadImages } from '@services/upload';
 import { fetchData } from '@services/utils/fetch';
 import { API } from '@services/utils/path';
+import usePaginationQueryParams from '@utils/hooks/usePaginationQueryParams';
 import useQueryParams from '@utils/hooks/useQueryParams';
 import { createQueryString, parseQueryParams } from '@utils/query/helper';
 
@@ -57,7 +58,7 @@ async function uploadImagesAndGetUrls(
 }
 
 export const useAdminProductListQuery = () => {
-  const { paginationProps } = useQueryParams();
+  const { paginationProps } = usePaginationQueryParams();
 
   const { data, ...rest } = useQuery({
     queryKey: [
@@ -94,7 +95,8 @@ export const useAdminProductListQuery = () => {
 export const useProductListInfiniteQuery = () => {
   const searchParams = useSearchParams();
   const queryParams = parseQueryParams(searchParams);
-  const { handleSearchParamsChange } = useQueryParams();
+
+  const { changeSearchParams } = useQueryParams();
 
   const { data, ...rest } = useInfiniteQuery(
     getProductListInfiniteQueryOptions(queryParams),
@@ -103,7 +105,7 @@ export const useProductListInfiniteQuery = () => {
   return {
     ...rest,
     products: data?.pages.flatMap(page => page.products) || [],
-    handleSearchParamsChange,
+    changeSearchParams,
   };
 };
 

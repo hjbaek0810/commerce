@@ -3,6 +3,7 @@
 import { isEmpty } from 'lodash-es';
 
 import Rhf from '@components/Form';
+import LoadingSpinner from '@components/Loading';
 import ProductCard from '@components/ProductCard';
 import { ProductSortType } from '@utils/constants/product';
 
@@ -17,6 +18,8 @@ const ProductGrid = () => {
     handleSortChange,
     productDetailQuery,
     isSoldOut,
+    setTarget,
+    isFetchingNextPage,
   } = useProductGrid();
 
   return (
@@ -67,6 +70,9 @@ const ProductGrid = () => {
           ))}
         </ProductCard.Group>
       )}
+      <div ref={setTarget}>
+        {isFetchingNextPage ? <LoadingSpinner /> : null}
+      </div>
     </>
   );
 };

@@ -6,11 +6,23 @@ import { useSearchParams } from 'next/navigation';
 import { useProductListInfiniteQuery } from '@services/queries/product';
 import { ProductSortType, ProductStatusType } from '@utils/constants/product';
 import useDebounce from '@utils/hooks/useDebounce';
+import useIntersectionObserver from '@utils/hooks/useIntersectionObserver';
 
 import type { SearchProduct } from '@api/product/types/dto';
 
 const useProductGrid = () => {
-  const { products, handleSearchParamsChange } = useProductListInfiniteQuery();
+  const {
+    products,
+    changeSearchParams,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useProductListInfiniteQuery();
+
+  const { setTarget } = useIntersectionObserver({
+    hasNextPage,
+    fetchNextPage,
+  });
 
   const searchParams = useSearchParams();
   const categoryParam = searchParams.get('category');
@@ -35,13 +47,13 @@ const useProductGrid = () => {
 
   useEffect(() => {
     if (keyword === debouncedKeyword)
-      handleSearchParamsChange({ name: debouncedKeyword });
-  }, [debouncedKeyword, handleSearchParamsChange, keyword]);
+      changeSearchParams({ name: debouncedKeyword });
+  }, [debouncedKeyword, changeSearchParams, keyword]);
 
   const handleSortChange = () => {
     const sort = getValues('sort');
 
-    handleSearchParamsChange({ sort });
+    changeSearchParams({ sort });
   };
 
   const isSoldOut = (status: ProductStatusType) =>
@@ -57,6 +69,8 @@ const useProductGrid = () => {
       subCategoryParam,
     },
     isSoldOut,
+    setTarget,
+    isFetchingNextPage,
   };
 };
 

@@ -7,6 +7,7 @@ import Image from 'next/image';
 import useOrderGrid from '@app/order/useOrderGrid';
 import Button from '@components/Button';
 import Radio from '@components/Form/Radio';
+import LoadingSpinner from '@components/Loading';
 import OrderStatusBadge from '@components/OrderStatusBadge';
 import { Table } from '@components/Table';
 import Title from '@components/Title';
@@ -21,6 +22,8 @@ const OrderGrid = () => {
     orderInfo,
     isEmptyOrderList,
     renderButton,
+    setTarget,
+    isFetchingNextPage,
     handleGoToCartListButtonClick,
     handleGoToProductDetailButton,
   } = useOrderGrid();
@@ -164,6 +167,9 @@ const OrderGrid = () => {
             </div>
           ),
         )}
+      </div>
+      <div ref={setTarget}>
+        {isFetchingNextPage ? <LoadingSpinner /> : null}
       </div>
     </>
   );

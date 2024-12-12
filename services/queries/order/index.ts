@@ -1,5 +1,3 @@
-import { toast } from 'react-toastify';
-
 import {
   keepPreviousData,
   useInfiniteQuery,
@@ -16,7 +14,7 @@ import {
 } from '@services/queries/order/options';
 import { fetchData } from '@services/utils/fetch';
 import { API } from '@services/utils/path';
-import useQueryParams from '@utils/hooks/useQueryParams';
+import usePaginationQueryParams from '@utils/hooks/usePaginationQueryParams';
 import { parseQueryParams } from '@utils/query/helper';
 
 import type { UpdateAdminOrder } from '@api/admin/order/types/dto';
@@ -27,19 +25,17 @@ export const useOrderListInfiniteQuery = () => {
     getOrderListInfiniteQueryOptions(),
   );
 
-  const { handleSearchParamsChange } = useQueryParams();
-
   return {
     ...rest,
     orders: data?.pages.flatMap(page => page.orders) || [],
-    handleSearchParamsChange,
   };
 };
 
 export const useAdminOrderListQuery = () => {
   const searchParams = useSearchParams();
   const queryParams = parseQueryParams(searchParams);
-  const { paginationProps, handleSearchParamsChange } = useQueryParams();
+  const { paginationProps, handleSearchParamsChange } =
+    usePaginationQueryParams();
 
   const { data, ...rest } = useQuery({
     ...getAdminOrderListQueryOptions({

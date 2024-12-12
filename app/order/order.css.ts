@@ -27,6 +27,7 @@ export const orderItemWrapper = style({
   gap: tokens.spacing['spacing-048'],
   paddingBottom: tokens.spacing['spacing-056'],
   borderBottom: `2px solid ${ColorPalettes.Grey['80']}`,
+
   ':last-child': {
     paddingBottom: 0,
     borderBottom: 0,

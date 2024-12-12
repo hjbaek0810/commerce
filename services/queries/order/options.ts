@@ -6,7 +6,7 @@ import type { AdminOrderVO } from '@api/admin/order/types/vo';
 import type { OrderVO } from '@api/order/types/vo';
 import type { PaginatedResponse } from '@services/utils/types/pagination';
 
-export const ORDER_LIST_LIMIT_ITEM = 10;
+export const ORDER_LIST_LIMIT_ITEM = 4;
 
 export const getOrderListInfiniteQueryOptions = (headers?: HeadersInit) => ({
   queryKey: [
