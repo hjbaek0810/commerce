@@ -104,10 +104,11 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     console.error(error);
 
-    return NextResponse.json({
-      message: 'Failed to load order list.',
-      code: AdminOrderListErrorType.ORDER_LIST_NOT_FOUND,
-      status: 400,
-    });
+    return NextResponse.json(
+      {
+        message: 'Failed to load order list.',
+      },
+      { status: 500 },
+    );
   }
 }

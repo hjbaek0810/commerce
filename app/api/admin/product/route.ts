@@ -6,8 +6,13 @@ import ProductModel from '@api/models/product';
 import SubCategoryModel from '@api/models/subCategory';
 
 import type { CreateProduct, SearchProduct } from './types/dto';
+import type { ProductModelType } from '@api/models/product';
 import type { FilterQuery } from 'mongoose';
 import type { NextRequest } from 'next/server';
+
+enum AdminProductErrorType {
+  PRODUCT_NOT_FOUND = 'AP-001',
+}
 
 export async function POST(req: NextRequest) {
   const data: CreateProduct = await req.json();
@@ -27,7 +32,7 @@ export async function POST(req: NextRequest) {
       {
         message: `Failed to register product.`,
       },
-      { status: 400 },
+      { status: 500 },
     );
   }
 }
@@ -72,14 +77,15 @@ export async function GET(req: NextRequest) {
         path: 'categoryIds.subCategoryId',
         select: 'name',
         model: SubCategoryModel,
-      });
+      })
+      .lean<ProductModelType[]>();
 
     const response = products.map(product => {
-      const { categoryIds, ...productData } = product._doc;
+      const { categoryIds, ...productData } = product || {};
 
       const categoryId = {
-        _id: categoryIds?._id?._id ?? null,
-        name: categoryIds?._id?.name ?? null,
+        _id: categoryIds._id._id ?? null,
+        name: categoryIds._id.name ?? null,
         subCategory: categoryIds?.subCategoryId?._id
           ? {
               _id: categoryIds?.subCategoryId?._id ?? null,
@@ -111,10 +117,12 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     console.error(error);
 
-    return NextResponse.json({
-      message: 'Failed to load products.',
-      status: 400,
-    });
+    return NextResponse.json(
+      {
+        message: 'Failed to load products.',
+      },
+      { status: 500 },
+    );
   }
 }
 
@@ -123,15 +131,26 @@ export async function DELETE(req: NextRequest) {
     await connectDB();
     const { _id } = await req.json();
 
-    await ProductModel.findOneAndDelete({ _id });
+    const deleteProduct = await ProductModel.findOneAndDelete({ _id });
+    if (!deleteProduct) {
+      return NextResponse.json(
+        {
+          message: 'Product not found',
+          code: AdminProductErrorType.PRODUCT_NOT_FOUND,
+        },
+        { status: 404 },
+      );
+    }
 
     return NextResponse.json({ message: 'success', status: 200 });
   } catch (error) {
     console.error(error);
 
-    return NextResponse.json({
-      message: 'Failed to delete the product.',
-      status: 400,
-    });
+    return NextResponse.json(
+      {
+        message: 'Failed to delete the product.',
+      },
+      { status: 500 },
+    );
   }
 }

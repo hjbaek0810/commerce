@@ -15,9 +15,11 @@ export async function GET() {
   } catch (error) {
     console.error(error);
 
-    return NextResponse.json({
-      message: 'Failed to load the top 10 products.',
-      status: 400,
-    });
+    return NextResponse.json(
+      {
+        message: 'Failed to load the top 10 products.',
+      },
+      { status: 500 },
+    );
   }
 }

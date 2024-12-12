@@ -71,8 +71,7 @@ export async function uploadImages(files: FormData) {
       fs.unlink(file.filePath, err => {
         if (err) {
           console.error(err);
-
-          return;
+          throw new Error('Failed to upload the images.');
         }
       }),
     );

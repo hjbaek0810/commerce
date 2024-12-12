@@ -79,11 +79,12 @@ export async function GET() {
   } catch (error) {
     console.error(error);
 
-    return NextResponse.json({
-      message: 'Failed to load admin categories.',
-
-      status: 400,
-    });
+    return NextResponse.json(
+      {
+        message: 'Failed to load admin categories.',
+      },
+      { status: 500 },
+    );
   }
 }
 
@@ -239,10 +240,12 @@ export async function PUT(req: NextRequest) {
   } catch (error) {
     console.error(error);
 
-    return NextResponse.json({
-      message: 'Failed to update the categories.',
-      code: AdminCategoryErrorType.CATEGORY_NOT_UPDATED,
-      status: 400,
-    });
+    return NextResponse.json(
+      {
+        message: 'Failed to update the categories.',
+        code: AdminCategoryErrorType.CATEGORY_NOT_UPDATED,
+      },
+      { status: 500 },
+    );
   }
 }

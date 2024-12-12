@@ -40,7 +40,7 @@ export const checkSession = async (
     return {
       isValid: false,
       message: 'An error occurred while checking the session.',
-      status: 500,
+      status: 403,
       code: SessionErrorType.UNKNOWN_ERROR,
     };
   }

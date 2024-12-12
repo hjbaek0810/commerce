@@ -55,9 +55,12 @@ export async function GET(
   } catch (error) {
     console.error(error);
 
-    return NextResponse.json({
-      message: 'Failed to load product.',
-      status: 400,
-    });
+    return NextResponse.json(
+      {
+        message: 'Failed to load product.',
+        status: 500,
+      },
+      { status: 500 },
+    );
   }
 }

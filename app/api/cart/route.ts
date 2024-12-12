@@ -7,7 +7,7 @@ import CartModel from '@api/models/cart';
 import ProductModel from '@api/models/product';
 
 import type { DeleteCartItems, UpdateCartItem } from '@api/cart/types/dto';
-import type { CartListVO, CartProductVO } from '@api/cart/types/vo';
+import type { CartModelType } from '@api/models/cart';
 import type { Schema } from 'mongoose';
 import type { NextRequest } from 'next/server';
 
@@ -21,29 +21,41 @@ export async function GET() {
     const sessionCheck = await checkSession(authOptions);
 
     if (!sessionCheck.isValid) {
-      return NextResponse.json({
-        message: sessionCheck.message,
-        code: sessionCheck.code,
-        status: sessionCheck.status,
-      });
+      return NextResponse.json(
+        {
+          message: sessionCheck.message,
+          code: sessionCheck.code,
+        },
+        { status: sessionCheck.status },
+      );
     }
 
     const { userId } = sessionCheck;
 
-    const cartList = await CartModel.findById(userId).populate({
-      path: 'productIds.productId',
-      model: ProductModel,
-      select: '_id name images price salePrice quantity status',
-    });
+    const cartList = await CartModel.findById(userId)
+      .populate({
+        path: 'productIds.productId',
+        model: ProductModel,
+        select: '_id name images price salePrice quantity status',
+      })
+      .lean<CartModelType>();
 
-    const { productIds, ...rest } = cartList?._doc || {};
+    if (!cartList) {
+      return NextResponse.json(
+        {
+          message: 'Cart not found.',
+          code: CartListErrorType.CART_LIST_NOT_FOUND,
+        },
+        { status: 400 },
+      );
+    }
 
-    const items: CartListVO = (productIds || []).map(
-      (item: { productId: CartProductVO; quantity: number }) => ({
-        product: item.productId,
-        quantity: item.quantity,
-      }),
-    );
+    const { productIds, ...rest } = cartList;
+
+    const items = productIds?.map(item => ({
+      product: item.productId || null,
+      quantity: item.quantity,
+    }));
 
     return NextResponse.json(
       {
@@ -57,11 +69,12 @@ export async function GET() {
   } catch (error) {
     console.error(error);
 
-    return NextResponse.json({
-      message: 'Failed to load cart list.',
-      code: CartListErrorType.CART_LIST_NOT_FOUND,
-      status: 400,
-    });
+    return NextResponse.json(
+      {
+        message: 'Failed to load cart list.',
+      },
+      { status: 500 },
+    );
   }
 }
 
@@ -73,11 +86,13 @@ export async function POST(req: NextRequest) {
     const sessionCheck = await checkSession(authOptions);
 
     if (!sessionCheck.isValid) {
-      return NextResponse.json({
-        message: sessionCheck.message,
-        code: sessionCheck.code,
-        status: sessionCheck.status,
-      });
+      return NextResponse.json(
+        {
+          message: sessionCheck.message,
+          code: sessionCheck.code,
+        },
+        { status: sessionCheck.status },
+      );
     }
 
     const { userId } = sessionCheck;
@@ -116,9 +131,9 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(
       {
-        message: `Failed to update cart list.`,
+        message: 'Failed to update cart list.',
       },
-      { status: 400 },
+      { status: 500 },
     );
   }
 }
@@ -132,11 +147,13 @@ export async function DELETE(req: NextRequest) {
     const sessionCheck = await checkSession(authOptions);
 
     if (!sessionCheck.isValid) {
-      return NextResponse.json({
-        message: sessionCheck.message,
-        code: sessionCheck.code,
-        status: sessionCheck.status,
-      });
+      return NextResponse.json(
+        {
+          message: sessionCheck.message,
+          code: sessionCheck.code,
+        },
+        { status: sessionCheck.status },
+      );
     }
 
     const { userId } = sessionCheck;
@@ -148,10 +165,13 @@ export async function DELETE(req: NextRequest) {
     );
 
     if (!cartList) {
-      return NextResponse.json({
-        status: 200,
-        message: 'No cart list found for this user.',
-      });
+      return NextResponse.json(
+        {
+          message: 'Cart not found.',
+          code: CartListErrorType.CART_LIST_NOT_FOUND,
+        },
+        { status: 400 },
+      );
     }
 
     return NextResponse.json({
@@ -163,9 +183,9 @@ export async function DELETE(req: NextRequest) {
 
     return NextResponse.json(
       {
-        message: `Failed to delete cart list.`,
+        message: 'Failed to delete cart list.',
       },
-      { status: 400 },
+      { status: 500 },
     );
   }
 }

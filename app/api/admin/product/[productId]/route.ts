@@ -6,6 +6,10 @@ import ProductModel from '@api/models/product';
 import type { UpdateProduct } from '../types/dto';
 import type { NextRequest } from 'next/server';
 
+enum AdminProductErrorType {
+  PRODUCT_NOT_FOUND = 'APD-001',
+}
+
 export async function GET(
   _: NextRequest,
   { params }: { params: { productId: string } },
@@ -15,16 +19,28 @@ export async function GET(
 
     const product = await ProductModel.findById(params.productId);
 
+    if (!product) {
+      return NextResponse.json(
+        {
+          message: 'Product not found',
+          code: AdminProductErrorType.PRODUCT_NOT_FOUND,
+        },
+        { status: 404 },
+      );
+    }
+
     return NextResponse.json(product, {
       status: 200,
     });
   } catch (error) {
     console.error(error);
 
-    return NextResponse.json({
-      message: 'Failed to load product.',
-      status: 400,
-    });
+    return NextResponse.json(
+      {
+        message: 'Failed to load product.',
+      },
+      { status: 500 },
+    );
   }
 }
 
@@ -79,7 +95,7 @@ export async function PUT(req: NextRequest) {
       {
         message: `Failed to update product.`,
       },
-      { status: 400 },
+      { status: 500 },
     );
   }
 }
@@ -91,7 +107,19 @@ export async function DELETE(
   try {
     await connectDB();
 
-    await ProductModel.findByIdAndDelete(params.productId);
+    const deleteProduct = await ProductModel.findByIdAndDelete(
+      params.productId,
+    );
+
+    if (!deleteProduct) {
+      return NextResponse.json(
+        {
+          message: 'Product not found',
+          code: AdminProductErrorType.PRODUCT_NOT_FOUND,
+        },
+        { status: 404 },
+      );
+    }
 
     return NextResponse.json({
       message: 'success',
@@ -104,7 +132,7 @@ export async function DELETE(
       {
         message: `Failed to delete product.`,
       },
-      { status: 400 },
+      { status: 500 },
     );
   }
 }

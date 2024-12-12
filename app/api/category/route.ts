@@ -24,10 +24,11 @@ export async function GET() {
   } catch (error) {
     console.error(error);
 
-    return NextResponse.json({
-      message: 'Failed to load categories.',
-      code: CategoryErrorType.CATEGORY_NOT_FOUND,
-      status: 400,
-    });
+    return NextResponse.json(
+      {
+        message: 'Failed to load categories.',
+      },
+      { status: 500 },
+    );
   }
 }

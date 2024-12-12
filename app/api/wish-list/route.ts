@@ -6,6 +6,7 @@ import { checkSession } from '@api/helper/session';
 import ProductModel from '@api/models/product';
 import WishListModel from '@api/models/wishList';
 
+import type { WishListModelType } from '@api/models/wishList';
 import type { DeleteWishItem, UpdateWishItem } from '@api/wish-list/types/dto';
 import type { NextRequest } from 'next/server';
 
@@ -19,22 +20,26 @@ export async function GET() {
     const sessionCheck = await checkSession(authOptions);
 
     if (!sessionCheck.isValid) {
-      return NextResponse.json({
-        message: sessionCheck.message,
-        code: sessionCheck.code,
-        status: sessionCheck.status,
-      });
+      return NextResponse.json(
+        {
+          message: sessionCheck.message,
+          code: sessionCheck.code,
+        },
+        { status: sessionCheck.status },
+      );
     }
 
     const { userId } = sessionCheck;
 
-    const wishList = await WishListModel.findById(userId).populate({
-      path: 'productIds',
-      model: ProductModel,
-      select: '_id name images price salePrice',
-    });
+    const wishList = await WishListModel.findById(userId)
+      .populate({
+        path: 'productIds',
+        model: ProductModel,
+        select: '_id name images price salePrice',
+      })
+      .lean<WishListModelType>();
 
-    const { productIds, ...rest } = wishList?._doc || {};
+    const { productIds, ...rest } = wishList || {};
 
     return NextResponse.json(
       {
@@ -48,11 +53,12 @@ export async function GET() {
   } catch (error) {
     console.error(error);
 
-    return NextResponse.json({
-      message: 'Failed to load wish list.',
-      code: WishListErrorType.WISH_LIST_NOT_FOUND,
-      status: 400,
-    });
+    return NextResponse.json(
+      {
+        message: 'Failed to load wish list.',
+      },
+      { status: 500 },
+    );
   }
 }
 
@@ -65,11 +71,13 @@ export async function POST(req: NextRequest) {
     const sessionCheck = await checkSession(authOptions);
 
     if (!sessionCheck.isValid) {
-      return NextResponse.json({
-        message: sessionCheck.message,
-        code: sessionCheck.code,
-        status: sessionCheck.status,
-      });
+      return NextResponse.json(
+        {
+          message: sessionCheck.message,
+          code: sessionCheck.code,
+        },
+        { status: sessionCheck.status },
+      );
     }
 
     const { userId } = sessionCheck;
@@ -105,7 +113,7 @@ export async function POST(req: NextRequest) {
       {
         message: `Failed to update wish list.`,
       },
-      { status: 400 },
+      { status: 500 },
     );
   }
 }
@@ -119,11 +127,13 @@ export async function DELETE(req: NextRequest) {
     const sessionCheck = await checkSession(authOptions);
 
     if (!sessionCheck.isValid) {
-      return NextResponse.json({
-        message: sessionCheck.message,
-        code: sessionCheck.code,
-        status: sessionCheck.status,
-      });
+      return NextResponse.json(
+        {
+          message: sessionCheck.message,
+          code: sessionCheck.code,
+        },
+        { status: sessionCheck.status },
+      );
     }
 
     const { userId } = sessionCheck;
@@ -135,10 +145,13 @@ export async function DELETE(req: NextRequest) {
     );
 
     if (!wishList) {
-      return NextResponse.json({
-        status: 200,
-        message: 'No wishlist found for this user.',
-      });
+      return NextResponse.json(
+        {
+          message: 'Wish List Not Found.',
+          code: WishListErrorType.WISH_LIST_NOT_FOUND,
+        },
+        { status: 400 },
+      );
     }
 
     return NextResponse.json({
@@ -152,7 +165,7 @@ export async function DELETE(req: NextRequest) {
       {
         message: `Failed to delete wish list.`,
       },
-      { status: 400 },
+      { status: 500 },
     );
   }
 }

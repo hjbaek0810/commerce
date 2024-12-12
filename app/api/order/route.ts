@@ -11,18 +11,13 @@ import { ProductStatusType } from '@utils/constants/product';
 
 import type { OrderModelType } from '@api/models/order';
 import type { CreateOrder, UpdateOrder } from '@api/order/types/dto';
-import type { OrderProductVO } from '@api/order/types/vo';
 import type { NextRequest } from 'next/server';
 
 enum OrderListErrorType {
   ORDER_LIST_NOT_FOUND = 'OI-001',
+  ORDER_PRODUCT_LIST_NOT_FOUND = 'OI-002',
+  ORDER_EXCEED_QUANTITY = 'OI-003',
 }
-
-type ProductItemType = {
-  productId: OrderProductVO;
-  quantity: number;
-  price: number;
-};
 
 export async function GET(req: NextRequest) {
   try {
@@ -30,11 +25,13 @@ export async function GET(req: NextRequest) {
     const sessionCheck = await checkSession(authOptions);
 
     if (!sessionCheck.isValid) {
-      return NextResponse.json({
-        message: sessionCheck.message,
-        code: sessionCheck.code,
-        status: sessionCheck.status,
-      });
+      return NextResponse.json(
+        {
+          message: sessionCheck.message,
+          code: sessionCheck.code,
+        },
+        { status: sessionCheck.status },
+      );
     }
 
     const { userId: sessionUserId } = sessionCheck;
@@ -90,11 +87,12 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     console.error(error);
 
-    return NextResponse.json({
-      message: 'Failed to load order list.',
-      code: OrderListErrorType.ORDER_LIST_NOT_FOUND,
-      status: 400,
-    });
+    return NextResponse.json(
+      {
+        message: 'Failed to load order list.',
+      },
+      { status: 500 },
+    );
   }
 }
 
@@ -106,11 +104,13 @@ export async function POST(req: NextRequest) {
     const sessionCheck = await checkSession(authOptions);
 
     if (!sessionCheck.isValid) {
-      return NextResponse.json({
-        message: sessionCheck.message,
-        code: sessionCheck.code,
-        status: sessionCheck.status,
-      });
+      return NextResponse.json(
+        {
+          message: sessionCheck.message,
+          code: sessionCheck.code,
+        },
+        { status: sessionCheck.status },
+      );
     }
 
     const { userId } = sessionCheck;
@@ -131,11 +131,23 @@ export async function POST(req: NextRequest) {
       const product = await ProductModel.findById(item._id);
 
       if (!product) {
-        throw new Error(`Product with ID ${item._id} not found.`);
+        return NextResponse.json(
+          {
+            message: 'Product not found',
+            code: OrderListErrorType.ORDER_PRODUCT_LIST_NOT_FOUND,
+          },
+          { status: 404 },
+        );
       }
 
       if (product.quantity < item.quantity) {
-        throw new Error(`Not enough stock for product: ${product.name}`);
+        return NextResponse.json(
+          {
+            message: 'The requested quantity exceeds the available stock.',
+            code: OrderListErrorType.ORDER_EXCEED_QUANTITY,
+          },
+          { status: 400 },
+        );
       }
 
       product.quantity -= item.quantity;
@@ -167,7 +179,7 @@ export async function POST(req: NextRequest) {
       {
         message: `Failed to upload order list.`,
       },
-      { status: 400 },
+      { status: 500 },
     );
   }
 }
@@ -180,11 +192,13 @@ export async function PUT(req: NextRequest) {
     const sessionCheck = await checkSession(authOptions);
 
     if (!sessionCheck.isValid) {
-      return NextResponse.json({
-        message: sessionCheck.message,
-        code: sessionCheck.code,
-        status: sessionCheck.status,
-      });
+      return NextResponse.json(
+        {
+          message: sessionCheck.message,
+          code: sessionCheck.code,
+        },
+        { status: sessionCheck.status },
+      );
     }
 
     const { userId } = sessionCheck;
@@ -212,7 +226,7 @@ export async function PUT(req: NextRequest) {
       {
         message: `Failed to update order list.`,
       },
-      { status: 400 },
+      { status: 500 },
     );
   }
 }
