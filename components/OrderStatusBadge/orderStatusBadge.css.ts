@@ -62,16 +62,16 @@ export const statusBadge = recipe({
     size: {
       small: sprinkles({
         display: 'inline-block',
-        paddingX: 'spacing-016',
-        paddingY: 'spacing-012',
-        fontSize: 'font-size-016',
+        paddingX: 'spacing-012',
+        paddingY: 'spacing-008',
+        fontSize: 'font-size-012',
         fontWeight: 'bold',
       }),
       large: sprinkles({
         display: 'inline-block',
-        paddingX: 'spacing-012',
-        paddingY: 'spacing-008',
-        fontSize: 'font-size-012',
+        paddingX: 'spacing-016',
+        paddingY: 'spacing-012',
+        fontSize: 'font-size-016',
         fontWeight: 'bold',
       }),
     },
