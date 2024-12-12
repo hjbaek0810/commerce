@@ -154,11 +154,8 @@ const ProductForm = ({ savedImages, editable = true }: ProductFormType) => {
               required={editable}
               disabled={!editable}
             >
-              <Rhf.RadioOption value={ProductStatusType.PENDING}>
-                대기
-              </Rhf.RadioOption>
               <Rhf.RadioOption value={ProductStatusType.IN_PROGRESS}>
-                진행
+                판매
               </Rhf.RadioOption>
               <Rhf.RadioOption value={ProductStatusType.STOPPED}>
                 판매 중지

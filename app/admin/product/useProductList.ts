@@ -8,21 +8,6 @@ const useAdminProductList = () => {
   const router = useRouter();
   const { data: products, paginationProps } = useAdminProductListQuery();
 
-  const getStatusLabel = (status: ProductStatusType) => {
-    switch (status) {
-      case ProductStatusType.PENDING:
-        return '대기';
-      case ProductStatusType.IN_PROGRESS:
-        return '진행';
-      case ProductStatusType.STOPPED:
-        return '판매 중지';
-      case ProductStatusType.HIDDEN:
-        return '상품 숨김';
-      default:
-        return '';
-    }
-  };
-
   const handleTableRowClick = (id: string) => {
     router.push(PATH.ADMIN.PRODUCT.DETAIL(id));
   };
@@ -30,7 +15,6 @@ const useAdminProductList = () => {
   return {
     paginationProps,
     products: products,
-    getStatusLabel,
     handleTableRowClick,
   };
 };

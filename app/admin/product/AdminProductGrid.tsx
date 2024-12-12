@@ -5,12 +5,13 @@ import Image from 'next/image';
 import Pagination from '@components/Pagination';
 import { Table } from '@components/Table';
 import { sprinkles } from '@styles/sprinkles.css';
+import { getProductStatusText } from '@utils/constants/product';
 import { formatNumber } from '@utils/formatter/number';
 
 import useAdminProductList from './useProductList';
 
 const AdminProductGrid = () => {
-  const { products, paginationProps, getStatusLabel, handleTableRowClick } =
+  const { products, paginationProps, handleTableRowClick } =
     useAdminProductList();
 
   // TODO: 필터 검색 기능
@@ -61,7 +62,7 @@ const AdminProductGrid = () => {
                 <Table.Td>{formatNumber(salePrice || price)}</Table.Td>
                 <Table.Td>{category.name}</Table.Td>
                 <Table.Td>{category.subCategory.name}</Table.Td>
-                <Table.Td>{getStatusLabel(status)}</Table.Td>
+                <Table.Td>{getProductStatusText(status)}</Table.Td>
                 <Table.Td>
                   {images && images[0] && (
                     <Image

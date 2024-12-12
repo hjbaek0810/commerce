@@ -37,7 +37,7 @@ const useProductDetail = () => {
     quantity: product?.quantity ?? 0,
     price: product?.price ?? 0,
     salePrice: product?.salePrice ?? null,
-    status: product?.status ?? ProductStatusType.PENDING,
+    status: product?.status ?? ProductStatusType.IN_PROGRESS,
     categoryId: categoryIds?._id ?? '',
     subCategoryId: categoryIds?.subCategoryId,
     description: product?.description,

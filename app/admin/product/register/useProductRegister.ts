@@ -16,7 +16,7 @@ const useProductRegister = () => {
   const productForm = useForm<ProductUseFormType>({
     reValidateMode: 'onChange',
     defaultValues: {
-      status: ProductStatusType.PENDING,
+      status: ProductStatusType.IN_PROGRESS,
     },
   });
 
