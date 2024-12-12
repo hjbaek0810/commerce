@@ -19,7 +19,7 @@ export async function GET(
       {
         path: 'productIds.productId',
         model: ProductModel,
-        select: '_id name images',
+        select: '_id name images quantity',
       },
       {
         path: 'userId',

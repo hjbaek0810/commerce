@@ -1,12 +1,16 @@
+import mongoose from 'mongoose';
 import { NextResponse } from 'next/server';
 
 import connectDB from '@api/config/connectDB';
 import OrderModel from '@api/models/order';
 import ProductModel from '@api/models/product';
 import UserModel from '@api/models/user';
-import { OrderSortType } from '@utils/constants/order';
+import { OrderSortType, OrderStatus } from '@utils/constants/order';
 
-import type { SearchAdminOrder } from '@api/admin/order/types/dto';
+import type {
+  SearchAdminOrder,
+  UpdateAdminOrder,
+} from '@api/admin/order/types/dto';
 import type { OrderModelType } from '@api/models/order';
 import type { FilterQuery } from 'mongoose';
 import type { NextRequest } from 'next/server';
@@ -49,7 +53,7 @@ export async function GET(req: NextRequest) {
       {
         path: 'productIds.productId',
         model: ProductModel,
-        select: '_id name images',
+        select: '_id name images quantity',
       },
       {
         path: 'userId',
@@ -79,11 +83,12 @@ export async function GET(req: NextRequest) {
         _id: _id.toString(),
         userId: userId._id,
         userName: userId.name,
-        items: productIds?.map(item => ({
-          product: item.productId,
-          quantity: item.quantity,
-          price: item.price,
-        })),
+        items:
+          productIds?.map(item => ({
+            product: item.productId || null,
+            quantity: item.quantity,
+            price: item.price,
+          })) || [],
         ...order,
         totalPrice: productIds
           .map(item => item.price * item.quantity)
@@ -107,6 +112,76 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(
       {
         message: 'Failed to load order list.',
+      },
+      { status: 500 },
+    );
+  }
+}
+
+export async function PUT(req: NextRequest) {
+  const data: UpdateAdminOrder = await req.json();
+
+  try {
+    await connectDB();
+
+    const { _id, status } = data;
+
+    const order = await OrderModel.findById(_id);
+
+    if (!order) {
+      return NextResponse.json(
+        {
+          message: 'Order not found',
+          code: AdminOrderListErrorType.ORDER_LIST_NOT_FOUND,
+        },
+        { status: 404 },
+      );
+    }
+
+    const isCancelledOrder =
+      status === OrderStatus.REFUND_COMPLETED ||
+      status === OrderStatus.RETURN_COMPLETED;
+
+    if (isCancelledOrder) {
+      const { productIds } = order;
+
+      for (const product of productIds) {
+        await ProductModel.updateOne(
+          { _id: product.productId },
+          { $inc: { quantity: product.quantity } }, // 지정된 필드의 값을 증가시키거나 감소
+        );
+      }
+    }
+
+    const updateOrder = await OrderModel.updateOne(
+      { _id },
+      {
+        $set: {
+          status,
+        },
+      },
+    );
+
+    if (!updateOrder) {
+      return NextResponse.json(
+        {
+          message: 'Order not found',
+          code: AdminOrderListErrorType.ORDER_LIST_NOT_FOUND,
+        },
+        { status: 404 },
+      );
+    }
+
+    return NextResponse.json({
+      message: 'success',
+      status: 200,
+    });
+  } catch (error) {
+    console.error(error);
+
+    return NextResponse.json(
+      {
+        message: `Failed to update order list.`,
       },
       { status: 500 },
     );

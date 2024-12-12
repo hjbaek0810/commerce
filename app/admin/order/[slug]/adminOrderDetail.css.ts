@@ -22,7 +22,7 @@ export const orderInfoWrapper = style([
     fontSize: 'font-size-014',
   }),
   {
-    width: '70%',
+    width: '60%',
     display: 'flex',
     flexDirection: 'column',
     gap: tokens.spacing['spacing-024'],
@@ -52,7 +52,7 @@ export const orderInfoValue = style({
 });
 
 export const orderStatusWrapper = style({
-  width: '30%',
+  width: '40%',
   display: 'flex',
   flexDirection: 'column',
   gap: tokens.spacing['spacing-012'],
@@ -68,6 +68,7 @@ export const orderStatusBox = style({
 export const orderStatusRadioWrapper = style({
   display: 'flex',
   gap: tokens.spacing['spacing-008'],
+  justifyContent: 'center',
 });
 
 export const imageWrapper = style({

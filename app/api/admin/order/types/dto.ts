@@ -7,3 +7,8 @@ export type SearchAdminOrder = {
   status?: OrderStatus;
   sort?: OrderSortType;
 };
+
+export type UpdateAdminOrder = {
+  _id: string;
+  status: OrderStatus;
+};

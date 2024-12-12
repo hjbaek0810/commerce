@@ -60,7 +60,7 @@ export const getAdminOrderListQueryOptions = ({
 
 export const getAdminOrderDetailQueryOptions = (id: string) => ({
   queryKey: [
-    'products',
+    'order',
     'admin',
     { scope: 'item', id },
     { categories: ['product', 'order'], action: 'update' },

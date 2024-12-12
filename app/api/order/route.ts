@@ -7,6 +7,7 @@ import CartModel from '@api/models/cart';
 import OrderModel from '@api/models/order';
 import ProductModel from '@api/models/product';
 import UserModel from '@api/models/user';
+import { OrderStatus } from '@utils/constants/order';
 import { ProductStatusType } from '@utils/constants/product';
 
 import type { OrderModelType } from '@api/models/order';
@@ -61,18 +62,19 @@ export async function GET(req: NextRequest) {
       _id: _id.toString(),
       userId: userId._id,
       userName: userId.name,
-      items: productIds.map(item => ({
-        product: item.productId,
-        quantity: item.quantity,
-        price: item.price,
-      })),
+      items:
+        productIds?.map(item => ({
+          product: item.productId || null,
+          quantity: item.quantity,
+          price: item.price,
+        })) || [],
       ...order,
       totalPrice: productIds
         .map(item => item.price * item.quantity)
         .reduce((total: number, price: number) => total + price, 0),
     }));
 
-    const count = await OrderModel.countDocuments();
+    const count = await OrderModel.countDocuments({ userId: sessionUserId });
 
     const response = {
       orders,
@@ -205,27 +207,27 @@ export async function PUT(req: NextRequest) {
 
     const { _id, status, paymentType } = data;
 
-    const isCancelledOrder =
-      status === OrderStatus.ORDER_CANCELLED ||
-      status === OrderStatus.REFUND_COMPLETED ||
-      status === OrderStatus.RETURN_COMPLETED;
+    const order = await OrderModel.findById(_id)
+      .populate({
+        path: 'userId',
+        model: UserModel,
+        match: { _id: userId },
+      })
+      .lean<OrderModelType>();
+
+    if (!order) {
+      return NextResponse.json(
+        {
+          message: 'Order not found',
+          code: OrderListErrorType.ORDER_LIST_NOT_FOUND,
+        },
+        { status: 404 },
+      );
+    }
+
+    const isCancelledOrder = status === OrderStatus.ORDER_CANCELLED;
 
     if (isCancelledOrder) {
-      const order: OrderModelType | null = await OrderModel.findOne({
-        _id,
-        userId,
-      });
-
-      if (!order) {
-        return NextResponse.json(
-          {
-            message: 'Order not found',
-            code: OrderListErrorType.ORDER_LIST_NOT_FOUND,
-          },
-          { status: 404 },
-        );
-      }
-
       const { productIds } = order;
 
       for (const product of productIds) {
@@ -236,7 +238,7 @@ export async function PUT(req: NextRequest) {
       }
     }
 
-    await OrderModel.updateOne(
+    const updateOrder = await OrderModel.updateOne(
       { _id, userId },
       {
         $set: {
@@ -245,6 +247,16 @@ export async function PUT(req: NextRequest) {
         },
       },
     );
+
+    if (!updateOrder) {
+      return NextResponse.json(
+        {
+          message: 'Order not found',
+          code: OrderListErrorType.ORDER_LIST_NOT_FOUND,
+        },
+        { status: 404 },
+      );
+    }
 
     return NextResponse.json({
       message: 'success',

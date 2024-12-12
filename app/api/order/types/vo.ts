@@ -1,7 +1,10 @@
 import type { ProductVO } from '@api/product/types/vo';
 import type { OrderStatus, PaymentType } from '@utils/constants/order';
 
-export type OrderProductVO = Pick<ProductVO, '_id' | 'name' | 'images'>;
+export type OrderProductVO = Pick<
+  ProductVO,
+  '_id' | 'name' | 'images' | 'quantity'
+>;
 
 export interface OrderVO {
   _id: string;

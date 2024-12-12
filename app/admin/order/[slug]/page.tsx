@@ -29,7 +29,12 @@ const OrderInfoBox = ({
   );
 };
 const AdminOrderDetail = () => {
-  const { adminOrderUseForm, data } = useAdminOrderDetail();
+  const {
+    adminOrderUseForm,
+    orderInfo,
+    getRadioOptions,
+    handleOrderStatusUpdate,
+  } = useAdminOrderDetail();
   const {
     _id,
     userId,
@@ -43,7 +48,7 @@ const AdminOrderDetail = () => {
     paymentType,
     telephone,
     status,
-  } = data || {};
+  } = orderInfo || {};
 
   return (
     <>
@@ -61,19 +66,29 @@ const AdminOrderDetail = () => {
             </div>
           </div>
 
-          <Rhf.Form className={css.orderStatusWrapper} {...adminOrderUseForm}>
+          <Rhf.Form
+            className={css.orderStatusWrapper}
+            {...adminOrderUseForm}
+            onSubmit={handleOrderStatusUpdate}
+          >
             <OrderStatusBadge
               status={status || OrderStatus.PAYMENT_PENDING}
               size="large"
               full
             />
-            <Rhf.Radio className={css.orderStatusRadioWrapper} name="status">
-              <Rhf.RadioOption value="a">a</Rhf.RadioOption>
-              <Rhf.RadioOption value="b">b</Rhf.RadioOption>
-              <Rhf.RadioOption value="c">c</Rhf.RadioOption>
-            </Rhf.Radio>
-
-            <Button size="medium">제출</Button>
+            {status && getRadioOptions(status) && (
+              <>
+                <Rhf.Radio
+                  className={css.orderStatusRadioWrapper}
+                  name="status"
+                >
+                  {getRadioOptions(status)}
+                </Rhf.Radio>
+                <Button size="medium" type="submit">
+                  제출
+                </Button>
+              </>
+            )}
           </Rhf.Form>
         </div>
 
@@ -83,6 +98,7 @@ const AdminOrderDetail = () => {
               <Table.Th />
               <Table.Th>상품명</Table.Th>
               <Table.Th>수량</Table.Th>
+              <Table.Th>남은 수량</Table.Th>
               <Table.Th>가격</Table.Th>
             </Table.Tr>
           </Table.Header>
@@ -108,12 +124,13 @@ const AdminOrderDetail = () => {
                 </Table.Td>
                 <Table.Td>{product.name}</Table.Td>
                 <Table.Td>{formatNumber(quantity)}</Table.Td>
+                <Table.Td>{formatNumber(product.quantity)}</Table.Td>
                 <Table.Td>{formatNumber(price)}</Table.Td>
               </Table.Tr>
             ))}
 
             <Table.Tr>
-              <Table.Td colSpan={4}>
+              <Table.Td colSpan={5}>
                 <span className={css.totalPrice}>
                   {`Total: ${formatNumber(totalPrice)}`}
                 </span>
@@ -132,7 +149,6 @@ const AdminOrderDetail = () => {
                   <span>{address}</span>
                   <span>{subAddress}</span>
                 </div>
-                주소
               </Table.Td>
             </Table.Tr>
             <Table.Tr>
