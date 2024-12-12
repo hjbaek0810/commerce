@@ -23,9 +23,6 @@ export const useWishListMutation = () => {
         refetchType: 'all',
       });
     },
-    onError: () => {
-      toast.error('잠시 후 시도해주시길 바랍니다.');
-    },
     onMutate: () => {},
   });
 };
@@ -43,9 +40,6 @@ export const useDeleteWishListMutation = () => {
         queryKey: ['wish-list'],
         refetchType: 'all',
       });
-    },
-    onError: () => {
-      toast.error('잠시 후 시도해주시길 바랍니다.');
     },
   });
 };

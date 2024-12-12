@@ -42,9 +42,6 @@ export const useCartListMutation = () => {
         refetchType: 'all',
       });
     },
-    onError: () => {
-      toast.error('잠시 후 시도해주시길 바랍니다.');
-    },
     onMutate: () => {},
   });
 };
@@ -62,9 +59,6 @@ export const useDeleteCartListMutation = () => {
         queryKey: ['cart'],
         refetchType: 'all',
       });
-    },
-    onError: () => {
-      toast.error('잠시 후 시도해주시길 바랍니다.');
     },
     onMutate: () => {},
   });

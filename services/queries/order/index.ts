@@ -19,6 +19,7 @@ import { API } from '@services/utils/path';
 import useQueryParams from '@utils/hooks/useQueryParams';
 import { parseQueryParams } from '@utils/query/helper';
 
+import type { UpdateAdminOrder } from '@api/admin/order/types/dto';
 import type { CreateOrder, UpdateOrder } from '@api/order/types/dto';
 
 export const useOrderListInfiniteQuery = () => {
@@ -72,9 +73,6 @@ export const useOrderListMutation = () => {
         refetchType: 'all',
       });
     },
-    onError: () => {
-      toast.error('잠시 후 시도해주시길 바랍니다.');
-    },
   });
 };
 
@@ -90,11 +88,25 @@ export const useOrderStatusMutation = () => {
         refetchType: 'all',
       });
     },
-    onError: () => {
-      toast.error('잠시 후 시도해주시길 바랍니다.');
-    },
   });
 };
 
 export const useAdminOrderDetailQuery = (id: string) =>
   useQuery(getAdminOrderDetailQueryOptions(id));
+
+export const useAdminOrderStatusMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: UpdateAdminOrder) =>
+      fetchData<unknown, UpdateAdminOrder>(API.ADMIN.ORDER.BASE, 'PUT', {
+        data,
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['order'],
+        refetchType: 'all',
+      });
+    },
+  });
+};
