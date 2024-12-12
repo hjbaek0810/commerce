@@ -205,6 +205,37 @@ export async function PUT(req: NextRequest) {
 
     const { _id, status, paymentType } = data;
 
+    const isCancelledOrder =
+      status === OrderStatus.ORDER_CANCELLED ||
+      status === OrderStatus.REFUND_COMPLETED ||
+      status === OrderStatus.RETURN_COMPLETED;
+
+    if (isCancelledOrder) {
+      const order: OrderModelType | null = await OrderModel.findOne({
+        _id,
+        userId,
+      });
+
+      if (!order) {
+        return NextResponse.json(
+          {
+            message: 'Order not found',
+            code: OrderListErrorType.ORDER_LIST_NOT_FOUND,
+          },
+          { status: 404 },
+        );
+      }
+
+      const { productIds } = order;
+
+      for (const product of productIds) {
+        await ProductModel.updateOne(
+          { _id: product.productId },
+          { $inc: { quantity: product.quantity } }, // 지정된 필드의 값을 증가시키거나 감소
+        );
+      }
+    }
+
     await OrderModel.updateOne(
       { _id, userId },
       {
