@@ -35,16 +35,6 @@ export const getProductListInfiniteQueryOptions = (
   initialPageParam: 1,
 });
 
-export const getProductTopViewsQueryOptions = () => ({
-  queryKey: [
-    'products',
-    { scope: 'list' },
-    { status: 'top-views' },
-    'update-product-order',
-  ],
-  queryFn: () => fetchData<ProductVO[]>(API.PRODUCT.TOP_VIEWS, 'GET'),
-});
-
 export const getProductDetailQueryOptions = (id: string) => ({
   queryKey: ['products', { scope: 'item', id }, 'update-product-order'],
   queryFn: () => fetchData<ProductDetailVO>(API.PRODUCT.DETAIL(id), 'GET'),

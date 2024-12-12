@@ -20,7 +20,7 @@ const ProductList = async ({
   return (
     <>
       <Title>상품 목록</Title>
-      {/* TODO : best slider home에 작성 */}
+
       <HydrationBoundary state={dehydrate(queryClient)}>
         <ProductGrid />
       </HydrationBoundary>

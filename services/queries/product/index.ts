@@ -14,7 +14,6 @@ import { useSearchParams } from 'next/navigation';
 import {
   getProductDetailQueryOptions,
   getProductListInfiniteQueryOptions,
-  getProductTopViewsQueryOptions,
 } from '@services/queries/product/options';
 import { getWishListQueryOptions } from '@services/queries/wish-list/options';
 import { deleteImages, uploadImages } from '@services/upload';
@@ -247,25 +246,16 @@ export const useAdminProductDeleteMutation = (id: string) => {
   });
 };
 
-export const useProductTopViewsQuery = () =>
-  useQuery(getProductTopViewsQueryOptions());
-
 export const useProductDetailQuery = (id: string) => {
-  const [productDetail, topViews, wish] = useQueries({
-    queries: [
-      getProductDetailQueryOptions(id),
-      getProductTopViewsQueryOptions(),
-      getWishListQueryOptions(),
-    ],
+  const [productDetail, wish] = useQueries({
+    queries: [getProductDetailQueryOptions(id), getWishListQueryOptions()],
   });
 
-  const isTop10 = topViews.data?.some(product => product._id === id);
   const isWished = wish.data?.items?.some(item => item._id.toString() === id);
 
   return {
     ...productDetail,
     isWished,
-    isTop10,
   };
 };
 
