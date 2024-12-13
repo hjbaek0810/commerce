@@ -90,6 +90,7 @@ const ProductInfo = ({ id }: { id: string }) => {
         >
           <div className={css.quantityWrapper}>
             <button
+              type="button"
               className={css.quantityButton}
               disabled={minusQuantityButtonDisabled}
               onClick={handleMinusQuantityClick}
@@ -98,6 +99,7 @@ const ProductInfo = ({ id }: { id: string }) => {
             </button>
             <span className={css.quantity}>{formatNumber(addedQuantity)}</span>
             <button
+              type="button"
               className={css.quantityButton}
               disabled={addQuantityButtonDisabled}
               onClick={handleAddQuantityClick}
