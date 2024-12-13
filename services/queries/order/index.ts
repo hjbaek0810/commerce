@@ -65,8 +65,14 @@ export const useOrderListMutation = () => {
       fetchData<unknown, CreateOrder>(API.ORDER.BASE, 'POST', { data }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        predicate: query => query.queryHash.includes('update-product-order'),
+        queryKey: ['order'],
         refetchType: 'all',
+      });
+
+      queryClient.removeQueries({
+        predicate: query =>
+          query.queryHash.includes('products') ||
+          query.queryHash.includes('cart'),
       });
     },
   });
@@ -80,14 +86,14 @@ export const useOrderStatusMutation = () => {
       fetchData<unknown, UpdateOrder>(API.ORDER.BASE, 'PUT', { data }),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        // predicate: query => query.queryHash.includes('update-product-order'),
         queryKey: ['order'],
         refetchType: 'all',
       });
 
-      queryClient.invalidateQueries({
-        predicate: query => query.queryHash.includes('update-product-order'),
-        refetchType: 'all',
+      queryClient.removeQueries({
+        predicate: query =>
+          query.queryHash.includes('products') ||
+          query.queryHash.includes('cart'),
       });
     },
   });
@@ -106,8 +112,14 @@ export const useAdminOrderStatusMutation = () => {
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        predicate: query => query.queryHash.includes('update-product-order'),
+        queryKey: ['order'],
         refetchType: 'all',
+      });
+
+      queryClient.removeQueries({
+        predicate: query =>
+          query.queryHash.includes('products') ||
+          query.queryHash.includes('cart'),
       });
     },
   });

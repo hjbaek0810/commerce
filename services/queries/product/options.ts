@@ -7,15 +7,19 @@ import type { PaginatedResponse } from '@services/utils/types/pagination';
 
 export const PRODUCT_LIST_LIMIT_ITEM = 10;
 
+export const getProductListQueryOptions = () => ({
+  queryKey: ['products', { scope: 'list', status: 'all' }],
+  queryFn: () =>
+    fetchData<PaginatedResponse<'products', ProductVO>>(
+      API.PRODUCT.BASE,
+      'GET',
+    ),
+});
+
 export const getProductListInfiniteQueryOptions = (
   searchParams: Record<string, string>,
 ) => ({
-  queryKey: [
-    'products',
-    { scope: 'list' },
-    searchParams,
-    'update-product-order',
-  ],
+  queryKey: ['products', { scope: 'list' }, searchParams],
   queryFn: ({ pageParam = 1 }) =>
     fetchData<PaginatedResponse<'products', ProductVO>>(
       createQueryString(API.PRODUCT.BASE, {
@@ -36,6 +40,6 @@ export const getProductListInfiniteQueryOptions = (
 });
 
 export const getProductDetailQueryOptions = (id: string) => ({
-  queryKey: ['products', { scope: 'item', id }, 'update-product-order'],
+  queryKey: ['products', { scope: 'item', id }],
   queryFn: () => fetchData<ProductDetailVO>(API.PRODUCT.DETAIL(id), 'GET'),
 });

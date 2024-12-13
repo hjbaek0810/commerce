@@ -68,7 +68,6 @@ export const useAdminProductListQuery = () => {
         page: paginationProps.currentPage,
         limit: paginationProps.currentLimit,
       },
-      'update-product-order',
     ],
     queryFn: () =>
       fetchData<PaginatedResponse<'products', AdminProductVO>>(
@@ -110,12 +109,7 @@ export const useProductListInfiniteQuery = () => {
 
 export const useAdminProductDetailQuery = (id: string) =>
   useQuery({
-    queryKey: [
-      'products',
-      'admin',
-      { scope: 'item', id },
-      'update-product-order',
-    ],
+    queryKey: ['products', 'admin', { scope: 'item', id }],
     queryFn: () =>
       fetchData<AdminProductDetailVO>(API.ADMIN.PRODUCT.DETAIL(id), 'GET'),
   });
@@ -159,7 +153,7 @@ export const useAdminProductMutation = () => {
       queryClient.invalidateQueries({
         queryKey: ['products'],
         refetchType: 'all',
-      }),
+      }), // TODO: queryClient.setQuery
     onError: () => {
       toast.error('상품 등록에 실패하였습니다. 잠시 후 시도해주시길 바랍니다.');
     },
@@ -211,10 +205,14 @@ export const useAdminProductDetailMutation = (id: string) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        predicate: query =>
-          query.queryHash.includes('update-product-order') ||
-          query.queryHash.includes('wish-list'),
+        queryKey: ['products'],
         refetchType: 'all',
+      });
+      queryClient.removeQueries({
+        predicate: query =>
+          query.queryHash.includes('wish-list') ||
+          query.queryHash.includes('order') ||
+          query.queryHash.includes('cart'),
       });
     },
     onError: () => {
@@ -233,11 +231,16 @@ export const useAdminProductDeleteMutation = (id: string) => {
         ...(images ? images.map(({ publicId }) => deleteImages(publicId)) : []),
       ]),
     onSuccess: () => {
+      // FIXME
       queryClient.invalidateQueries({
-        predicate: query =>
-          query.queryHash.includes('update-product-order') ||
-          query.queryHash.includes('wish-list'),
+        queryKey: ['products'],
         refetchType: 'all',
+      });
+      queryClient.removeQueries({
+        predicate: query =>
+          query.queryHash.includes('wish-list') ||
+          query.queryHash.includes('order') ||
+          query.queryHash.includes('cart'),
       });
     },
     onError: () => {

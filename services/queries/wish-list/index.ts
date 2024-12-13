@@ -18,6 +18,7 @@ export const useWishListMutation = () => {
     mutationFn: (data: UpdateWishItem) =>
       fetchData<unknown, UpdateWishItem>(API.WISH_LIST.BASE, 'POST', { data }),
     onSuccess: () => {
+      // TODO : queryClient.setQuery
       queryClient.invalidateQueries({
         queryKey: ['wish-list'],
         refetchType: 'all',
