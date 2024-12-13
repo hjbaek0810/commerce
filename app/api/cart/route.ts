@@ -54,10 +54,15 @@ export async function GET() {
 
     const { productIds, ...rest } = cartList;
 
-    const items = productIds?.map(item => ({
-      product: item.productId || null,
-      quantity: item.quantity,
-    }));
+    const items = productIds
+      ?.map(item => ({
+        product: item.productId || null,
+        quantity: item.quantity,
+        addedAt: item.addedAt,
+      }))
+      .sort(
+        (a, b) => new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime(),
+      );
 
     return NextResponse.json(
       {
@@ -130,6 +135,7 @@ export async function POST(req: NextRequest) {
       cartList.productIds.push({
         productId: data.productId,
         quantity: data.quantity,
+        addedAt: new Date(),
       });
     } else {
       const currentQuantityInCart =
@@ -138,6 +144,8 @@ export async function POST(req: NextRequest) {
       if (currentQuantityInCart + data.quantity <= product.quantity) {
         cartList.productIds[existingCartIndex].quantity += data.quantity;
       }
+
+      cartList.productIds[existingCartIndex].addedAt = new Date();
     }
 
     await cartList.save();

@@ -6,6 +6,7 @@ import type { InferSchemaType } from 'mongoose';
 const CartItemSchema = new Schema({
   productId: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
   quantity: { type: Number, required: true, min: 1 },
+  addedAt: { type: Date, default: Date.now },
 });
 
 const CartSchema = new Schema(
@@ -25,6 +26,7 @@ export type CartModelType = InferSchemaType<typeof CartSchema> & {
   productIds: {
     productId: ProductModelType;
     quantity: number;
+    addedAt: string;
   }[];
 };
 

@@ -10,5 +10,6 @@ export interface CartListVO {
   items: Array<{
     product: CartProductVO;
     quantity: number;
+    addedAt: string;
   }>;
 }

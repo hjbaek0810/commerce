@@ -1,6 +1,6 @@
-import type { MouseEvent } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
+import { useQueryClient } from '@tanstack/react-query';
 import { isEmpty } from 'lodash-es';
 import { useRouter } from 'next/navigation';
 
@@ -10,13 +10,16 @@ import {
   useCartListQuery,
   useDeleteCartListMutation,
 } from '@services/queries/cart';
+import { CART_QUERY_KEY } from '@services/queries/cart/options';
 import { ProductStatusType } from '@utils/constants/product';
 import useSessionHandler from '@utils/hooks/useSessionHandler';
 import { PATH } from '@utils/path';
 
 import type { DeleteCartItems } from '@api/cart/types/dto';
+import type { CartListVO } from '@api/cart/types/vo';
 
 const useCartGrid = () => {
+  const queryClient = useQueryClient();
   const { checkSession } = useSessionHandler();
   const cartForm = useForm<DeleteCartItems>();
   const checkedCarts = useWatch({
@@ -45,21 +48,66 @@ const useCartGrid = () => {
   const showRemainingQuantity = (quantity: number, status: ProductStatusType) =>
     quantity <= SHOW_REMAINING_QUANTITY_COUNT && !isSoldOut(status);
 
+  const handleUpdateQuantitySuccess = (cartId: string, quantity: number) => {
+    queryClient.setQueryData<CartListVO>(CART_QUERY_KEY, oldData => {
+      if (!oldData) return data;
+
+      const updatedCartList = oldData?.items.map(item =>
+        item.product._id === cartId
+          ? {
+              ...item,
+              quantity: item.quantity + quantity,
+            }
+          : item,
+      );
+
+      return {
+        ...oldData,
+        items: updatedCartList,
+      };
+    });
+  };
+
   const handleAddQuantityClick = (id: string) => {
     if (checkSession()) {
-      updateCart({ productId: id, quantity: 1 });
+      updateCart(
+        { productId: id, quantity: 1 },
+        {
+          onSuccess: () => handleUpdateQuantitySuccess(id, 1),
+        },
+      );
     }
   };
 
   const handleMinusQuantityClick = (id: string) => {
     if (checkSession()) {
-      updateCart({ productId: id, quantity: -1 });
+      updateCart(
+        { productId: id, quantity: -1 },
+        {
+          onSuccess: () => handleUpdateQuantitySuccess(id, -1),
+        },
+      );
     }
   };
 
-  const handleDeleteCartList = (data: DeleteCartItems) => {
+  const handleDeleteCartList = (deleteData: DeleteCartItems) => {
     if (checkSession()) {
-      deleteCart(data);
+      deleteCart(deleteData, {
+        onSuccess: () => {
+          queryClient.setQueryData<CartListVO>(CART_QUERY_KEY, oldData => {
+            if (!oldData) return data;
+
+            const filteredItems = oldData.items.filter(
+              item => !deleteData.productIds.includes(item.product._id),
+            );
+
+            return {
+              ...oldData,
+              items: filteredItems,
+            };
+          });
+        },
+      });
     }
   };
 

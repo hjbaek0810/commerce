@@ -9,7 +9,11 @@ import { API } from '@services/utils/path';
 import type { DeleteCartItems, UpdateCartItem } from '@api/cart/types/dto';
 import type { CartListVO } from '@api/cart/types/vo';
 
-export const useCartListQuery = () => useQuery(getCartListQueryOptions());
+export const useCartListQuery = () =>
+  useQuery({
+    ...getCartListQueryOptions(),
+    select: (data: CartListVO) => ({ ...data, items: data.items }),
+  });
 
 export const useCartListWhenNewOrderQuery = (
   selectedProductIds: string[],
@@ -31,35 +35,20 @@ export const useCartListWhenNewOrderQuery = (
   });
 
 export const useCartListMutation = () => {
-  const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: (data: UpdateCartItem) =>
       fetchData<unknown, UpdateCartItem>(API.CART.BASE, 'POST', { data }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['cart'],
-        refetchType: 'all',
-      });
-    },
+
     onMutate: () => {},
   });
 };
 
 export const useDeleteCartListMutation = () => {
-  const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: (data: DeleteCartItems) =>
       fetchData<CartListVO, DeleteCartItems>(API.CART.BASE, 'DELETE', {
         data,
       }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['cart'],
-        refetchType: 'all',
-      });
-    },
     onMutate: () => {},
   });
 };

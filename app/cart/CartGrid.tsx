@@ -115,6 +115,7 @@ const CartGrid = () => {
                     onClick={e => e.stopPropagation()}
                   >
                     <button
+                      type="button"
                       className={productDetailCss.quantityButton}
                       disabled={quantity === 1}
                       onClick={() => handleMinusQuantityClick(product._id)}
@@ -128,6 +129,7 @@ const CartGrid = () => {
                       {formatNumber(quantity)}
                     </span>
                     <button
+                      type="button"
                       className={productDetailCss.quantityButton}
                       onClick={() => handleAddQuantityClick(product._id)}
                       disabled={product.quantity <= quantity}
