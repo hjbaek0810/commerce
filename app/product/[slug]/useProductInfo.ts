@@ -1,9 +1,11 @@
 import { useState } from 'react';
 
+import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 
 import PromptModal from '@components/Modal/templates/PromptModal';
 import { useCartListMutation } from '@services/queries/cart';
+import { CART_QUERY_KEY } from '@services/queries/cart/options';
 import { useProductDetailQuery } from '@services/queries/product';
 import { useWishListMutation } from '@services/queries/wish-list';
 import { ProductStatusType } from '@utils/constants/product';
@@ -11,12 +13,15 @@ import useModals from '@utils/hooks/useModals';
 import useSessionHandler from '@utils/hooks/useSessionHandler';
 import { PATH } from '@utils/path';
 
+import type { CartListVO } from '@api/cart/types/vo';
+
 export const SHOW_REMAINING_QUANTITY_COUNT = 10;
 
 const useProductInfo = (id: string) => {
   const { checkSession } = useSessionHandler();
 
-  const { data: product, isTop10, isWished } = useProductDetailQuery(id);
+  const queryClient = useQueryClient();
+  const { data: product, isWished } = useProductDetailQuery(id);
   const { mutate: updateWish } = useWishListMutation();
   const { mutate: updateCart } = useCartListMutation();
 
@@ -47,6 +52,11 @@ const useProductInfo = (id: string) => {
         { productId: id, quantity },
         {
           onSuccess: () => {
+            queryClient.invalidateQueries({
+              queryKey: CART_QUERY_KEY,
+              refetchType: 'all',
+            });
+
             openModal(PromptModal, {
               message: '장바구니 목록으로 이동하시겠습니까?',
               onSubmit: () => {
@@ -66,7 +76,6 @@ const useProductInfo = (id: string) => {
   return {
     product,
     isWished,
-    isTop10,
     minusQuantityButtonDisabled,
     addQuantityButtonDisabled,
     soldOut,
