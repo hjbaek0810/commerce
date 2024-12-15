@@ -1,7 +1,11 @@
-import { toast } from 'react-toastify';
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-
+import { cartKeys } from '@services/queries/cart/keys';
 import { getCartListQueryOptions } from '@services/queries/cart/options';
 import { fetchData } from '@services/utils/fetch';
 import { API } from '@services/utils/path';
@@ -35,20 +39,35 @@ export const useCartListWhenNewOrderQuery = (
   });
 
 export const useCartListMutation = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: (data: UpdateCartItem) =>
       fetchData<unknown, UpdateCartItem>(API.CART.BASE, 'POST', { data }),
-
     onMutate: () => {},
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: cartKeys.getAll(),
+        refetchType: 'all',
+      });
+    },
   });
 };
 
 export const useDeleteCartListMutation = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: (data: DeleteCartItems) =>
       fetchData<CartListVO, DeleteCartItems>(API.CART.BASE, 'DELETE', {
         data,
       }),
     onMutate: () => {},
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: cartKeys.getAll(),
+        refetchType: 'none',
+      });
+    },
   });
 };

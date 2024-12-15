@@ -2,6 +2,7 @@ import { toast } from 'react-toastify';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
+import { categoryKeys } from '@services/queries/category/keys';
 import {
   getAdminCategoriesQueryOptions,
   getCategoriesQueryOptions,
@@ -51,8 +52,7 @@ export const useAdminCategoriesMutation = () => {
       ),
     onSuccess: () =>
       queryClient.invalidateQueries({
-        queryKey: ['categories'],
-        refetchType: 'all',
+        queryKey: categoryKeys.all,
       }),
     onError: error => {
       if (isApiError(error)) {

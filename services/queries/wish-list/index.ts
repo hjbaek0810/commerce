@@ -1,7 +1,6 @@
-import { toast } from 'react-toastify';
-
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
+import { wishListKeys } from '@services/queries/wish-list/keys';
 import { getWishListQueryOptions } from '@services/queries/wish-list/options';
 import { fetchData } from '@services/utils/fetch';
 import { API } from '@services/utils/path';
@@ -18,10 +17,9 @@ export const useWishListMutation = () => {
     mutationFn: (data: UpdateWishItem) =>
       fetchData<unknown, UpdateWishItem>(API.WISH_LIST.BASE, 'POST', { data }),
     onSuccess: () => {
-      // TODO : queryClient.setQuery
       queryClient.invalidateQueries({
-        queryKey: ['wish-list'],
-        refetchType: 'all',
+        queryKey: wishListKeys.getAll(),
+        refetchType: 'none',
       });
     },
     onMutate: () => {},
@@ -38,8 +36,8 @@ export const useDeleteWishListMutation = () => {
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['wish-list'],
-        refetchType: 'all',
+        queryKey: wishListKeys.getAll(),
+        refetchType: 'none',
       });
     },
   });

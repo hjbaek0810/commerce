@@ -11,28 +11,38 @@ import {
 import { isEmpty } from 'lodash-es';
 import { useSearchParams } from 'next/navigation';
 
+import { cartKeys, cartTags } from '@services/queries/cart/keys';
+import { orderKeys, orderTags } from '@services/queries/order/keys';
+import { productKeys, productTags } from '@services/queries/product/keys';
 import {
+  getAdminProductDetailQueryOptions,
+  getAdminProductListQueryOptions,
   getProductDetailQueryOptions,
   getProductListInfiniteQueryOptions,
 } from '@services/queries/product/options';
 import { getWishListQueryOptions } from '@services/queries/wish-list/options';
 import { deleteImages, uploadImages } from '@services/upload';
 import { fetchData } from '@services/utils/fetch';
+import {
+  invalidateQueries,
+  removeQueries,
+  resetQueries,
+  revalidateTags,
+} from '@services/utils/helper';
 import { API } from '@services/utils/path';
 import usePaginationQueryParams from '@utils/hooks/usePaginationQueryParams';
 import useQueryParams from '@utils/hooks/useQueryParams';
-import { createQueryString, parseQueryParams } from '@utils/query/helper';
+import { parseQueryParams } from '@utils/query/helper';
 
 import type {
-  CreateProduct,
-  UpdateProduct,
+  CreateAdminProduct,
+  UpdateAdminProduct,
 } from '@api/admin/product/types/dto';
 import type {
   AdminImageVO,
   AdminProductDetailVO,
   AdminProductVO,
 } from '@api/admin/product/types/vo';
-import type { PaginatedResponse } from '@services/utils/types/pagination';
 import type { ProductUseFormType } from 'app/admin/product/components/ProductForm/useProductForm';
 import type { UploadApiResponse } from 'cloudinary';
 
@@ -57,26 +67,16 @@ async function uploadImagesAndGetUrls(
 }
 
 export const useAdminProductListQuery = () => {
+  const searchParams = useSearchParams();
+  const queryParams = parseQueryParams(searchParams);
   const { paginationProps } = usePaginationQueryParams();
 
   const { data, ...rest } = useQuery({
-    queryKey: [
-      'products',
-      'admin',
-      { scope: 'list' },
-      {
-        page: paginationProps.currentPage,
-        limit: paginationProps.currentLimit,
-      },
-    ],
-    queryFn: () =>
-      fetchData<PaginatedResponse<'products', AdminProductVO>>(
-        createQueryString(API.ADMIN.PRODUCT.BASE, {
-          page: paginationProps.currentPage,
-          limit: paginationProps.currentLimit,
-        }),
-        'GET',
-      ),
+    ...getAdminProductListQueryOptions({
+      searchParams: queryParams,
+      page: paginationProps.currentPage,
+      limit: paginationProps.currentLimit,
+    }),
     placeholderData: keepPreviousData,
   });
 
@@ -108,11 +108,7 @@ export const useProductListInfiniteQuery = () => {
 };
 
 export const useAdminProductDetailQuery = (id: string) =>
-  useQuery({
-    queryKey: ['products', 'admin', { scope: 'item', id }],
-    queryFn: () =>
-      fetchData<AdminProductDetailVO>(API.ADMIN.PRODUCT.DETAIL(id), 'GET'),
-  });
+  useQuery(getAdminProductDetailQueryOptions(id));
 
 export const useAdminProductMutation = () => {
   const queryClient = useQueryClient();
@@ -128,7 +124,7 @@ export const useAdminProductMutation = () => {
 
       // save mongoDB
       const { categoryId, subCategoryId, images, ...restData } = data;
-      const productData: CreateProduct = {
+      const productData: CreateAdminProduct = {
         ...restData,
         categoryIds: {
           _id: categoryId,
@@ -141,7 +137,7 @@ export const useAdminProductMutation = () => {
         })),
       };
 
-      return fetchData<AdminProductVO, CreateProduct>(
+      return fetchData<AdminProductVO, CreateAdminProduct>(
         API.ADMIN.PRODUCT.BASE,
         'POST',
         {
@@ -149,11 +145,15 @@ export const useAdminProductMutation = () => {
         },
       );
     },
-    onSuccess: () =>
-      queryClient.invalidateQueries({
-        queryKey: ['products'],
-        refetchType: 'all',
-      }), // TODO: queryClient.setQuery
+    onSuccess: async () => {
+      await Promise.all([
+        revalidateTags([productTags.list]),
+        resetQueries(queryClient, [
+          productKeys.getAll(),
+          productKeys.getAdminAll(),
+        ]),
+      ]);
+    },
     onError: () => {
       toast.error('상품 등록에 실패하였습니다. 잠시 후 시도해주시길 바랍니다.');
     },
@@ -176,7 +176,7 @@ export const useAdminProductDetailMutation = (id: string) => {
       const { _id, categoryId, subCategoryId, deleteImageIds, ...restData } =
         data;
 
-      const productData: UpdateProduct = {
+      const productData: UpdateAdminProduct = {
         ...restData,
         _id: _id ?? '',
         categoryIds: {
@@ -191,9 +191,9 @@ export const useAdminProductDetailMutation = (id: string) => {
         deleteImageIds,
       };
 
-      const updateProductPromise = fetchData<
+      const UpdateAdminProductPromise = fetchData<
         AdminProductDetailVO,
-        UpdateProduct
+        UpdateAdminProduct
       >(API.ADMIN.PRODUCT.DETAIL(id), 'PUT', { data: productData });
 
       const deleteImagesPromise =
@@ -201,19 +201,31 @@ export const useAdminProductDetailMutation = (id: string) => {
           ? Promise.all(deleteImageIds.map(id => deleteImages(id)))
           : Promise.resolve();
 
-      return await Promise.all([updateProductPromise, deleteImagesPromise]);
+      return await Promise.all([
+        UpdateAdminProductPromise,
+        deleteImagesPromise,
+      ]);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['products'],
-        refetchType: 'all',
-      });
-      queryClient.removeQueries({
-        predicate: query =>
-          query.queryHash.includes('wish-list') ||
-          query.queryHash.includes('order') ||
-          query.queryHash.includes('cart'),
-      });
+    onSuccess: async (_, variables) => {
+      await Promise.all([
+        revalidateTags([
+          productTags.list,
+          productTags.detail(variables._id),
+          cartTags.all,
+          orderTags.all,
+        ]),
+        invalidateQueries(queryClient, [
+          productTags.adminDetail(variables._id),
+        ]),
+        resetQueries(queryClient, [
+          productKeys.getAll(),
+          productKeys.getAdminAll(),
+          productTags.detail(variables._id),
+          orderKeys.getAdminAll(),
+          orderKeys.getAll(),
+          cartKeys.getAll(),
+        ]),
+      ]);
     },
     onError: () => {
       toast.error('상품 수정에 실패하였습니다. 잠시 후 시도해주시길 바랍니다.');
@@ -230,18 +242,26 @@ export const useAdminProductDeleteMutation = (id: string) => {
         fetchData(API.ADMIN.PRODUCT.DETAIL(id), 'DELETE'),
         ...(images ? images.map(({ publicId }) => deleteImages(publicId)) : []),
       ]),
-    onSuccess: () => {
-      // FIXME
-      queryClient.invalidateQueries({
-        queryKey: ['products'],
-        refetchType: 'all',
-      });
-      queryClient.removeQueries({
-        predicate: query =>
-          query.queryHash.includes('wish-list') ||
-          query.queryHash.includes('order') ||
-          query.queryHash.includes('cart'),
-      });
+    onSuccess: async () => {
+      await Promise.all([
+        revalidateTags([
+          productTags.list,
+          productTags.detail(id),
+          cartTags.all,
+          orderTags.all,
+        ]),
+        resetQueries(queryClient, [
+          productKeys.getAll(),
+          productKeys.getAdminAll(),
+          orderKeys.getAdminAll(),
+          orderKeys.getAll(),
+          cartKeys.getAll(),
+        ]),
+        removeQueries(queryClient, [
+          productTags.detail(id),
+          productTags.adminDetail(id),
+        ]),
+      ]);
     },
     onError: () => {
       toast.error('상품 삭제에 실패하였습니다. 잠시 후 시도해주시길 바랍니다.');

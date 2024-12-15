@@ -1,14 +1,14 @@
+import { cartKeys, cartTags } from '@services/queries/cart/keys';
 import { fetchData } from '@services/utils/fetch';
 import { API } from '@services/utils/path';
 
 import type { CartListVO } from '@api/cart/types/vo';
 
-export const CART_QUERY_KEY = ['cart', { scope: 'list' }];
-
 export const getCartListQueryOptions = (headers?: HeadersInit) => ({
-  queryKey: CART_QUERY_KEY,
+  queryKey: cartKeys.getAll(),
   queryFn: () =>
     fetchData<CartListVO>(API.CART.BASE, 'GET', {
       headers,
+      next: { tags: [cartTags.all, cartTags.list] },
     }),
 });

@@ -7,12 +7,21 @@ import {
 } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
 
+import { OrderVO } from '@api/order/types/vo';
+import { cartKeys, cartTags } from '@services/queries/cart/keys';
+import { orderKeys, orderTags } from '@services/queries/order/keys';
 import {
   getAdminOrderDetailQueryOptions,
   getAdminOrderListQueryOptions,
   getOrderListInfiniteQueryOptions,
 } from '@services/queries/order/options';
+import { productKeys, productTags } from '@services/queries/product/keys';
 import { fetchData } from '@services/utils/fetch';
+import {
+  invalidateQueries,
+  resetQueries,
+  revalidateTags,
+} from '@services/utils/helper';
 import { API } from '@services/utils/path';
 import usePaginationQueryParams from '@utils/hooks/usePaginationQueryParams';
 import { parseQueryParams } from '@utils/query/helper';
@@ -63,17 +72,24 @@ export const useOrderListMutation = () => {
   return useMutation({
     mutationFn: (data: CreateOrder) =>
       fetchData<unknown, CreateOrder>(API.ORDER.BASE, 'POST', { data }),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: ['order'],
-        refetchType: 'all',
-      });
+    onSuccess: async (_, variables) => {
+      const productTagsToRevalidate = variables.products.flatMap(item => [
+        productTags.detail(item._id),
+        productTags.adminDetail(item._id),
+      ]);
 
-      queryClient.removeQueries({
-        predicate: query =>
-          query.queryHash.includes('products') ||
-          query.queryHash.includes('cart'),
-      });
+      await Promise.all([
+        revalidateTags([
+          ...productTagsToRevalidate,
+          productTags.list,
+          cartTags.list,
+          orderTags.adminList,
+        ]),
+        queryClient.invalidateQueries({
+          queryKey: orderKeys.getAll(),
+          refetchType: 'all',
+        }),
+      ]);
     },
   });
 };
@@ -82,19 +98,35 @@ export const useOrderStatusMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: UpdateOrder) =>
+    mutationFn: (data: UpdateOrder & { productIds: string[] }) =>
       fetchData<unknown, UpdateOrder>(API.ORDER.BASE, 'PUT', { data }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['order'],
-        refetchType: 'all',
-      });
+    onSuccess: async (_, variables) => {
+      const productTagsToRevalidate = variables.productIds.flatMap(id => [
+        productTags.detail(id),
+        productTags.adminDetail(id),
+      ]);
 
-      queryClient.removeQueries({
-        predicate: query =>
-          query.queryHash.includes('products') ||
-          query.queryHash.includes('cart'),
-      });
+      const productQueriesToInvalidate = variables.productIds.flatMap(id => [
+        productKeys.getDetail(id),
+        productKeys.getAdminDetail(id),
+      ]);
+
+      await Promise.all([
+        revalidateTags([
+          ...productTagsToRevalidate,
+          productTags.list,
+          productTags.adminList,
+          cartTags.list,
+          orderTags.adminList,
+          orderTags.adminDetail(variables._id),
+        ]),
+        invalidateQueries(queryClient, [orderKeys.getAll()]),
+        resetQueries(queryClient, [
+          ...productQueriesToInvalidate,
+          cartKeys.getAll(),
+          orderKeys.getAdminAll(),
+        ]),
+      ]);
     },
   });
 };
@@ -106,21 +138,41 @@ export const useAdminOrderStatusMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: UpdateAdminOrder) =>
+    mutationFn: (data: UpdateAdminOrder & { productIds: string[] }) =>
       fetchData<unknown, UpdateAdminOrder>(API.ADMIN.ORDER.BASE, 'PUT', {
         data,
       }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['order'],
-        refetchType: 'all',
-      });
+    onSuccess: async (_, variables) => {
+      const productTagsToRevalidate = variables.productIds.flatMap(id => [
+        productTags.detail(id),
+        productTags.adminDetail(id),
+      ]);
 
-      queryClient.removeQueries({
-        predicate: query =>
-          query.queryHash.includes('products') ||
-          query.queryHash.includes('cart'),
-      });
+      const productQueriesToInvalidate = variables.productIds.flatMap(id => [
+        productKeys.getDetail(id),
+        productKeys.getAdminDetail(id),
+      ]);
+
+      await Promise.all([
+        revalidateTags([
+          ...productTagsToRevalidate,
+          productTags.list,
+          productTags.adminList,
+          cartTags.list,
+          orderTags.list,
+          orderTags.detail(variables._id),
+        ]),
+        invalidateQueries(queryClient, [
+          orderKeys.getAdminDetail(variables._id),
+        ]),
+        resetQueries(queryClient, [
+          ...productQueriesToInvalidate,
+          orderKeys.getAll(),
+          orderKeys.getAdminAll(),
+          orderKeys.getDetail(variables._id),
+          cartKeys.getAll(),
+        ]),
+      ]);
     },
   });
 };

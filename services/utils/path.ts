@@ -28,4 +28,5 @@ export const API = {
   ORDER: {
     BASE: 'order',
   },
+  REVALIDATE: (tag: string) => `revalidate?tag=${tag}`,
 };

@@ -16,6 +16,7 @@ export async function middleware(request: NextRequest) {
   const signInPage = pathname === PATH.SIGN_IN;
 
   if (!hasToken && !signInPage && !accessPage) {
+    // TODO: query reset
     return NextResponse.redirect(new URL(PATH.SIGN_IN, request.url));
   }
 

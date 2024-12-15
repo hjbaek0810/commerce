@@ -1,3 +1,4 @@
+import { orderKeys, orderTags } from '@services/queries/order/keys';
 import { fetchData } from '@services/utils/fetch';
 import { API } from '@services/utils/path';
 import { createQueryString } from '@utils/query/helper';
@@ -9,7 +10,7 @@ import type { PaginatedResponse } from '@services/utils/types/pagination';
 export const ORDER_LIST_LIMIT_ITEM = 4;
 
 export const getOrderListInfiniteQueryOptions = (headers?: HeadersInit) => ({
-  queryKey: ['order', { scope: 'list' }],
+  queryKey: orderKeys.getAll(),
   queryFn: ({ pageParam = 1 }) =>
     fetchData<PaginatedResponse<'orders', OrderVO>>(
       createQueryString(API.ORDER.BASE, {
@@ -17,7 +18,10 @@ export const getOrderListInfiniteQueryOptions = (headers?: HeadersInit) => ({
         limit: ORDER_LIST_LIMIT_ITEM,
       }),
       'GET',
-      { headers },
+      {
+        headers,
+        next: { tags: [orderTags.all, orderTags.list] },
+      },
     ),
   getNextPageParam: (lastPage: PaginatedResponse<'orders', OrderVO>) => {
     const { currentPage, totalCount } = lastPage || {};
@@ -37,7 +41,7 @@ export const getAdminOrderListQueryOptions = ({
   page: number;
   limit: number;
 }) => ({
-  queryKey: ['order', { scope: 'list' }, searchParams],
+  queryKey: orderKeys.getAdminAll({ ...searchParams, page, limit }),
   queryFn: () =>
     fetchData<PaginatedResponse<'orders', AdminOrderVO>>(
       createQueryString(API.ADMIN.ORDER.BASE, {
@@ -46,10 +50,14 @@ export const getAdminOrderListQueryOptions = ({
         limit,
       }),
       'GET',
+      { next: { tags: [orderTags.all, orderTags.adminList] } },
     ),
 });
 
 export const getAdminOrderDetailQueryOptions = (id: string) => ({
-  queryKey: ['order', 'admin', { scope: 'item', id }],
-  queryFn: () => fetchData<OrderVO>(API.ADMIN.ORDER.DETAIL(id), 'GET'),
+  queryKey: orderKeys.getAdminDetail(id),
+  queryFn: () =>
+    fetchData<OrderVO>(API.ADMIN.ORDER.DETAIL(id), 'GET', {
+      next: { tags: [orderTags.all, orderTags.adminDetail(id)] },
+    }),
 });

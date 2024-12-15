@@ -1,18 +1,25 @@
+import { categoryKeys, categoryTags } from '@services/queries/category/keys';
 import { fetchData } from '@services/utils/fetch';
 import { API } from '@services/utils/path';
 
 import type { CategoryVO } from '@api/category/types/vo';
 
 export const getCategoriesQueryOptions = () => ({
-  queryKey: ['categories', { scope: 'list' }],
-  queryFn: () => fetchData<Array<CategoryVO>>(API.CATEGORY, 'GET'),
+  queryKey: categoryKeys.getAll(),
+  queryFn: () =>
+    fetchData<Array<CategoryVO>>(API.CATEGORY, 'GET', {
+      next: { tags: [categoryTags.all, categoryTags.list] },
+    }),
   staleTime: 10 * 60 * 1000,
   gcTime: 30 * 60 * 1000,
 });
 
 export const getAdminCategoriesQueryOptions = () => ({
-  queryKey: ['categories', 'admin', { scope: 'list' }],
-  queryFn: () => fetchData<Array<CategoryVO>>(API.ADMIN.CATEGORY, 'GET'),
+  queryKey: categoryKeys.getAdminAll(),
+  queryFn: () =>
+    fetchData<Array<CategoryVO>>(API.ADMIN.CATEGORY, 'GET', {
+      next: { tags: [categoryTags.all, categoryTags.adminList] },
+    }),
   staleTime: 10 * 60 * 1000,
   gcTime: 30 * 60 * 1000,
 });
