@@ -8,3 +8,8 @@ export type PaginatedResponse<T extends string, K extends NewObject> = Record<
   currentPage: number;
   currentLimit: number;
 };
+
+export type PaginationQueryParamsType<T extends NewObject> = T & {
+  page?: number;
+  limit?: number;
+};
