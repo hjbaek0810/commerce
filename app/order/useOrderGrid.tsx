@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { isEmpty } from 'lodash-es';
 import { useRouter } from 'next/navigation';
 
@@ -10,7 +11,10 @@ import { OrderStatus } from '@utils/constants/order';
 import useIntersectionObserver from '@utils/hooks/useIntersectionObserver';
 import { PATH } from '@utils/path';
 
+import type { OrderVO } from '@api/order/types/vo';
+
 const useOrderGrid = () => {
+  const queryClient = useQueryClient();
   const {
     orders: orderInfo,
     fetchNextPage,
@@ -31,10 +35,31 @@ const useOrderGrid = () => {
     router.push(PATH.PRODUCT.DETAIL(id));
 
   const handleRequestStatusButton = (orderId: string, status: OrderStatus) => {
-    updateOrderStatus({
-      _id: orderId,
-      status,
-    });
+    updateOrderStatus(
+      {
+        _id: orderId,
+        status,
+        productIds: orderInfo
+          .filter(item => item._id === orderId)
+          .flatMap(({ items }) => items.map(({ product }) => product._id)),
+      },
+      {
+        onSuccess: () => {
+          queryClient.setQueryData<OrderVO[]>(
+            ['order', { scope: 'list' }],
+            previous => {
+              if (!previous) return orderInfo;
+
+              const updatedData = previous.map(item =>
+                item._id === orderId ? { ...item, status } : item,
+              );
+
+              return updatedData;
+            },
+          );
+        },
+      },
+    );
   };
 
   const renderButton = (orderId: string, status: OrderStatus) => {

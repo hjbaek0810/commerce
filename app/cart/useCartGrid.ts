@@ -10,7 +10,7 @@ import {
   useCartListQuery,
   useDeleteCartListMutation,
 } from '@services/queries/cart';
-import { CART_QUERY_KEY } from '@services/queries/cart/options';
+import { cartKeys } from '@services/queries/cart/keys';
 import { ProductStatusType } from '@utils/constants/product';
 import useSessionHandler from '@utils/hooks/useSessionHandler';
 import { PATH } from '@utils/path';
@@ -48,12 +48,12 @@ const useCartGrid = () => {
   const showRemainingQuantity = (quantity: number, status: ProductStatusType) =>
     quantity <= SHOW_REMAINING_QUANTITY_COUNT && !isSoldOut(status);
 
-  const handleUpdateQuantitySuccess = (cartId: string, quantity: number) => {
-    queryClient.setQueryData<CartListVO>(CART_QUERY_KEY, oldData => {
-      if (!oldData) return data;
+  const handleUpdateQuantitySuccess = (productId: string, quantity: number) => {
+    queryClient.setQueryData<CartListVO>(cartKeys.getAll(), previous => {
+      if (!previous) return data;
 
-      const updatedCartList = oldData?.items.map(item =>
-        item.product._id === cartId
+      const updatedCartList = previous?.items.map(item =>
+        item.product._id === productId
           ? {
               ...item,
               quantity: item.quantity + quantity,
@@ -62,7 +62,7 @@ const useCartGrid = () => {
       );
 
       return {
-        ...oldData,
+        ...previous,
         items: updatedCartList,
       };
     });
@@ -94,7 +94,7 @@ const useCartGrid = () => {
     if (checkSession()) {
       deleteCart(deleteData, {
         onSuccess: () => {
-          queryClient.setQueryData<CartListVO>(CART_QUERY_KEY, oldData => {
+          queryClient.setQueryData<CartListVO>(cartKeys.getAll(), oldData => {
             if (!oldData) return data;
 
             const filteredItems = oldData.items.filter(

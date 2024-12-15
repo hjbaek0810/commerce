@@ -5,15 +5,15 @@ import { useRouter } from 'next/navigation';
 
 import PromptModal from '@components/Modal/templates/PromptModal';
 import { useCartListMutation } from '@services/queries/cart';
-import { CART_QUERY_KEY } from '@services/queries/cart/options';
 import { useProductDetailQuery } from '@services/queries/product';
 import { useWishListMutation } from '@services/queries/wish-list';
+import { wishListKeys } from '@services/queries/wish-list/keys';
 import { ProductStatusType } from '@utils/constants/product';
 import useModals from '@utils/hooks/useModals';
 import useSessionHandler from '@utils/hooks/useSessionHandler';
 import { PATH } from '@utils/path';
 
-import type { CartListVO } from '@api/cart/types/vo';
+import type { WishListVO } from '@api/wish-list/types/vo';
 
 export const SHOW_REMAINING_QUANTITY_COUNT = 10;
 
@@ -42,7 +42,42 @@ const useProductInfo = (id: string) => {
 
   const handleWishButtonClick = () => {
     if (checkSession()) {
-      updateWish({ productId: id });
+      updateWish(
+        { productId: id },
+        {
+          onSuccess: () => {
+            queryClient.setQueryData<WishListVO>(
+              wishListKeys.getAll(),
+              previous => {
+                if (!previous) return undefined;
+
+                const exists = previous.items.some(item => item._id === id);
+
+                if (exists) {
+                  return {
+                    ...previous,
+                    items: previous.items.filter(item => item._id !== id),
+                  };
+                } else {
+                  return {
+                    ...previous,
+                    items: [
+                      {
+                        _id: id,
+                        name: product?.name || '',
+                        images: product?.images || [],
+                        price: product?.price || 0,
+                        salePrice: product?.salePrice || null,
+                      },
+                      ...previous.items,
+                    ],
+                  };
+                }
+              },
+            );
+          },
+        },
+      );
     }
   };
 
@@ -52,11 +87,6 @@ const useProductInfo = (id: string) => {
         { productId: id, quantity },
         {
           onSuccess: () => {
-            queryClient.invalidateQueries({
-              queryKey: CART_QUERY_KEY,
-              refetchType: 'all',
-            });
-
             openModal(PromptModal, {
               message: '장바구니 목록으로 이동하시겠습니까?',
               onSubmit: () => {
