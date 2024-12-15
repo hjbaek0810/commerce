@@ -1,13 +1,18 @@
 import type { FormEvent } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { useQueryClient } from '@tanstack/react-query';
 import { isEmpty } from 'lodash-es';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import FindPostCodeModal from '@components/Modal/templates/FindPostCodeModal';
 import { useCartListWhenNewOrderQuery } from '@services/queries/cart';
+import { cartKeys } from '@services/queries/cart/keys';
 import { useOrderListMutation } from '@services/queries/order';
+import { orderKeys } from '@services/queries/order/keys';
 import { useProductDetailWhenNewOrderQuery } from '@services/queries/product';
+import { productKeys } from '@services/queries/product/keys';
+import { resetQueries } from '@services/utils/helper';
 import { OrderStatus, PaymentType } from '@utils/constants/order';
 import useModals from '@utils/hooks/useModals';
 import { PATH } from '@utils/path';
@@ -24,6 +29,7 @@ const useNewOrder = () => {
   const searchParams = useSearchParams();
   const fromCart = searchParams.get('fromCart') === 'true' ? true : false;
 
+  const queryClient = useQueryClient();
   const { data: fromCartList } = useCartListWhenNewOrderQuery(
     searchParams.getAll('productId'),
     fromCart,
@@ -77,8 +83,23 @@ const useNewOrder = () => {
     };
 
     orderRequest(requestData, {
-      onSuccess: () => {
+      onSuccess: (_, variables) => {
         router.push(PATH.ORDER);
+
+        setTimeout(() => {
+          const productQueriesToInvalidate = variables.products.flatMap(
+            item => [
+              productKeys.getDetail(item._id),
+              productKeys.getAdminDetail(item._id),
+            ],
+          );
+
+          resetQueries(queryClient, [
+            ...productQueriesToInvalidate,
+            orderKeys.getAdminAll(),
+            cartKeys.getAll(),
+          ]);
+        }, 2000);
       },
     });
   };
