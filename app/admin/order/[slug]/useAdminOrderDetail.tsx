@@ -1,5 +1,6 @@
 import { useForm } from 'react-hook-form';
 
+import { useQueryClient } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
 
 import Rhf from '@components/Form';
@@ -11,6 +12,7 @@ import { OrderStatus } from '@utils/constants/order';
 import { PATH } from '@utils/path';
 
 import type { UpdateAdminOrder } from '@api/admin/order/types/dto';
+import type { AdminOrderVO } from '@api/admin/order/types/vo';
 
 type AdminOrderStatusUseForm = Pick<UpdateAdminOrder, 'status'>;
 
@@ -18,6 +20,7 @@ const useAdminOrderDetail = () => {
   const params = useParams();
   const id = params.slug as string;
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const { data: orderInfo } = useAdminOrderDetailQuery(id);
   const { mutate: updateOrderStatus } = useAdminOrderStatusMutation();
@@ -75,10 +78,29 @@ const useAdminOrderDetail = () => {
 
   const handleOrderStatusUpdate = (data: AdminOrderStatusUseForm) => {
     if (id && data.status !== orderInfo?.status) {
-      updateOrderStatus({
-        _id: id,
-        ...data,
-      });
+      updateOrderStatus(
+        {
+          _id: id,
+          ...data,
+          productIds:
+            orderInfo?.items?.flatMap(({ product }) => product._id) || [],
+        },
+        {
+          onSuccess: () => {
+            queryClient.setQueryData<AdminOrderVO>(
+              ['order', 'admin', { scope: 'item', id }],
+              previous => {
+                if (!previous) return orderInfo;
+
+                return {
+                  ...previous,
+                  status: data.status,
+                };
+              },
+            );
+          },
+        },
+      );
     }
   };
 
