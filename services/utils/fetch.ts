@@ -5,6 +5,7 @@ import { ApiError } from './error';
 type FetchDataOptionsType<U> = {
   data?: U;
   headers?: HeadersInit;
+  next?: NextFetchRequestConfig;
 };
 
 export async function fetchData<T, U = unknown>(
@@ -32,6 +33,7 @@ export async function fetchData<T, U = unknown>(
   const fetchOptions: RequestInit = {
     method,
     headers,
+    next: options.next,
   };
 
   if (options.data && method !== 'GET') {
@@ -49,9 +51,9 @@ export async function fetchData<T, U = unknown>(
   if (!response.ok) {
     const errorData = await response.json();
 
-    if (response.status === 401 || response.status === 403) {
-      revalidatePath('/');
-    }
+    // if (response.status === 401 || response.status === 403) {
+    //   revalidatePath('/');
+    // }
 
     const error = new ApiError(
       errorData.message || '서버 요청 실패',

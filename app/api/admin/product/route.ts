@@ -5,7 +5,7 @@ import CategoryModel from '@api/models/category';
 import ProductModel from '@api/models/product';
 import SubCategoryModel from '@api/models/subCategory';
 
-import type { CreateProduct, SearchProduct } from './types/dto';
+import type { CreateAdminProduct, SearchAdminProduct } from './types/dto';
 import type { ProductModelType } from '@api/models/product';
 import type { FilterQuery } from 'mongoose';
 import type { NextRequest } from 'next/server';
@@ -15,7 +15,7 @@ enum AdminProductErrorType {
 }
 
 export async function POST(req: NextRequest) {
-  const data: CreateProduct = await req.json();
+  const data: CreateAdminProduct = await req.json();
 
   try {
     await connectDB();
@@ -46,7 +46,7 @@ export async function GET(req: NextRequest) {
     const pageNumber = Number(searchParams.get('page'));
     const limitNumber = Number(searchParams.get('limit'));
 
-    const filters: FilterQuery<SearchProduct> = {};
+    const filters: FilterQuery<SearchAdminProduct> = {};
 
     searchParams.forEach((value, key) => {
       if (value && key !== 'page' && key !== 'limit') {
