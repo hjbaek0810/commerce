@@ -28,7 +28,7 @@ const useAdminOrderDetail = () => {
     },
   });
 
-  const getRadioOptions = (status: OrderStatus) => {
+  const renderOrderStatusRadioOptions = (status: OrderStatus) => {
     switch (status) {
       case OrderStatus.PAYMENT_PENDING:
         return (
@@ -85,7 +85,7 @@ const useAdminOrderDetail = () => {
   return {
     adminOrderUseForm,
     orderInfo,
-    getRadioOptions,
+    renderOrderStatusRadioOptions,
     handleGoToProductDetail,
     handleOrderStatusUpdate,
   };

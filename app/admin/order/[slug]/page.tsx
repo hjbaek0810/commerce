@@ -32,7 +32,7 @@ const AdminOrderDetail = () => {
   const {
     adminOrderUseForm,
     orderInfo,
-    getRadioOptions,
+    renderOrderStatusRadioOptions,
     handleGoToProductDetail,
     handleOrderStatusUpdate,
   } = useAdminOrderDetail();
@@ -77,13 +77,13 @@ const AdminOrderDetail = () => {
               size="large"
               full
             />
-            {status && getRadioOptions(status) && (
+            {status && renderOrderStatusRadioOptions(status) && (
               <>
                 <Rhf.Radio
                   className={css.orderStatusRadioWrapper}
                   name="status"
                 >
-                  {getRadioOptions(status)}
+                  {renderOrderStatusRadioOptions(status)}
                 </Rhf.Radio>
                 <Button size="medium" type="submit">
                   제출
