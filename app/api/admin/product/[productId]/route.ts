@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import connectDB from '@api/config/connectDB';
 import ProductModel from '@api/models/product';
 
-import type { UpdateProduct } from '../types/dto';
+import type { UpdateAdminProduct } from '../types/dto';
 import type { NextRequest } from 'next/server';
 
 enum AdminProductErrorType {
@@ -45,7 +45,7 @@ export async function GET(
 }
 
 export async function PUT(req: NextRequest) {
-  const data: UpdateProduct = await req.json();
+  const data: UpdateAdminProduct = await req.json();
 
   try {
     await connectDB();

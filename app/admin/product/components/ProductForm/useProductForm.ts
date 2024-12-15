@@ -6,12 +6,12 @@ import { useRouter } from 'next/navigation';
 import { useAdminCategoriesQuery } from '@services/queries/category';
 import { PATH } from '@utils/path';
 
-import type { CreateProduct } from '@api/admin/product/types/dto';
+import type { CreateAdminProduct } from '@api/admin/product/types/dto';
 import type { SubCategoryVO } from '@api/category/types/vo';
 
 const MAX_SIZE = 10485760; // 10MB
 export type ProductUseFormType = Omit<
-  CreateProduct,
+  CreateAdminProduct,
   'images' | 'categoryIds'
 > & {
   _id?: string; // detail

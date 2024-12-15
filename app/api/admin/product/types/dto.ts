@@ -1,12 +1,12 @@
 import type { ProductStatusType } from '@utils/constants/product';
 
-export type SearchProduct = {
+export type SearchAdminProduct = {
   category?: string;
   subCategory?: string;
   name?: string;
 };
 
-export type CreateProduct = {
+export type CreateAdminProduct = {
   name: string;
   quantity: number;
   price: number;
@@ -24,7 +24,7 @@ export type CreateProduct = {
   description?: string;
 };
 
-export type UpdateProduct = CreateProduct & {
+export type UpdateAdminProduct = CreateAdminProduct & {
   _id: string;
   deleteImageIds?: string[];
 };
