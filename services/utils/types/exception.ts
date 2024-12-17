@@ -12,3 +12,8 @@ export enum SessionExceptionCode {
   EXPIRED_SESSION = 'ES-002',
   UNKNOWN_ERROR = 'ES-003',
 }
+
+export enum UserExceptionCode {
+  USER_ALREADY_EXISTS = 'U-001',
+  EMAIL_ALREADY_EXISTS = 'U-002',
+}

@@ -6,18 +6,37 @@ const UserSchema = new Schema(
   {
     name: {
       type: String,
+      require: true,
     },
     email: {
       type: String,
       unique: true,
+      require: true,
     },
     image: {
       type: String,
+      default: '',
     },
     emailVerified: {
       type: Boolean,
+      default: null,
     },
-    // new
+    // New
+    loginId: {
+      type: String,
+      unique: true,
+      required: true,
+      default: null,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    role: {
+      type: String,
+      enum: ['ADMIN', 'USER'],
+      default: 'USER',
+    },
     postCode: { type: String, default: '' },
     address: { type: String, default: '' },
     subAddress: { type: String, default: '' },

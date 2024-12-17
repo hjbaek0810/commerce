@@ -27,6 +27,7 @@
     "@vanilla-extract/dynamic": "^2.1.1",
     "@vanilla-extract/recipes": "^0.5.3",
     "@vanilla-extract/sprinkles": "^1.6.2",
+    "bcryptjs": "^2.4.3",
     "cloudinary": "^2.5.1",
     "clsx": "^2.1.1",
     "draft-js": "^0.11.7",
@@ -53,6 +54,7 @@
     "webpack": "5"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/draft-js": "^0.11.18",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^22.7.4",

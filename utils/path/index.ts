@@ -4,6 +4,7 @@ const ORDER = '/order';
 
 export const PATH = {
   SIGN_IN: '/auth/sign-in',
+  SIGN_UP: '/sign-up',
   ADMIN: {
     HOME: ADMIN_HOME,
     CATEGORY: ADMIN_HOME + '/category',

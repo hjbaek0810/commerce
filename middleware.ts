@@ -14,10 +14,15 @@ export async function middleware(request: NextRequest) {
 
   const accessPage = pathname.startsWith('/product') || pathname === '/';
   const signInPage = pathname === PATH.SIGN_IN;
+  const signUpPage = pathname === PATH.SIGN_UP;
 
-  if (!hasToken && !signInPage && !accessPage) {
+  if (!hasToken && !signInPage && !signUpPage && !accessPage) {
     // TODO: query reset
     return NextResponse.redirect(new URL(PATH.SIGN_IN, request.url));
+  }
+
+  if (hasToken && signUpPage) {
+    return NextResponse.redirect(new URL('/', request.url));
   }
 
   if (hasToken && signInPage) {

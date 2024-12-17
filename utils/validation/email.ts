@@ -4,7 +4,6 @@ const REG_EMAIL =
 const MAX_LENGTH = 50;
 
 export const emailRules = {
-  required: true,
   pattern: {
     value: REG_EMAIL,
     message: '이메일 형식이 올바르지 않습니다.',

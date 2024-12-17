@@ -3,6 +3,9 @@ export const API = {
     BASE: 'auth',
     SIGN_IN: 'auth/sign-in',
   },
+  USER: {
+    BASE: 'user',
+  },
   ADMIN: {
     CATEGORY: 'admin/category',
     PRODUCT: {
