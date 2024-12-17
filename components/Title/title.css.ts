@@ -5,7 +5,6 @@ import { sprinkles } from '@styles/sprinkles.css';
 
 import type { RecipeVariants } from '@vanilla-extract/recipes';
 
-
 export const title = recipe({
   base: [
     sprinkles({
@@ -28,6 +27,11 @@ export const title = recipe({
       large: sprinkles({
         fontSize: 'font-size-020',
       }),
+    },
+    align: {
+      start: { textAlign: 'start' },
+      center: { textAlign: 'center' },
+      end: { textAlign: 'end' },
     },
   },
 });

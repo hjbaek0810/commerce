@@ -6,9 +6,10 @@ import type { TitleVariants } from './title.css';
 
 const Title = ({
   size = 'large',
+  align = 'start',
   children,
 }: PropsWithChildren<TitleVariants>) => {
-  return <h2 className={css.title({ size })}>{children}</h2>;
+  return <h2 className={css.title({ size, align })}>{children}</h2>;
 };
 
 export default Title;
