@@ -7,7 +7,6 @@ import {
 } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
 
-import { OrderVO } from '@api/order/types/vo';
 import { cartKeys, cartTags } from '@services/queries/cart/keys';
 import { orderKeys, orderTags } from '@services/queries/order/keys';
 import {

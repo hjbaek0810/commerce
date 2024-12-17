@@ -6,7 +6,7 @@ import { getSortedProductListQueryOptions } from '@services/queries/product/opti
 import { ProductSortType } from '@utils/constants/product';
 import { getQueryClient } from '@utils/query/queryClient';
 
-import Banner from './sections/Banner';
+import Banner from './Banner';
 
 const Home = async () => {
   const queryClient = getQueryClient();
