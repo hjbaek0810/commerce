@@ -160,7 +160,7 @@ export default tseslint.config(
           html: true,
         },
       ],
-      'react/destructuring-assignment': 'warn',
+      // 'react/destructuring-assignment': 'warn',
       'react/jsx-pascal-case': 'error',
       'react/jsx-no-useless-fragment': 'warn',
       'react/jsx-key': 'error',
