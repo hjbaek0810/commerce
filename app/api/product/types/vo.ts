@@ -24,6 +24,7 @@ export interface ProductVO {
   status: ProductStatusType;
   description: string;
   images: Array<ImageVO>;
+  createdAt: string;
 }
 
 export interface ProductDetailVO extends Omit<ProductVO, 'category'> {

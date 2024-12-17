@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 
 import connectDB from '@api/config/connectDB';
 import ProductModel from '@api/models/product';
-import { ProductSortType } from '@utils/constants/product';
+import { ProductSortType, ProductStatusType } from '@utils/constants/product';
 
 import type { SearchProduct } from './types/dto';
 import type { FilterQuery } from 'mongoose';
@@ -46,7 +46,13 @@ export async function GET(req: NextRequest) {
     const filters: FilterQuery<SearchProduct> = {};
 
     searchParams.forEach((value, key) => {
-      if (value && key !== 'page' && key !== 'limit' && key !== 'sort') {
+      if (
+        value &&
+        key !== 'page' &&
+        key !== 'limit' &&
+        key !== 'sort' &&
+        key !== 'hiddenSoldOut'
+      ) {
         switch (key) {
           case 'category':
             filters['categoryIds._id'] = new mongoose.Types.ObjectId(value);
@@ -66,7 +72,13 @@ export async function GET(req: NextRequest) {
       }
     });
 
-    filters['status'] = { $ne: 'HIDDEN' };
+    if (searchParams.get('hiddenSoldOut')) {
+      filters['status'] = {
+        $nin: [ProductStatusType.HIDDEN, ProductStatusType.STOPPED],
+      };
+    } else {
+      filters['status'] = { $ne: ProductStatusType.HIDDEN };
+    }
 
     const products = await ProductModel.aggregate([
       {

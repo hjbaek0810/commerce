@@ -14,14 +14,20 @@ import type {
   PaginatedResponse,
   PaginationQueryParamsType,
 } from '@services/utils/types/pagination';
+import type { ProductSortType } from '@utils/constants/product';
 
-const PRODUCT_LIST_LIMIT_ITEM = 10;
+const PRODUCT_LIST_LIMIT_ITEM = 12;
 
-export const getProductListQueryOptions = () => ({
-  queryKey: productKeys.getAll(),
+export const getSortedProductListQueryOptions = (sort: ProductSortType) => ({
+  queryKey: productKeys.getAll({ sort, hiddenSoldOut: true }),
   queryFn: () =>
     fetchData<PaginatedResponse<'products', ProductVO>>(
-      API.PRODUCT.BASE,
+      createQueryString(API.PRODUCT.BASE, {
+        hiddenSoldOut: true,
+        sort,
+        page: 1,
+        limit: 12,
+      }),
       'GET',
       {
         next: { tags: [productTags.all, productTags.list] },

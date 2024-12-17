@@ -1,6 +1,7 @@
 import { toast } from 'react-toastify';
 
 import {
+  UseQueryResult,
   keepPreviousData,
   useInfiniteQuery,
   useMutation,
@@ -19,6 +20,7 @@ import {
   getAdminProductListQueryOptions,
   getProductDetailQueryOptions,
   getProductListInfiniteQueryOptions,
+  getSortedProductListQueryOptions,
 } from '@services/queries/product/options';
 import { getWishListQueryOptions } from '@services/queries/wish-list/options';
 import { deleteImages, uploadImages } from '@services/upload';
@@ -30,6 +32,7 @@ import {
   revalidateTags,
 } from '@services/utils/helper';
 import { API } from '@services/utils/path';
+import { ProductSortType } from '@utils/constants/product';
 import usePaginationQueryParams from '@utils/hooks/usePaginationQueryParams';
 import useQueryParams from '@utils/hooks/useQueryParams';
 import { parseQueryParams } from '@utils/query/helper';
@@ -43,6 +46,9 @@ import type {
   AdminProductDetailVO,
   AdminProductVO,
 } from '@api/admin/product/types/vo';
+import type { SearchProduct } from '@api/product/types/dto';
+import type { ProductVO } from '@api/product/types/vo';
+import type { PaginatedResponse } from '@services/utils/types/pagination';
 import type { ProductUseFormType } from 'app/admin/product/components/ProductForm/useProductForm';
 import type { UploadApiResponse } from 'cloudinary';
 
@@ -87,6 +93,38 @@ export const useAdminProductListQuery = () => {
       ...paginationProps,
       totalCount: data?.totalCount || 0,
     },
+  };
+};
+
+export const useSortedProductListQueries = () => {
+  const [newProducts, popularProducts] = useQueries({
+    queries: [
+      {
+        ...getSortedProductListQueryOptions(ProductSortType.NEWEST),
+        select: (data: PaginatedResponse<'products', ProductVO>) => {
+          const sixtyDaysAgo = new Date();
+          sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
+
+          return data.products.filter(product => {
+            const productDate = new Date(product.createdAt);
+
+            return productDate >= sixtyDaysAgo; // 60일 이내의 상품만 필터링
+          });
+        },
+        placeholderData: keepPreviousData,
+      },
+      {
+        ...getSortedProductListQueryOptions(ProductSortType.POPULARITY),
+        select: (data: PaginatedResponse<'products', ProductVO>) =>
+          data.products,
+        placeholderData: keepPreviousData,
+      },
+    ],
+  });
+
+  return {
+    newProducts,
+    popularProducts,
   };
 };
 
