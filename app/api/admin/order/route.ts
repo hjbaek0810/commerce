@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
 
     const pageNumber = Number(searchParams.get('page')) || 1;
     const limitNumber = Number(searchParams.get('limit')) || 10;
-    const useName = searchParams.get('userName');
+    const useName = searchParams.get('username');
 
     const sort = searchParams.get('sort') || OrderSortType.NEWEST;
 
@@ -40,7 +40,7 @@ export async function GET(req: NextRequest) {
         key !== 'page' &&
         key !== 'limit' &&
         key !== 'sort' &&
-        key !== 'userName'
+        key !== 'username'
       ) {
         filters[key] = value;
       }
@@ -83,7 +83,7 @@ export async function GET(req: NextRequest) {
       ({ _id, userId, productIds, ...order }) => ({
         _id: _id.toString(),
         userId: userId._id,
-        userName: userId.name,
+        username: userId.name,
         items:
           productIds?.map(item => ({
             product: item.productId || null,

@@ -40,7 +40,7 @@ const useAdminOrder = () => {
     values: {
       _id: searchParams.get('_id') || '',
       userId: searchParams.get('userId') || '',
-      userName: searchParams.get('userName') || '',
+      username: searchParams.get('username') || '',
       status: (searchParams.get('status') as OrderStatus) || '',
       sort: (searchParams.get('sort') as OrderSortType) || OrderSortType.NEWEST,
     },
@@ -69,7 +69,7 @@ const useAdminOrder = () => {
     handleSearchParamsChange({
       _id: '',
       userId: '',
-      userName: '',
+      username: '',
       status: '',
       sort: OrderSortType.NEWEST,
     });

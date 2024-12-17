@@ -37,7 +37,7 @@ export async function GET(
     const response = {
       _id: _id?.toString(),
       userId: userId?._id,
-      userName: userId?.name,
+      username: userId?.name,
       items: productIds?.map(item => ({
         product: item.productId,
         quantity: item.quantity,

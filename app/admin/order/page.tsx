@@ -71,10 +71,10 @@ const AdminOrder = () => {
                     <Rhf.Input name="userId" />
                   </Table.Td>
                   <Table.Th scope="row">
-                    <Rhf.Label name="userName">주문자</Rhf.Label>
+                    <Rhf.Label name="username">주문자</Rhf.Label>
                   </Table.Th>
                   <Table.Td>
-                    <Rhf.Input name="userName" />
+                    <Rhf.Input name="username" />
                   </Table.Td>
                 </Table.Tr>
               </Table.Body>
@@ -125,11 +125,11 @@ const AdminOrder = () => {
             )}
 
             {orderList.map(
-              ({ _id, userId, userName, items, status, createdAt }) => (
+              ({ _id, userId, username, items, status, createdAt }) => (
                 <Table.Tr key={_id} onClick={() => handleGoToOrderDetail(_id)}>
                   <Table.Td>{_id}</Table.Td>
                   <Table.Td>{userId}</Table.Td>
-                  <Table.Td>{userName}</Table.Td>
+                  <Table.Td>{username}</Table.Td>
                   <Table.Td>{formatNumber(items.length)}</Table.Td>
                   <Table.Td>
                     <OrderStatusBadge status={status} size="small" />

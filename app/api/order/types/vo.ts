@@ -9,7 +9,7 @@ export type OrderProductVO = Pick<
 export interface OrderVO {
   _id: string;
   userId: string;
-  userName: string;
+  username: string;
   items: Array<{
     product: OrderProductVO;
     quantity: number;

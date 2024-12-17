@@ -39,7 +39,7 @@ const AdminOrderDetail = () => {
   const {
     _id,
     userId,
-    userName,
+    username,
     createdAt,
     items,
     totalPrice,
@@ -60,7 +60,7 @@ const AdminOrderDetail = () => {
             <div className={css.orderInfoBoxWrapper}>
               <OrderInfoBox label="주문 번호">{_id}</OrderInfoBox>
               <OrderInfoBox label="주문자 번호">{userId}</OrderInfoBox>
-              <OrderInfoBox label="주문자">{userName}</OrderInfoBox>
+              <OrderInfoBox label="주문자">{username}</OrderInfoBox>
               <OrderInfoBox label="주문일시">
                 {formatDateTime(createdAt)}
               </OrderInfoBox>

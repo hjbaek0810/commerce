@@ -61,7 +61,7 @@ export async function GET(req: NextRequest) {
     const orders = orderList.map(({ _id, productIds, userId, ...order }) => ({
       _id: _id.toString(),
       userId: userId._id,
-      userName: userId.name,
+      username: userId.name,
       items:
         productIds?.map(item => ({
           product: item.productId || null,
