@@ -20,7 +20,7 @@ export const checkSession = async (
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session || !session.user?.id) {
+    if (!session || !session.user.id) {
       return {
         isValid: false,
         message: 'No active session or user ID not found.',
