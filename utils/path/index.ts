@@ -26,4 +26,5 @@ export const PATH = {
   CART: '/cart',
   NEW_ORDER: '/new-order',
   ORDER: '/order',
+  MY_ACCOUNT: '/my-account',
 };

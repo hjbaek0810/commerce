@@ -69,6 +69,23 @@ const useMenu = () => {
       : [];
   });
 
+  if (pathname === PATH.MY_ACCOUNT || pathname === PATH.ORDER) {
+    return {
+      headers,
+      subMenus: [
+        {
+          title: 'My Account',
+          href: { path: PATH.MY_ACCOUNT },
+        },
+        {
+          title: 'Order List',
+          href: { path: PATH.ORDER },
+        },
+      ],
+      showSideBar: true,
+    };
+  }
+
   return { headers, subMenus, showSideBar };
 };
 

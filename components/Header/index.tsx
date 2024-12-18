@@ -77,7 +77,7 @@ const Header = ({ list }: HeaderPropsType) => {
             )}
           </li>
           <li>
-            <Link href="/my-account">
+            <Link href={PATH.MY_ACCOUNT}>
               <FontAwesomeIcon icon={faUser} />
             </Link>
           </li>
