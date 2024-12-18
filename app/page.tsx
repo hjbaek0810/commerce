@@ -12,10 +12,10 @@ const Home = async () => {
   const queryClient = getQueryClient();
 
   await Promise.all([
-    queryClient.fetchQuery(
+    queryClient.prefetchQuery(
       getSortedProductListQueryOptions(ProductSortType.NEWEST),
     ),
-    queryClient.fetchQuery(
+    queryClient.prefetchQuery(
       getSortedProductListQueryOptions(ProductSortType.POPULARITY),
     ),
   ]);
