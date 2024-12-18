@@ -45,10 +45,11 @@ export async function GET() {
     if (!cartList) {
       return NextResponse.json(
         {
-          message: 'Cart not found.',
-          code: CartListErrorType.CART_LIST_NOT_FOUND,
+          items: [],
         },
-        { status: 400 },
+        {
+          status: 200,
+        },
       );
     }
 
