@@ -18,6 +18,7 @@ const Input = forwardRef<HTMLInputElement, InputPropsType>(
       autoComplete = 'off',
       name,
       hidden = false,
+      placeholder,
       ...restProps
     },
     ref,
@@ -28,6 +29,7 @@ const Input = forwardRef<HTMLInputElement, InputPropsType>(
           {...restProps}
           id={name}
           name={name}
+          placeholder={restProps.disabled ? '' : placeholder}
           className={css.input({ error })}
           type={type}
           autoComplete={autoComplete}
