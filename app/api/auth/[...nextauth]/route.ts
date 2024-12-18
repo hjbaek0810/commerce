@@ -66,6 +66,7 @@ export const authOptions: NextAuthOptions = {
         token.accessToken = account.access_token;
         token.accessTokenExpires = account.expires_at;
         token.refreshToken = account.refresh_token;
+        token.provider = account.provider;
       }
 
       if (user) {
@@ -74,9 +75,9 @@ export const authOptions: NextAuthOptions = {
           user: {
             id: user?.id || user?._id,
             name: user.name,
-            loginId: user.loginId || user.email, // 소셜 - email, db - login id
+            loginId: user?.loginId,
             email: user.email,
-            role: user.role || UserRoleType.USER,
+            role: user?.role || UserRoleType.USER,
             picture: user.picture || '',
           },
         };
@@ -88,6 +89,7 @@ export const authOptions: NextAuthOptions = {
       session.user = token.user;
       session.accessToken = token.accessToken;
       session.accessTokenExpires = token.accessTokenExpires;
+      session.provider = token.provider;
       // session.refreshToken = token.refreshToken;
 
       return session;

@@ -5,12 +5,12 @@ import "next-auth/jwt";
 
 declare module "next-auth" {
   interface User {
-    id: string; // google
-    _id: string; // db
-    loginId: string;
+    id?: string; // google
+    _id?: string; // db
+    loginId?: string;
     email: string;
     name: string;
-    role: string;
+    role?: string;
     picture: string;
     exp: number;
     iat: number;
@@ -22,6 +22,7 @@ declare module "next-auth" {
     accessToken?: string;
     accessTokenExpires?: number;
     refreshToken?: string;
+    provider: string;
   }
 }
 
@@ -32,6 +33,7 @@ declare module "next-auth/jwt" {
     accessToken?: string;
     accessTokenExpires?: number;
     refreshToken?: string;
+    provider: string;
   }
 }
 
