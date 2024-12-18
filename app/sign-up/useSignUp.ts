@@ -15,10 +15,12 @@ import { formatPhoneNumber } from '@utils/validation';
 
 import type { CreateUser } from '@api/user/types/dto';
 
+type SignUpUseFormType = CreateUser & { confirmPassword: string };
+
 const useSignUp = () => {
   const { mutate: signUp } = useSignUpMutation();
   const router = useRouter();
-  const signUpForm = useForm<CreateUser>({
+  const signUpForm = useForm<SignUpUseFormType>({
     defaultValues: {
       role: UserRoleType.USER,
     },
@@ -46,8 +48,10 @@ const useSignUp = () => {
     });
   };
 
-  const handleSignUpSubmit = (data: CreateUser) => {
-    signUp(data, {
+  const handleSignUpSubmit = (data: SignUpUseFormType) => {
+    const { confirmPassword, ...requestData } = data;
+
+    signUp(requestData, {
       onSuccess: () => {
         router.push(PATH.SIGN_IN);
       },
