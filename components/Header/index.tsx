@@ -3,6 +3,8 @@
 import {
   faCartShopping,
   faHeart,
+  faRightFromBracket,
+  faRightToBracket,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -29,7 +31,7 @@ type HeaderPropsType = {
 };
 
 const Header = ({ list }: HeaderPropsType) => {
-  const { selected } = useHeader();
+  const { selected, session, handleSignOutButtonClick } = useHeader();
 
   return (
     <header className={css.header}>
@@ -60,6 +62,20 @@ const Header = ({ list }: HeaderPropsType) => {
         </ul>
 
         <ul className={css.menu}>
+          <li>
+            {session ? (
+              <div className={css.loginInfoWrapper}>
+                <span>{session.user.name}</span>
+                <button type="button" onClick={handleSignOutButtonClick}>
+                  <FontAwesomeIcon icon={faRightFromBracket} />
+                </button>
+              </div>
+            ) : (
+              <Link href={PATH.SIGN_IN}>
+                <FontAwesomeIcon icon={faRightToBracket} />
+              </Link>
+            )}
+          </li>
           <li>
             <Link href="/my-account">
               <FontAwesomeIcon icon={faUser} />

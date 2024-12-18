@@ -41,3 +41,12 @@ export const sideMenuItemBg = recipe({
     selected: false,
   },
 });
+
+export const logoutButton = style({
+  position: 'absolute',
+  width: 'fit-content',
+  fontSize: tokens.sizing['sizing-032'],
+  color: ColorPalettes.Grey['20'],
+  right: '2rem',
+  bottom: '3rem',
+});

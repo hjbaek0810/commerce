@@ -1,5 +1,9 @@
 'use client';
 
+import type { PropsWithChildren } from 'react';
+
+import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Link from 'next/link';
 
 import useSideMenu from '@components/SideMenu/useSideMenu';
@@ -22,7 +26,11 @@ export type SideMenuListType = {
   show?: boolean;
 };
 
-const SideMenu = ({ list, isHide = false }: SideMenuPropsType) => {
+const SideMenu = ({
+  list,
+  isHide = false,
+  children,
+}: PropsWithChildren<SideMenuPropsType>) => {
   const { selected } = useSideMenu();
 
   return (
@@ -47,6 +55,7 @@ const SideMenu = ({ list, isHide = false }: SideMenuPropsType) => {
           </li>
         ))}
       </ul>
+      {children}
     </aside>
   );
 };

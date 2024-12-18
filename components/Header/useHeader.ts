@@ -1,11 +1,15 @@
 import { isBoolean } from 'lodash-es';
 import { usePathname, useSearchParams } from 'next/navigation';
 
+import useSignOut from '@utils/hooks/useSignOut';
+
 import type { ParsedUrlQueryInput } from 'querystring';
 
 const useHeader = () => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+
+  const { session, handleSignOutButtonClick } = useSignOut();
 
   const selected = (
     menuPath: string,
@@ -27,7 +31,7 @@ const useHeader = () => {
     return pathname.startsWith(menuPath) && currentQuery.startsWith(menuQuery);
   };
 
-  return { selected };
+  return { selected, session, handleSignOutButtonClick };
 };
 
 export default useHeader;

@@ -58,3 +58,9 @@ export const menuItem = recipe({
   },
   defaultVariants: { selected: false },
 });
+
+export const loginInfoWrapper = style({
+  display: 'flex',
+  gap: tokens.spacing['spacing-004'],
+  alignItems: 'center',
+});
