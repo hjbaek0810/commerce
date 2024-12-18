@@ -1,7 +1,8 @@
-import mongoose from 'mongoose';
 import { NextResponse } from 'next/server';
 
+import { authOptions } from '@api/auth/[...nextauth]/route';
 import connectDB from '@api/config/connectDB';
+import { checkSession } from '@api/helper/session';
 import OrderModel from '@api/models/order';
 import ProductModel from '@api/models/product';
 import UserModel from '@api/models/user';
@@ -22,6 +23,18 @@ enum AdminOrderListErrorType {
 
 export async function GET(req: NextRequest) {
   try {
+    const sessionCheck = await checkSession(authOptions, true);
+
+    if (!sessionCheck.isValid) {
+      return NextResponse.json(
+        {
+          message: sessionCheck.message,
+          code: sessionCheck.code,
+        },
+        { status: sessionCheck.status },
+      );
+    }
+
     await connectDB();
 
     const { searchParams } = req.nextUrl;
@@ -123,6 +136,18 @@ export async function PUT(req: NextRequest) {
   const data: UpdateAdminOrder = await req.json();
 
   try {
+    const sessionCheck = await checkSession(authOptions, true);
+
+    if (!sessionCheck.isValid) {
+      return NextResponse.json(
+        {
+          message: sessionCheck.message,
+          code: sessionCheck.code,
+        },
+        { status: sessionCheck.status },
+      );
+    }
+
     await connectDB();
 
     const { _id, status } = data;

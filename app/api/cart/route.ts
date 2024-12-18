@@ -19,7 +19,6 @@ enum CartListErrorType {
 
 export async function GET() {
   try {
-    await connectDB();
     const sessionCheck = await checkSession(authOptions);
 
     if (!sessionCheck.isValid) {
@@ -31,6 +30,8 @@ export async function GET() {
         { status: sessionCheck.status },
       );
     }
+
+    await connectDB();
 
     const { userId } = sessionCheck;
 
@@ -90,7 +91,6 @@ export async function POST(req: NextRequest) {
   const data: UpdateCartItem = await req.json();
 
   try {
-    await connectDB();
     const sessionCheck = await checkSession(authOptions);
 
     if (!sessionCheck.isValid) {
@@ -102,6 +102,8 @@ export async function POST(req: NextRequest) {
         { status: sessionCheck.status },
       );
     }
+
+    await connectDB();
 
     const { userId } = sessionCheck;
 
@@ -171,8 +173,6 @@ export async function DELETE(req: NextRequest) {
   const { productIds }: DeleteCartItems = await req.json();
 
   try {
-    await connectDB();
-
     const sessionCheck = await checkSession(authOptions);
 
     if (!sessionCheck.isValid) {
@@ -184,6 +184,8 @@ export async function DELETE(req: NextRequest) {
         { status: sessionCheck.status },
       );
     }
+
+    await connectDB();
 
     const { userId } = sessionCheck;
 

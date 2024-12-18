@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 
+import { authOptions } from '@api/auth/[...nextauth]/route';
 import connectDB from '@api/config/connectDB';
+import { checkSession } from '@api/helper/session';
 import CategoryModel from '@api/models/category';
 import ProductModel from '@api/models/product';
 import SubCategoryModel from '@api/models/subCategory';
@@ -18,6 +20,18 @@ enum AdminCategoryErrorType {
 
 export async function GET() {
   try {
+    const sessionCheck = await checkSession(authOptions, true);
+
+    if (!sessionCheck.isValid) {
+      return NextResponse.json(
+        {
+          message: sessionCheck.message,
+          code: sessionCheck.code,
+        },
+        { status: sessionCheck.status },
+      );
+    }
+
     await connectDB();
 
     const categories = await CategoryModel.find()
@@ -92,6 +106,18 @@ export async function PUT(req: NextRequest) {
   const data: Array<AdminCreateCategory> = await req.json();
 
   try {
+    const sessionCheck = await checkSession(authOptions, true);
+
+    if (!sessionCheck.isValid) {
+      return NextResponse.json(
+        {
+          message: sessionCheck.message,
+          code: sessionCheck.code,
+        },
+        { status: sessionCheck.status },
+      );
+    }
+
     await connectDB();
 
     const [existingCategories, existingSubCategories] = await Promise.all([

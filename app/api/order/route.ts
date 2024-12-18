@@ -22,7 +22,6 @@ enum OrderListErrorType {
 
 export async function GET(req: NextRequest) {
   try {
-    await connectDB();
     const sessionCheck = await checkSession(authOptions);
 
     if (!sessionCheck.isValid) {
@@ -34,6 +33,8 @@ export async function GET(req: NextRequest) {
         { status: sessionCheck.status },
       );
     }
+
+    await connectDB();
 
     const { userId: sessionUserId } = sessionCheck;
 
@@ -102,7 +103,6 @@ export async function POST(req: NextRequest) {
   const data: CreateOrder = await req.json();
 
   try {
-    await connectDB();
     const sessionCheck = await checkSession(authOptions);
 
     if (!sessionCheck.isValid) {
@@ -114,6 +114,8 @@ export async function POST(req: NextRequest) {
         { status: sessionCheck.status },
       );
     }
+
+    await connectDB();
 
     const { userId } = sessionCheck;
     const { products, fromCart, ...restData } = data;
@@ -190,7 +192,6 @@ export async function PUT(req: NextRequest) {
   const data: UpdateOrder = await req.json();
 
   try {
-    await connectDB();
     const sessionCheck = await checkSession(authOptions);
 
     if (!sessionCheck.isValid) {
@@ -202,6 +203,8 @@ export async function PUT(req: NextRequest) {
         { status: sessionCheck.status },
       );
     }
+
+    await connectDB();
 
     const { userId } = sessionCheck;
 

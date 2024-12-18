@@ -1,9 +1,12 @@
 import { type AuthOptions, getServerSession } from 'next-auth';
 
+import { UserRoleType } from '@utils/constants/user';
+
 enum SessionErrorType {
   SESSION_NOT_FOUND = 'ES-001',
   EXPIRED_SESSION = 'ES-002',
   UNKNOWN_ERROR = 'ES-003',
+  FORBIDDEN_ACCESS = 'ES-004',
 }
 
 type CheckSessionResponse =
@@ -16,6 +19,7 @@ type CheckSessionResponse =
 
 export const checkSession = async (
   authOptions: AuthOptions,
+  isAdmin?: boolean,
 ): Promise<CheckSessionResponse> => {
   try {
     const session = await getServerSession(authOptions);
@@ -25,7 +29,25 @@ export const checkSession = async (
         isValid: false,
         message: 'No active session or user ID not found.',
         status: 401, // Unauthorized
-        code: SessionErrorType.EXPIRED_SESSION,
+        code: SessionErrorType.SESSION_NOT_FOUND,
+      };
+    }
+
+    if (!isAdmin && session.user.role !== UserRoleType.USER) {
+      return {
+        isValid: false,
+        message: 'Access denied. User role is required.',
+        status: 403,
+        code: SessionErrorType.FORBIDDEN_ACCESS,
+      };
+    }
+
+    if (isAdmin && session.user.role !== UserRoleType.ADMIN) {
+      return {
+        isValid: false,
+        message: 'Access denied. Admin role is required.',
+        status: 403,
+        code: SessionErrorType.FORBIDDEN_ACCESS,
       };
     }
 
@@ -40,7 +62,7 @@ export const checkSession = async (
     return {
       isValid: false,
       message: 'An error occurred while checking the session.',
-      status: 403,
+      status: 500,
       code: SessionErrorType.UNKNOWN_ERROR,
     };
   }

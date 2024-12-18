@@ -11,6 +11,7 @@ export enum SessionExceptionCode {
   SESSION_NOT_FOUND = 'ES-001',
   EXPIRED_SESSION = 'ES-002',
   UNKNOWN_ERROR = 'ES-003',
+  FORBIDDEN_ACCESS = 'ES-004',
 }
 
 export enum UserExceptionCode {

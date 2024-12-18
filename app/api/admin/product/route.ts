@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 
+import { authOptions } from '@api/auth/[...nextauth]/route';
 import connectDB from '@api/config/connectDB';
+import { checkSession } from '@api/helper/session';
 import CategoryModel from '@api/models/category';
 import ProductModel from '@api/models/product';
 import SubCategoryModel from '@api/models/subCategory';
@@ -18,6 +20,18 @@ export async function POST(req: NextRequest) {
   const data: CreateAdminProduct = await req.json();
 
   try {
+    const sessionCheck = await checkSession(authOptions, true);
+
+    if (!sessionCheck.isValid) {
+      return NextResponse.json(
+        {
+          message: sessionCheck.message,
+          code: sessionCheck.code,
+        },
+        { status: sessionCheck.status },
+      );
+    }
+
     await connectDB();
 
     const response = await ProductModel.create(data);
@@ -39,6 +53,18 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   try {
+    const sessionCheck = await checkSession(authOptions, true);
+
+    if (!sessionCheck.isValid) {
+      return NextResponse.json(
+        {
+          message: sessionCheck.message,
+          code: sessionCheck.code,
+        },
+        { status: sessionCheck.status },
+      );
+    }
+
     await connectDB();
 
     const { searchParams } = req.nextUrl;
@@ -128,6 +154,18 @@ export async function GET(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   try {
+    const sessionCheck = await checkSession(authOptions, true);
+
+    if (!sessionCheck.isValid) {
+      return NextResponse.json(
+        {
+          message: sessionCheck.message,
+          code: sessionCheck.code,
+        },
+        { status: sessionCheck.status },
+      );
+    }
+
     await connectDB();
     const { _id } = await req.json();
 

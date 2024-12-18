@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 
+import { authOptions } from '@api/auth/[...nextauth]/route';
 import connectDB from '@api/config/connectDB';
+import { checkSession } from '@api/helper/session';
 import ProductModel from '@api/models/product';
 
 import type { UpdateAdminProduct } from '../types/dto';
@@ -15,6 +17,18 @@ export async function GET(
   { params }: { params: { productId: string } },
 ) {
   try {
+    const sessionCheck = await checkSession(authOptions, true);
+
+    if (!sessionCheck.isValid) {
+      return NextResponse.json(
+        {
+          message: sessionCheck.message,
+          code: sessionCheck.code,
+        },
+        { status: sessionCheck.status },
+      );
+    }
+
     await connectDB();
 
     const product = await ProductModel.findById(params.productId);
@@ -48,6 +62,18 @@ export async function PUT(req: NextRequest) {
   const data: UpdateAdminProduct = await req.json();
 
   try {
+    const sessionCheck = await checkSession(authOptions, true);
+
+    if (!sessionCheck.isValid) {
+      return NextResponse.json(
+        {
+          message: sessionCheck.message,
+          code: sessionCheck.code,
+        },
+        { status: sessionCheck.status },
+      );
+    }
+
     await connectDB();
 
     const { _id, images, deleteImageIds, ...restData } = data;
@@ -105,6 +131,18 @@ export async function DELETE(
   { params }: { params: { productId: string } },
 ) {
   try {
+    const sessionCheck = await checkSession(authOptions, true);
+
+    if (!sessionCheck.isValid) {
+      return NextResponse.json(
+        {
+          message: sessionCheck.message,
+          code: sessionCheck.code,
+        },
+        { status: sessionCheck.status },
+      );
+    }
+
     await connectDB();
 
     const deleteProduct = await ProductModel.findByIdAndDelete(
