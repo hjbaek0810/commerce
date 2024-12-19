@@ -13,7 +13,7 @@ const UserSchema = new Schema(
       unique: true,
       require: true,
     },
-    picture: {
+    image: {
       type: String,
       default: '',
     },

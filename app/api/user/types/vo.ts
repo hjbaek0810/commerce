@@ -10,5 +10,5 @@ export interface UserVO {
   address: string;
   subAddress: string;
   role: UserRoleType;
-  picture: string;
+  image: string;
 }
