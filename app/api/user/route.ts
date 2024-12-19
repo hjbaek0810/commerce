@@ -112,3 +112,51 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+export async function PUT(req: NextRequest) {
+  try {
+    const sessionCheck = await checkSession(authOptions);
+
+    if (!sessionCheck.isValid) {
+      return NextResponse.json(
+        {
+          message: sessionCheck.message,
+          code: sessionCheck.code,
+        },
+        { status: sessionCheck.status },
+      );
+    }
+
+    await connectDB();
+
+    const data: UpdateUser = await req.json();
+
+    const updatedUser = await UserModel.findByIdAndUpdate(sessionCheck.userId, {
+      $set: data,
+    });
+
+    if (!updatedUser) {
+      return NextResponse.json(
+        {
+          message: 'User not found',
+          code: UserErrorCode.USER_NOT_FOUND,
+        },
+        { status: 404 },
+      );
+    }
+
+    return NextResponse.json({
+      message: 'success',
+      status: 200,
+    });
+  } catch (error) {
+    console.error(error);
+
+    return NextResponse.json(
+      {
+        message: 'Failed to sign-up.',
+      },
+      { status: 500 },
+    );
+  }
+}

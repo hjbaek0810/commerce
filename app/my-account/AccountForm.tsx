@@ -29,12 +29,17 @@ const AccountForm = () => {
     handleCancelClick,
     handleEditClick,
     handleFindPostCodeButtonClick,
+    handleUpdateMyAccount,
   } = useAccountForm();
 
   return (
     <>
       <Title size="large">My Account</Title>
-      <Rhf.Form {...accountForm} className={css.accountFormWrapper}>
+      <Rhf.Form
+        {...accountForm}
+        className={css.accountFormWrapper}
+        onSubmit={handleUpdateMyAccount}
+      >
         <div className={css.buttonWrapper}>
           {editable ? (
             <>

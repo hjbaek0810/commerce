@@ -1,15 +1,22 @@
 import type { FormEvent } from 'react';
 import { useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
+import { useQueryClient } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
 
 import FindPostCodeModal from '@components/Modal/templates/FindPostCodeModal';
-import { useMyAccountQuery } from '@services/queries/user';
+import {
+  useMyAccountMutation,
+  useMyAccountQuery,
+} from '@services/queries/user';
+import { userKeys } from '@services/queries/user/keys';
 import useModals from '@utils/hooks/useModals';
 import { formatPhoneNumber } from '@utils/validation';
 
 import type { UpdateUser } from '@api/user/types/dto';
+import type { UserVO } from '@api/user/types/vo';
 
 type AccountUseFormType = UpdateUser & {
   name?: string;
@@ -19,6 +26,8 @@ type AccountUseFormType = UpdateUser & {
 
 const useAccountForm = () => {
   const { data: myInfo } = useMyAccountQuery();
+  const { mutate: updateMyAccount, isPending } = useMyAccountMutation();
+  const queryClient = useQueryClient();
 
   const defaultValue = {
     name: myInfo?.name,
@@ -81,6 +90,30 @@ const useAccountForm = () => {
     });
   };
 
+  const handleUpdateMyAccount = (data: AccountUseFormType) => {
+    const { name, loginId, confirmPassword, ...requestData } = data;
+
+    updateMyAccount(requestData, {
+      onSuccess: () => {
+        setEditable(false);
+        setEditablePassword(false);
+        queryClient.setQueryData<UserVO>(userKeys.getDetail(), previous => {
+          if (!previous) return myInfo;
+
+          return {
+            ...previous,
+            ...requestData,
+          };
+        });
+      },
+      onError: () => {
+        toast.error(
+          '사용자 정보 수정에 실패했습니다. 다시 시도해주시기 바랍니다.',
+        );
+      },
+    });
+  };
+
   return {
     accountForm,
     isCustomUser,
@@ -88,12 +121,13 @@ const useAccountForm = () => {
     onlyCustomUserEditable,
     passwordValue,
     editablePassword,
+    isPending,
     handleUpdatePasswordButtonClick,
     handleTelephoneInput,
     handleCancelClick,
     handleEditClick,
     handleFindPostCodeButtonClick,
-    isPending: false, // FIXME
+    handleUpdateMyAccount,
   };
 };
 

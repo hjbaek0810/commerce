@@ -13,9 +13,10 @@ export type CreateUser = {
 };
 
 export type UpdateUser = {
-  _id: string;
-  name: string;
-  password: string;
+  email?: string;
+  password?: string;
   telephone?: string;
+  postCode?: string;
   address?: string;
+  subAddress?: string;
 };
