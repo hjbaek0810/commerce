@@ -12,6 +12,20 @@ import type { UserVO } from '@api/user/types/vo';
 
 export const useMyAccountQuery = () => useQuery(getMyAccountQueryOptions());
 
+export const useMyAccountWhenNewOrder = (enabled: boolean) =>
+  useQuery({
+    ...getMyAccountQueryOptions(),
+    enabled,
+    select: data => ({
+      postCode: data.postCode,
+      address: data.address,
+      subAddress: data.subAddress,
+      telephone: data.telephone,
+    }),
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+  });
+
 export const useSignUpMutation = () =>
   useMutation({
     mutationFn: (data: CreateUser) =>

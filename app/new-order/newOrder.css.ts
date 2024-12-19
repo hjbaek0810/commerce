@@ -41,3 +41,8 @@ export const paymentTypeRadioWrapper = style({
   flexDirection: 'column',
   gap: tokens.spacing['spacing-008'],
 });
+
+export const isSameAsUserInfoRadioWrapper = style({
+  display: 'flex',
+  gap: tokens.spacing['spacing-008'],
+});

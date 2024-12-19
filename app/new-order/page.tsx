@@ -92,6 +92,19 @@ const NewOrder = () => {
           <Table.Body>
             <Table.Tr>
               <Table.Th scope="row">
+                <Rhf.Label name="isSameAsUserInfo">회원정보와 동일</Rhf.Label>
+              </Table.Th>
+              <Table.Td colSpan={2}>
+                <Rhf.Radio name="isSameAsUserInfo">
+                  <div className={css.isSameAsUserInfoRadioWrapper}>
+                    <Rhf.RadioOption value="true">예</Rhf.RadioOption>
+                    <Rhf.RadioOption value="false">아니오</Rhf.RadioOption>
+                  </div>
+                </Rhf.Radio>
+              </Table.Td>
+            </Table.Tr>
+            <Table.Tr>
+              <Table.Th scope="row">
                 <Rhf.Label name="postCode" required>
                   주소
                 </Rhf.Label>
