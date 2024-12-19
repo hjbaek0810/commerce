@@ -5,6 +5,7 @@ export interface UserVO {
   loginId: string;
   name: string;
   email: string;
+  contactEmail: string;
   telephone: string;
   postCode: string;
   address: string;

@@ -8,7 +8,8 @@ declare module "next-auth" {
     id?: string; // google
     _id?: string; // db
     loginId?: string;
-    email: string;
+    email?: string; // google
+    contactEmail?: string; // db
     name: string;
     role?: string;
     image: string;

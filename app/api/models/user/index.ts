@@ -11,7 +11,6 @@ const UserSchema = new Schema(
     email: {
       type: String,
       unique: true,
-      require: true,
     },
     image: {
       type: String,
@@ -26,7 +25,10 @@ const UserSchema = new Schema(
       type: String,
       unique: true,
       required: true,
-      default: null,
+    },
+    contactEmail: {
+      type: String,
+      required: true,
     },
     password: {
       type: String,
@@ -38,9 +40,9 @@ const UserSchema = new Schema(
       default: 'USER',
     },
     telephone: { type: String, required: true },
-    postCode: { type: String, default: '' },
-    address: { type: String, default: '' },
-    subAddress: { type: String, default: '' },
+    postCode: { type: String },
+    address: { type: String },
+    subAddress: { type: String },
   },
   { collection: 'users' },
 );

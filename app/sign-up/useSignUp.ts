@@ -68,19 +68,6 @@ const useSignUp = () => {
               },
             );
           }
-
-          if (error.code === UserExceptionCode.USER_ALREADY_EXISTS) {
-            toast.error(
-              '이미 사용 중인 이메일입니다. 소셜 로그인을 사용하여 로그인하거나 다른 이메일로 시도해주세요.',
-            );
-            setError(
-              'email',
-              {},
-              {
-                shouldFocus: true,
-              },
-            );
-          }
         }
       },
     });

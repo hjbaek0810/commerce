@@ -29,10 +29,20 @@ const useAccountForm = () => {
   const { mutate: updateMyAccount, isPending } = useMyAccountMutation();
   const queryClient = useQueryClient();
 
+  const { data: session } = useSession();
+
+  const [editablePassword, setEditablePassword] = useState<boolean>(false);
+  const [editable, setEditable] = useState<boolean>(false);
+
+  const { openModal } = useModals();
+
+  const isCustomUser = session?.provider === 'credentials';
+  const onlyCustomUserEditable = isCustomUser && editable;
+
   const defaultValue = {
     name: myInfo?.name,
     loginId: myInfo?.loginId,
-    email: myInfo?.email || '',
+    contactEmail: isCustomUser ? myInfo?.contactEmail : myInfo?.email || '',
     telephone: myInfo?.telephone || '',
     postCode: myInfo?.postCode || '',
     address: myInfo?.address || '',
@@ -48,16 +58,6 @@ const useAccountForm = () => {
     name: 'password',
     control,
   });
-
-  const { data: session } = useSession();
-
-  const [editablePassword, setEditablePassword] = useState<boolean>(false);
-  const [editable, setEditable] = useState<boolean>(false);
-
-  const { openModal } = useModals();
-
-  const isCustomUser = session?.provider === 'credentials';
-  const onlyCustomUserEditable = isCustomUser && editable;
 
   const handleEditClick = () => {
     setEditable(true);
@@ -91,27 +91,34 @@ const useAccountForm = () => {
   };
 
   const handleUpdateMyAccount = (data: AccountUseFormType) => {
-    const { name, loginId, confirmPassword, ...requestData } = data;
+    const { name, loginId, confirmPassword, contactEmail, ...requestData } =
+      data;
 
-    updateMyAccount(requestData, {
-      onSuccess: () => {
-        setEditable(false);
-        setEditablePassword(false);
-        queryClient.setQueryData<UserVO>(userKeys.getDetail(), previous => {
-          if (!previous) return myInfo;
+    updateMyAccount(
+      {
+        ...requestData,
+        ...(isCustomUser && { contactEmail }),
+      },
+      {
+        onSuccess: () => {
+          setEditable(false);
+          setEditablePassword(false);
+          queryClient.setQueryData<UserVO>(userKeys.getDetail(), previous => {
+            if (!previous) return myInfo;
 
-          return {
-            ...previous,
-            ...requestData,
-          };
-        });
+            return {
+              ...previous,
+              ...requestData,
+            };
+          });
+        },
+        onError: () => {
+          toast.error(
+            '사용자 정보 수정에 실패했습니다. 다시 시도해주시기 바랍니다.',
+          );
+        },
       },
-      onError: () => {
-        toast.error(
-          '사용자 정보 수정에 실패했습니다. 다시 시도해주시기 바랍니다.',
-        );
-      },
-    });
+    );
   };
 
   return {

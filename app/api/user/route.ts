@@ -32,9 +32,9 @@ export async function GET() {
 
     await connectDB();
 
-    const user = await UserModel.findById(
-      sessionCheck.userId,
-    ).lean<UserModelType>();
+    const user = await UserModel.findById(sessionCheck.userId)
+      .select('-password')
+      .lean<UserModelType>();
 
     if (!user) {
       return NextResponse.json(
@@ -46,9 +46,7 @@ export async function GET() {
       );
     }
 
-    const { password, ...userWithoutPassword } = user;
-
-    return NextResponse.json(userWithoutPassword, {
+    return NextResponse.json(user, {
       status: 200,
     });
   } catch (error) {
@@ -80,23 +78,12 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const dbUserByEmail = await UserModel.findOne({ email: data.email });
-    if (dbUserByEmail) {
-      return NextResponse.json(
-        {
-          message: '이미 존재한 이메일입니다.',
-          code: UserErrorCode.EMAIL_ALREADY_EXISTS,
-        },
-        { status: 409 },
-      );
-    }
-
     const user = await UserModel.create({
       ...data,
       password: await bcrypt.hash(data.password, 10),
     });
 
-    const { password, ...userWithoutPassword } = user.lean();
+    const { password, ...userWithoutPassword } = user._doc;
 
     return NextResponse.json(userWithoutPassword, {
       status: 200,
