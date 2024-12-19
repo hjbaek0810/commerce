@@ -59,6 +59,7 @@ const useNewOrder = () => {
       onSubmit: data => {
         setValue('postCode', data.zonecode);
         setValue('address', data.address);
+        setValue('subAddress', '');
       },
     });
   };
