@@ -11,8 +11,8 @@ import {
 import { isEmpty } from 'lodash-es';
 import { useSearchParams } from 'next/navigation';
 
-import { orderKeys, orderTags } from '@services/queries/order/keys';
-import { productKeys, productTags } from '@services/queries/product/keys';
+import { orderKeys } from '@services/queries/order/keys';
+import { productKeys } from '@services/queries/product/keys';
 import {
   getAdminProductDetailQueryOptions,
   getAdminProductListQueryOptions,
@@ -23,7 +23,7 @@ import {
 import { getWishListQueryOptions } from '@services/queries/wish-list/options';
 import { deleteImages, uploadImages } from '@services/upload';
 import { fetchData } from '@services/utils/fetch';
-import { resetQueries, revalidateTags } from '@services/utils/helper';
+import { resetQueries } from '@services/utils/helper';
 import { API } from '@services/utils/path';
 import { ProductSortType } from '@utils/constants/product';
 import usePaginationQueryParams from '@utils/hooks/usePaginationQueryParams';
@@ -176,13 +176,10 @@ export const useAdminProductMutation = () => {
       );
     },
     onSuccess: async () => {
-      await Promise.all([
-        revalidateTags([productTags.list]),
-        queryClient.invalidateQueries({
-          queryKey: productKeys.getAdminAll(),
-          refetchType: 'all',
-        }),
-      ]);
+      await queryClient.invalidateQueries({
+        queryKey: productKeys.getAdminAll(),
+        refetchType: 'all',
+      });
     },
     onError: () => {
       toast.error('상품 등록에 실패하였습니다. 잠시 후 시도해주시길 바랍니다.');
@@ -236,20 +233,13 @@ export const useAdminProductDetailMutation = (id: string) => {
         deleteImagesPromise,
       ]);
     },
-    onSuccess: async (_, variables) => {
-      await Promise.all([
-        revalidateTags([
-          productTags.list,
-          productTags.detail(variables._id),
-          orderTags.all,
-        ]),
-        queryClient.invalidateQueries({
-          queryKey: productKeys.getAdminDetail(variables._id || ''),
-        }),
-        resetQueries(queryClient, [
-          productKeys.getAdminAll(),
-          orderKeys.getAdminAll(),
-        ]),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: productKeys.getAdminDetail(variables._id || ''),
+      });
+      resetQueries(queryClient, [
+        productKeys.getAdminAll(),
+        orderKeys.getAdminAll(),
       ]);
     },
     onError: () => {
@@ -269,11 +259,6 @@ export const useAdminProductDeleteMutation = (id: string) => {
       ]),
     onSuccess: async () => {
       await Promise.all([
-        revalidateTags([
-          productTags.list,
-          productTags.detail(id),
-          orderTags.all,
-        ]),
         queryClient.invalidateQueries({
           queryKey: productKeys.getAdminAll(),
           refetchType: 'all',

@@ -32,5 +32,5 @@ export const orderTags = {
   all: 'all-orders',
   list: 'orders',
   adminList: 'admin-orders',
-  adminDetail: (id?: string) => `admin-order-${id}`,
+  adminDetail: (id: string) => `admin-order-${id}`,
 };

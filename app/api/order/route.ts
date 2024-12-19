@@ -1,3 +1,4 @@
+import { revalidateTag } from 'next/cache';
 import { NextResponse } from 'next/server';
 
 import { authOptions } from '@api/auth/[...nextauth]/route';
@@ -7,6 +8,8 @@ import CartModel from '@api/models/cart';
 import OrderModel from '@api/models/order';
 import ProductModel from '@api/models/product';
 import UserModel from '@api/models/user';
+import { orderTags } from '@services/queries/order/keys';
+import { productTags } from '@services/queries/product/keys';
 import { OrderStatus } from '@utils/constants/order';
 import { ProductStatusType } from '@utils/constants/product';
 
@@ -131,6 +134,8 @@ export async function POST(req: NextRequest) {
       ...restData,
     });
 
+    revalidateTag(orderTags.adminList);
+
     for (const item of products) {
       const product = await ProductModel.findById(item._id);
 
@@ -161,7 +166,12 @@ export async function POST(req: NextRequest) {
       }
 
       await product.save();
+
+      productTags.detail(item._id);
+      productTags.adminDetail(item._id);
     }
+
+    revalidateTag(productTags.list);
 
     if (fromCart) {
       const productIds = products.map(({ _id }) => _id);
@@ -248,7 +258,12 @@ export async function PUT(req: NextRequest) {
             },
           },
         ]);
+        revalidateTag(productTags.detail(product.productId.toString()));
+        revalidateTag(productTags.adminDetail(product.productId.toString()));
       }
+
+      revalidateTag(productTags.list);
+      revalidateTag(productTags.adminList);
     }
 
     const updateOrder = await OrderModel.updateOne(
@@ -270,6 +285,9 @@ export async function PUT(req: NextRequest) {
         { status: 404 },
       );
     }
+
+    revalidateTag(orderTags.adminList);
+    revalidateTag(orderTags.adminDetail(data._id));
 
     return NextResponse.json({
       message: 'success',

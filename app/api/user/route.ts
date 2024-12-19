@@ -1,10 +1,12 @@
 import * as bcrypt from 'bcryptjs';
+import { revalidateTag } from 'next/cache';
 import { NextResponse } from 'next/server';
 
 import { authOptions } from '@api/auth/[...nextauth]/route';
 import connectDB from '@api/config/connectDB';
 import { checkSession } from '@api/helper/session';
 import UserModel from '@api/models/user';
+import { userTags } from '@services/queries/user/keys';
 
 import type { UserModelType } from '@api/models/user';
 import type { CreateUser, UpdateUser } from '@api/user/types/dto';
@@ -85,6 +87,8 @@ export async function POST(req: NextRequest) {
 
     const { password, ...userWithoutPassword } = user._doc;
 
+    revalidateTag(userTags.adminList);
+
     return NextResponse.json(userWithoutPassword, {
       status: 200,
     });
@@ -131,6 +135,9 @@ export async function PUT(req: NextRequest) {
         { status: 404 },
       );
     }
+
+    revalidateTag(userTags.adminList);
+    // revalidateTag(userTags.adminDetail(sessionCheck.userId));
 
     return NextResponse.json({
       message: 'success',

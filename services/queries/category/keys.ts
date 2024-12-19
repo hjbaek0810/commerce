@@ -28,5 +28,5 @@ export const categoryTags = {
   all: 'all-category',
   list: 'categories',
   adminList: 'admin-categories',
-  adminDetail: (id?: string) => `admin-category-${id}`,
+  adminDetail: (id: string) => `admin-category-${id}`,
 };

@@ -1,3 +1,4 @@
+import { revalidateTag } from 'next/cache';
 import { NextResponse } from 'next/server';
 
 import { authOptions } from '@api/auth/[...nextauth]/route';
@@ -6,6 +7,7 @@ import { checkSession } from '@api/helper/session';
 import OrderModel from '@api/models/order';
 import ProductModel from '@api/models/product';
 import UserModel from '@api/models/user';
+import { productTags } from '@services/queries/product/keys';
 import { OrderSortType, OrderStatus } from '@utils/constants/order';
 import { ProductStatusType } from '@utils/constants/product';
 
@@ -186,7 +188,12 @@ export async function PUT(req: NextRequest) {
             },
           },
         ]);
+        revalidateTag(productTags.detail(product.productId));
+        revalidateTag(productTags.adminDetail(product.productId));
       }
+
+      revalidateTag(productTags.list);
+      revalidateTag(productTags.adminList);
     }
 
     const updateOrder = await OrderModel.updateOne(

@@ -42,6 +42,6 @@ export const productTags = {
   all: 'all-product',
   list: 'products',
   adminList: 'admin-products',
-  detail: (id?: string) => `product-${id}`,
-  adminDetail: (id?: string) => `admin-product-${id}`,
+  detail: (id: string) => `product-${id}`,
+  adminDetail: (id: string) => `admin-product-${id}`,
 };

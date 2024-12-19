@@ -136,23 +136,8 @@ const useNewOrder = () => {
     };
 
     orderRequest(requestData, {
-      onSuccess: (_, variables) => {
+      onSuccess: () => {
         router.push(PATH.ORDER);
-
-        setTimeout(() => {
-          const productQueriesToInvalidate = variables.products.flatMap(
-            item => [
-              productKeys.getDetail(item._id),
-              productKeys.getAdminDetail(item._id),
-            ],
-          );
-
-          resetQueries(queryClient, [
-            ...productQueriesToInvalidate,
-            orderKeys.getAdminAll(),
-            cartKeys.getAll(),
-          ]);
-        }, 2000);
       },
     });
   };

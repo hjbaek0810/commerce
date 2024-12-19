@@ -1,3 +1,4 @@
+import { revalidateTag } from 'next/cache';
 import { NextResponse } from 'next/server';
 
 import { authOptions } from '@api/auth/[...nextauth]/route';
@@ -6,6 +7,7 @@ import { checkSession } from '@api/helper/session';
 import CategoryModel from '@api/models/category';
 import ProductModel from '@api/models/product';
 import SubCategoryModel from '@api/models/subCategory';
+import { productTags } from '@services/queries/product/keys';
 
 import type { CreateAdminProduct, SearchAdminProduct } from './types/dto';
 import type { ProductModelType } from '@api/models/product';
@@ -34,9 +36,11 @@ export async function POST(req: NextRequest) {
 
     await connectDB();
 
-    const response = await ProductModel.create(data);
+    const product = await ProductModel.create(data);
 
-    return NextResponse.json(response, {
+    revalidateTag(productTags.list);
+
+    return NextResponse.json(product._doc, {
       status: 200,
     });
   } catch (error) {

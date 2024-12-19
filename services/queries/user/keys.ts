@@ -29,5 +29,5 @@ export const userTags = {
   all: 'all-user',
   detail: 'user',
   adminList: 'admin-users',
-  adminDetail: (id?: string) => `admin-user-${id}`,
+  adminDetail: (id: string) => `admin-user-${id}`,
 };

@@ -1,9 +1,12 @@
+import { revalidateTag } from 'next/cache';
 import { NextResponse } from 'next/server';
 
 import { authOptions } from '@api/auth/[...nextauth]/route';
 import connectDB from '@api/config/connectDB';
 import { checkSession } from '@api/helper/session';
 import ProductModel from '@api/models/product';
+import { orderTags } from '@services/queries/order/keys';
+import { productTags } from '@services/queries/product/keys';
 
 import type { UpdateAdminProduct } from '../types/dto';
 import type { NextRequest } from 'next/server';
@@ -111,6 +114,10 @@ export async function PUT(req: NextRequest) {
 
     const response = await ProductModel.bulkWrite(updateOperations);
 
+    revalidateTag(productTags.list);
+    revalidateTag(productTags.detail(_id));
+    revalidateTag(orderTags.all);
+
     return NextResponse.json(response, {
       status: 200,
     });
@@ -158,6 +165,10 @@ export async function DELETE(
         { status: 404 },
       );
     }
+
+    revalidateTag(productTags.list);
+    revalidateTag(productTags.detail(params.productId));
+    revalidateTag(orderTags.all);
 
     return NextResponse.json({
       message: 'success',

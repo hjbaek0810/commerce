@@ -8,15 +8,15 @@ import {
 import { useSearchParams } from 'next/navigation';
 
 import { cartKeys } from '@services/queries/cart/keys';
-import { orderKeys, orderTags } from '@services/queries/order/keys';
+import { orderKeys } from '@services/queries/order/keys';
 import {
   getAdminOrderDetailQueryOptions,
   getAdminOrderListQueryOptions,
   getOrderListInfiniteQueryOptions,
 } from '@services/queries/order/options';
-import { productKeys, productTags } from '@services/queries/product/keys';
+import { productKeys } from '@services/queries/product/keys';
 import { fetchData } from '@services/utils/fetch';
-import { resetQueries, revalidateTags } from '@services/utils/helper';
+import { resetQueries } from '@services/utils/helper';
 import { API } from '@services/utils/path';
 import usePaginationQueryParams from '@utils/hooks/usePaginationQueryParams';
 import { parseQueryParams } from '@utils/query/helper';
@@ -68,22 +68,22 @@ export const useOrderListMutation = () => {
     mutationFn: (data: CreateOrder) =>
       fetchData<unknown, CreateOrder>(API.ORDER.BASE, 'POST', { data }),
     onSuccess: async (_, variables) => {
-      const productTagsToRevalidate = variables.products.flatMap(item => [
-        productTags.detail(item._id),
-        productTags.adminDetail(item._id),
-      ]);
+      await queryClient.invalidateQueries({
+        queryKey: orderKeys.getAll(),
+        refetchType: 'all',
+      });
 
-      await Promise.all([
-        revalidateTags([
-          ...productTagsToRevalidate,
-          productTags.list,
-          orderTags.adminList,
-        ]),
-        queryClient.invalidateQueries({
-          queryKey: orderKeys.getAll(),
-          refetchType: 'all',
-        }),
-      ]);
+      variables.products.forEach(product => {
+        queryClient.resetQueries({
+          queryKey: productKeys.getDetail(product._id),
+        });
+      });
+
+      if (variables.fromCart) {
+        queryClient.resetQueries({
+          queryKey: cartKeys.getAll(),
+        });
+      }
     },
   });
 };
@@ -94,31 +94,17 @@ export const useOrderStatusMutation = () => {
   return useMutation({
     mutationFn: (data: UpdateOrder & { productIds: string[] }) =>
       fetchData<unknown, UpdateOrder>(API.ORDER.BASE, 'PUT', { data }),
-    onSuccess: async (_, variables) => {
-      const productTagsToRevalidate = variables.productIds.flatMap(id => [
-        productTags.detail(id),
-        productTags.adminDetail(id),
-      ]);
-
+    onSuccess: (_, variables) => {
       const productQueriesToInvalidate = variables.productIds.flatMap(id => [
         productKeys.getDetail(id),
       ]);
 
-      await Promise.all([
-        revalidateTags([
-          ...productTagsToRevalidate,
-          productTags.list,
-          productTags.adminList,
-          orderTags.adminList,
-          orderTags.adminDetail(variables._id),
-        ]),
-        queryClient.invalidateQueries({
-          queryKey: orderKeys.getAll(),
-        }),
-        resetQueries(queryClient, [
-          ...productQueriesToInvalidate,
-          cartKeys.getAll(),
-        ]),
+      queryClient.invalidateQueries({
+        queryKey: orderKeys.getAll(),
+      });
+      resetQueries(queryClient, [
+        ...productQueriesToInvalidate,
+        cartKeys.getAll(),
       ]);
     },
   });
@@ -135,29 +121,17 @@ export const useAdminOrderStatusMutation = () => {
       fetchData<unknown, UpdateAdminOrder>(API.ADMIN.ORDER.BASE, 'PUT', {
         data,
       }),
-    onSuccess: async (_, variables) => {
-      const productTagsToRevalidate = variables.productIds.flatMap(id => [
-        productTags.detail(id),
-        productTags.adminDetail(id),
-      ]);
-
+    onSuccess: (_, variables) => {
       const productQueriesToInvalidate = variables.productIds.flatMap(id => [
         productKeys.getAdminDetail(id),
       ]);
 
-      await Promise.all([
-        revalidateTags([
-          ...productTagsToRevalidate,
-          productTags.list,
-          productTags.adminList,
-        ]),
-        queryClient.invalidateQueries({
-          queryKey: orderKeys.getAdminDetail(variables._id),
-        }),
-        resetQueries(queryClient, [
-          ...productQueriesToInvalidate,
-          orderKeys.getAdminAll(),
-        ]),
+      queryClient.invalidateQueries({
+        queryKey: orderKeys.getAdminDetail(variables._id),
+      });
+      resetQueries(queryClient, [
+        ...productQueriesToInvalidate,
+        orderKeys.getAdminAll(),
       ]);
     },
   });
