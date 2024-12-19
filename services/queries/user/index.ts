@@ -22,8 +22,6 @@ export const useMyAccountWhenNewOrder = (enabled: boolean) =>
       subAddress: data.subAddress,
       telephone: data.telephone,
     }),
-    staleTime: 5 * 60 * 1000,
-    gcTime: 30 * 60 * 1000,
   });
 
 export const useSignUpMutation = () =>

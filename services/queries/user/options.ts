@@ -12,4 +12,6 @@ export const getMyAccountQueryOptions = (headers?: HeadersInit) => ({
       next: { tags: [userTags.all, userTags.detail] },
       cache: 'no-store',
     }),
+  staleTime: Infinity,
+  gcTime: 30 * 60 * 1000,
 });
