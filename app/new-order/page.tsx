@@ -7,6 +7,7 @@ import Button from '@components/Button';
 import Rhf from '@components/Form';
 import { Table } from '@components/Table';
 import Title from '@components/Title';
+import { NOT_FOUND_IMAGE } from '@utils/constants/image';
 import { PaymentType } from '@utils/constants/order';
 import { formatNumber } from '@utils/formatter/number';
 import { calculatePrice, calculateTotalPrice } from '@utils/math/price';
@@ -47,10 +48,7 @@ const NewOrder = () => {
                 <Table.Td>
                   <figure className={css.imageWrapper}>
                     <Image
-                      src={
-                        product?.images?.[0]?.secureUrl ||
-                        'https://placehold.co/200x300/png?text=X'
-                      }
+                      src={product?.images?.[0]?.secureUrl || NOT_FOUND_IMAGE}
                       alt={product.name}
                       fill
                       priority

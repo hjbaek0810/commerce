@@ -1,5 +1,6 @@
 import Slider from '@components/Slider';
 import Title from '@components/Title';
+import { NOT_FOUND_IMAGE } from '@utils/constants/image';
 import { PATH } from '@utils/path';
 
 import * as css from './home.css';
@@ -42,10 +43,7 @@ const ProductSlider = ({
               {group.map(({ _id, images }) => (
                 <Slider.ClickableImage
                   key={_id}
-                  src={
-                    images?.[0]?.secureUrl ??
-                    'https://placehold.co/200x300/png?text=X'
-                  }
+                  src={images?.[0]?.secureUrl ?? NOT_FOUND_IMAGE}
                   redirectTo={PATH.PRODUCT.DETAIL(_id)}
                   sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw"
                   className={css.sliderItem}

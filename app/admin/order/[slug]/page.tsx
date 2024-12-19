@@ -11,6 +11,7 @@ import Radio from '@components/Form/Radio';
 import OrderStatusBadge from '@components/OrderStatusBadge';
 import { Table } from '@components/Table';
 import Title from '@components/Title';
+import { NOT_FOUND_IMAGE } from '@utils/constants/image';
 import { OrderStatus, PaymentType } from '@utils/constants/order';
 import { formatDateTime } from '@utils/formatter/datetime';
 import { formatNumber } from '@utils/formatter/number';
@@ -112,10 +113,7 @@ const AdminOrderDetail = () => {
                 <Table.Td>
                   <figure className={css.imageWrapper}>
                     <Image
-                      src={
-                        product?.images?.[0]?.secureUrl ||
-                        'https://placehold.co/200x300/png?text=X'
-                      }
+                      src={product?.images?.[0]?.secureUrl || NOT_FOUND_IMAGE}
                       alt={product.name}
                       fill
                       priority

@@ -14,6 +14,7 @@ import Link from 'next/link';
 import useProductInfo from '@app/product/[slug]/useProductInfo';
 import Button from '@components/Button';
 import { sprinkles } from '@styles/sprinkles.css';
+import { NOT_FOUND_IMAGE } from '@utils/constants/image';
 import { formatNumber } from '@utils/formatter/number';
 import { calculateSaleRate } from '@utils/math/rate';
 import { PATH } from '@utils/path';
@@ -42,9 +43,7 @@ const ProductInfo = ({ id }: { id: string }) => {
     <div className={css.infoWrapper}>
       <figure className={css.imageWrapper}>
         <Image
-          src={
-            images?.[0]?.secureUrl ?? 'https://placehold.co/200x300/png?text=X'
-          }
+          src={images?.[0]?.secureUrl ?? NOT_FOUND_IMAGE}
           alt={name ?? ''}
           fill
           priority

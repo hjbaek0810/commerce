@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { NOT_FOUND_IMAGE } from '@utils/constants/image';
 import { formatNumber } from '@utils/formatter/number';
 import { calculateSaleRate } from '@utils/math/rate';
 import { PATH } from '@utils/path';
@@ -39,7 +40,7 @@ const ProductImage = ({
 }: PropsWithChildren<ProductImagePropsType>) => (
   <figure className={css.productImageWrapper}>
     <Image
-      src={src ?? 'https://placehold.co/200x300/png?text=X'}
+      src={src ?? NOT_FOUND_IMAGE}
       alt={alt}
       fill
       priority
