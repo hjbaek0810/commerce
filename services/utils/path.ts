@@ -17,7 +17,9 @@ export const API = {
       DETAIL: (orderId: string) => `admin/order/${orderId}`,
     },
   },
-  CATEGORY: 'category',
+  CATEGORY: {
+    BASE: 'category',
+  },
   PRODUCT: {
     BASE: 'product',
     DETAIL: (productId: string) => `product/${productId}`,

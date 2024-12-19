@@ -7,7 +7,7 @@ import type { CategoryVO } from '@api/category/types/vo';
 export const getCategoriesQueryOptions = () => ({
   queryKey: categoryKeys.getAll(),
   queryFn: () =>
-    fetchData<Array<CategoryVO>>(API.CATEGORY, 'GET', {
+    fetchData<Array<CategoryVO>>(API.CATEGORY.BASE, 'GET', {
       next: { tags: [categoryTags.all, categoryTags.list] },
     }),
   staleTime: 10 * 60 * 1000,
