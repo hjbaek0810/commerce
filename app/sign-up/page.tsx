@@ -102,6 +102,7 @@ const SignUp = () => {
                   name="password"
                   type="password"
                   required
+                  autoComplete="one-time-code"
                   rules={passwordRules}
                 />
                 <Rhf.ErrorMessage name="password" />
@@ -118,6 +119,7 @@ const SignUp = () => {
                   type="password"
                   name="confirmPassword"
                   required
+                  autoComplete="one-time-code"
                   rules={{
                     validate: value =>
                       isConfirmPasswordValidate({

@@ -44,15 +44,24 @@ const AdminCategory = () => {
           <div className={css.categoryButtonWrapper}>
             {editable ? (
               <>
-                <Button color="secondary" onClick={handleCancelClick}>
+                <Button
+                  size="medium"
+                  color="secondary"
+                  onClick={handleCancelClick}
+                >
                   Cancel
                 </Button>
-                <Button fill type="submit">
+                <Button fill size="medium" type="submit">
                   Save
                 </Button>
               </>
             ) : (
-              <Button fill onClick={handleEditClick} disabled={isPending}>
+              <Button
+                fill
+                size="medium"
+                onClick={handleEditClick}
+                disabled={isPending}
+              >
                 Edit
               </Button>
             )}

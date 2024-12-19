@@ -37,6 +37,7 @@ const GoogleAuthSignIn = () => {
           <Rhf.Input
             name="password"
             type="password"
+            autoComplete="one-time-code"
             required
             onChange={() => signInForm.clearErrors('password')}
           />
