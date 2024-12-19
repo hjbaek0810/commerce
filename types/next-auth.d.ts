@@ -11,7 +11,7 @@ declare module "next-auth" {
     email: string;
     name: string;
     role?: string;
-    picture: string;
+    image: string;
     exp: number;
     iat: number;
     jti: string;

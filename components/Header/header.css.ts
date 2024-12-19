@@ -31,12 +31,14 @@ export const bar = style({
   width: '100%',
   display: 'flex',
   justifyContent: 'space-between',
+  alignItems: 'center',
   gap: tokens.spacing['spacing-008'],
 });
 
 export const menu = style({
   display: 'flex',
   gap: tokens.spacing['spacing-012'],
+  alignItems: 'center',
   fontSize: tokens.fontSize['font-size-014'],
 });
 

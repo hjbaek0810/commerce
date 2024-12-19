@@ -1,5 +1,4 @@
 'use client';
-
 import {
   faCartShopping,
   faHeart,
@@ -8,6 +7,7 @@ import {
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Image from 'next/image';
 import Link from 'next/link';
 
 import useHeader from '@components/Header/useHeader';
@@ -62,20 +62,38 @@ const Header = ({ list }: HeaderPropsType) => {
         </ul>
 
         <ul className={css.menu}>
-          <li>
-            {session ? (
-              <div className={css.loginInfoWrapper}>
-                <span>{session.user.name}</span>
+          {session && (
+            <>
+              <li>
+                {session.user.image ? (
+                  <Image
+                    style={{
+                      borderRadius: '50%',
+                    }}
+                    width={24}
+                    height={24}
+                    src={session.user.image}
+                    alt="avatar"
+                  />
+                ) : (
+                  session.user.name
+                )}
+              </li>
+              <li>
                 <button type="button" onClick={handleSignOutButtonClick}>
                   <FontAwesomeIcon icon={faRightFromBracket} />
                 </button>
-              </div>
-            ) : (
+              </li>
+            </>
+          )}
+          {!session && (
+            <li>
               <Link href={PATH.SIGN_IN}>
                 <FontAwesomeIcon icon={faRightToBracket} />
               </Link>
-            )}
-          </li>
+            </li>
+          )}
+
           <li>
             <Link href={PATH.MY_ACCOUNT}>
               <FontAwesomeIcon icon={faUser} />

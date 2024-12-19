@@ -78,7 +78,7 @@ export const authOptions: NextAuthOptions = {
             loginId: user?.loginId,
             email: user.email,
             role: user?.role || UserRoleType.USER,
-            picture: user.picture || '',
+            image: user.image || '',
           },
         };
       }
