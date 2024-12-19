@@ -1,7 +1,6 @@
 import { toast } from 'react-toastify';
 
 import {
-  UseQueryResult,
   keepPreviousData,
   useInfiniteQuery,
   useMutation,
@@ -12,7 +11,6 @@ import {
 import { isEmpty } from 'lodash-es';
 import { useSearchParams } from 'next/navigation';
 
-import { cartKeys, cartTags } from '@services/queries/cart/keys';
 import { orderKeys, orderTags } from '@services/queries/order/keys';
 import { productKeys, productTags } from '@services/queries/product/keys';
 import {
@@ -27,7 +25,6 @@ import { deleteImages, uploadImages } from '@services/upload';
 import { fetchData } from '@services/utils/fetch';
 import {
   invalidateQueries,
-  removeQueries,
   resetQueries,
   revalidateTags,
 } from '@services/utils/helper';
@@ -46,7 +43,6 @@ import type {
   AdminProductDetailVO,
   AdminProductVO,
 } from '@api/admin/product/types/vo';
-import type { SearchProduct } from '@api/product/types/dto';
 import type { ProductVO } from '@api/product/types/vo';
 import type { PaginatedResponse } from '@services/utils/types/pagination';
 import type { ProductUseFormType } from 'app/admin/product/components/ProductForm/useProductForm';
@@ -186,10 +182,10 @@ export const useAdminProductMutation = () => {
     onSuccess: async () => {
       await Promise.all([
         revalidateTags([productTags.list]),
-        resetQueries(queryClient, [
-          productKeys.getAll(),
-          productKeys.getAdminAll(),
-        ]),
+        queryClient.invalidateQueries({
+          queryKey: [productKeys.getAdminAll()],
+          refetchType: 'all',
+        }),
       ]);
     },
     onError: () => {
@@ -249,19 +245,14 @@ export const useAdminProductDetailMutation = (id: string) => {
         revalidateTags([
           productTags.list,
           productTags.detail(variables._id),
-          cartTags.all,
           orderTags.all,
         ]),
-        invalidateQueries(queryClient, [
-          productTags.adminDetail(variables._id),
-        ]),
+        queryClient.invalidateQueries({
+          queryKey: [productTags.adminDetail(variables._id)],
+        }),
         resetQueries(queryClient, [
-          productKeys.getAll(),
           productKeys.getAdminAll(),
-          productTags.detail(variables._id),
           orderKeys.getAdminAll(),
-          orderKeys.getAll(),
-          cartKeys.getAll(),
         ]),
       ]);
     },
@@ -285,20 +276,18 @@ export const useAdminProductDeleteMutation = (id: string) => {
         revalidateTags([
           productTags.list,
           productTags.detail(id),
-          cartTags.all,
           orderTags.all,
         ]),
-        resetQueries(queryClient, [
-          productKeys.getAll(),
-          productKeys.getAdminAll(),
-          orderKeys.getAdminAll(),
-          orderKeys.getAll(),
-          cartKeys.getAll(),
-        ]),
-        removeQueries(queryClient, [
-          productTags.detail(id),
-          productTags.adminDetail(id),
-        ]),
+        queryClient.invalidateQueries({
+          queryKey: [productKeys.getAdminAll()],
+          refetchType: 'all',
+        }),
+        queryClient.resetQueries({
+          queryKey: [orderKeys.getAdminAll()],
+        }),
+        queryClient.removeQueries({
+          queryKey: [productTags.adminDetail(id)],
+        }),
       ]);
     },
     onError: () => {

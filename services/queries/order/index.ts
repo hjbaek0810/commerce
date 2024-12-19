@@ -81,7 +81,6 @@ export const useOrderListMutation = () => {
         revalidateTags([
           ...productTagsToRevalidate,
           productTags.list,
-          cartTags.list,
           orderTags.adminList,
         ]),
         queryClient.invalidateQueries({
@@ -107,7 +106,6 @@ export const useOrderStatusMutation = () => {
 
       const productQueriesToInvalidate = variables.productIds.flatMap(id => [
         productKeys.getDetail(id),
-        productKeys.getAdminDetail(id),
       ]);
 
       await Promise.all([
@@ -115,15 +113,15 @@ export const useOrderStatusMutation = () => {
           ...productTagsToRevalidate,
           productTags.list,
           productTags.adminList,
-          cartTags.list,
           orderTags.adminList,
           orderTags.adminDetail(variables._id),
         ]),
-        invalidateQueries(queryClient, [orderKeys.getAll()]),
+        queryClient.invalidateQueries({
+          queryKey: [orderKeys.getAll()],
+        }),
         resetQueries(queryClient, [
           ...productQueriesToInvalidate,
           cartKeys.getAll(),
-          orderKeys.getAdminAll(),
         ]),
       ]);
     },
@@ -148,7 +146,6 @@ export const useAdminOrderStatusMutation = () => {
       ]);
 
       const productQueriesToInvalidate = variables.productIds.flatMap(id => [
-        productKeys.getDetail(id),
         productKeys.getAdminDetail(id),
       ]);
 
@@ -157,19 +154,13 @@ export const useAdminOrderStatusMutation = () => {
           ...productTagsToRevalidate,
           productTags.list,
           productTags.adminList,
-          cartTags.list,
-          orderTags.list,
-          orderTags.detail(variables._id),
         ]),
-        invalidateQueries(queryClient, [
-          orderKeys.getAdminDetail(variables._id),
-        ]),
+        queryClient.invalidateQueries({
+          queryKey: [orderKeys.getAdminDetail(variables._id)],
+        }),
         resetQueries(queryClient, [
           ...productQueriesToInvalidate,
-          orderKeys.getAll(),
           orderKeys.getAdminAll(),
-          orderKeys.getDetail(variables._id),
-          cartKeys.getAll(),
         ]),
       ]);
     },
