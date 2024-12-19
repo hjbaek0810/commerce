@@ -125,7 +125,7 @@ export async function POST(req: NextRequest) {
           message: 'Product not found.',
           code: CartListErrorType.CART_PRODUCT_NOT_FOUND,
         },
-        { status: 400 },
+        { status: 404 },
       );
     }
 
@@ -192,7 +192,6 @@ export async function DELETE(req: NextRequest) {
     const cartList = await CartModel.findOneAndUpdate(
       { _id: userId },
       { $pull: { productIds: { productId: { $in: productIds } } } },
-      { new: true },
     );
 
     if (!cartList) {
@@ -201,7 +200,7 @@ export async function DELETE(req: NextRequest) {
           message: 'Cart not found.',
           code: CartListErrorType.CART_LIST_NOT_FOUND,
         },
-        { status: 400 },
+        { status: 404 },
       );
     }
 

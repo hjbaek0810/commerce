@@ -142,7 +142,6 @@ export async function DELETE(req: NextRequest) {
     const wishList = await WishListModel.findOneAndUpdate(
       { _id: userId },
       { $pull: { productIds: productId } },
-      { new: true },
     );
 
     if (!wishList) {
@@ -151,7 +150,7 @@ export async function DELETE(req: NextRequest) {
           message: 'Wish List Not Found.',
           code: WishListErrorType.WISH_LIST_NOT_FOUND,
         },
-        { status: 400 },
+        { status: 404 },
       );
     }
 
