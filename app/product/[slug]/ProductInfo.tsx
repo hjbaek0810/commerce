@@ -24,7 +24,6 @@ import * as css from './productDetail.css';
 const ProductInfo = ({ id }: { id: string }) => {
   const {
     product,
-    isTop10,
     isWished,
     minusQuantityButtonDisabled,
     addQuantityButtonDisabled,
@@ -55,10 +54,7 @@ const ProductInfo = ({ id }: { id: string }) => {
       </figure>
 
       <div className={css.infoText}>
-        <p className={css.productName}>
-          {name}
-          {isTop10 && <span className={css.bestBadge}>BEST</span>}
-        </p>
+        <p className={css.productName}>{name}</p>
 
         {price && (
           <div className={css.productPriceWrapper}>
