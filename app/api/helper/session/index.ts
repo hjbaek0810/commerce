@@ -19,7 +19,7 @@ type CheckSessionResponse =
 
 export const checkSession = async (
   authOptions: AuthOptions,
-  isAdmin?: boolean,
+  adminOnly?: boolean,
 ): Promise<CheckSessionResponse> => {
   try {
     const session = await getServerSession(authOptions);
@@ -33,7 +33,7 @@ export const checkSession = async (
       };
     }
 
-    if (!isAdmin && session.user.role !== UserRoleType.USER) {
+    if (!adminOnly && session.user.role !== UserRoleType.USER) {
       return {
         isValid: false,
         message: 'Access denied. User role is required.',
@@ -42,7 +42,7 @@ export const checkSession = async (
       };
     }
 
-    if (isAdmin && session.user.role !== UserRoleType.ADMIN) {
+    if (adminOnly && session.user.role !== UserRoleType.ADMIN) {
       return {
         isValid: false,
         message: 'Access denied. Admin role is required.',
