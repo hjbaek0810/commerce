@@ -175,7 +175,7 @@ const ProductForm = ({ savedImages, editable = true }: ProductFormType) => {
               <p className={css.imageDesc}>이미지 10MB를 초과할 수 없습니다.</p>
               <Rhf.FileUpload
                 name="images"
-                multiple
+                // multiple
                 accept="image/*"
                 rules={{
                   validate: validateImage,
