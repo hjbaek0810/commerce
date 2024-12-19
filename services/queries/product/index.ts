@@ -23,11 +23,7 @@ import {
 import { getWishListQueryOptions } from '@services/queries/wish-list/options';
 import { deleteImages, uploadImages } from '@services/upload';
 import { fetchData } from '@services/utils/fetch';
-import {
-  invalidateQueries,
-  resetQueries,
-  revalidateTags,
-} from '@services/utils/helper';
+import { resetQueries, revalidateTags } from '@services/utils/helper';
 import { API } from '@services/utils/path';
 import { ProductSortType } from '@utils/constants/product';
 import usePaginationQueryParams from '@utils/hooks/usePaginationQueryParams';

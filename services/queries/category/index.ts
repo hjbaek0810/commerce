@@ -16,7 +16,11 @@ import type { AdminCreateCategory } from '@api/admin/category/types/dto';
 import type { CategoryVO } from '@api/category/types/vo';
 
 export const useCategoriesQuery = () => {
-  const { data, ...rest } = useQuery(getCategoriesQueryOptions());
+  const { data, ...rest } = useQuery({
+    ...getCategoriesQueryOptions(),
+    staleTime: Infinity,
+    gcTime: 60 * 60 * 1000,
+  });
 
   return {
     ...rest,
@@ -25,7 +29,11 @@ export const useCategoriesQuery = () => {
 };
 
 export const useAdminCategoriesQuery = () => {
-  const { data, ...rest } = useQuery(getAdminCategoriesQueryOptions());
+  const { data, ...rest } = useQuery({
+    ...getAdminCategoriesQueryOptions(),
+    staleTime: Infinity,
+    gcTime: 60 * 60 * 1000,
+  });
 
   return {
     ...rest,

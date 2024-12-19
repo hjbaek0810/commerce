@@ -7,7 +7,7 @@ import {
 } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
 
-import { cartKeys, cartTags } from '@services/queries/cart/keys';
+import { cartKeys } from '@services/queries/cart/keys';
 import { orderKeys, orderTags } from '@services/queries/order/keys';
 import {
   getAdminOrderDetailQueryOptions,
@@ -16,11 +16,7 @@ import {
 } from '@services/queries/order/options';
 import { productKeys, productTags } from '@services/queries/product/keys';
 import { fetchData } from '@services/utils/fetch';
-import {
-  invalidateQueries,
-  resetQueries,
-  revalidateTags,
-} from '@services/utils/helper';
+import { resetQueries, revalidateTags } from '@services/utils/helper';
 import { API } from '@services/utils/path';
 import usePaginationQueryParams from '@utils/hooks/usePaginationQueryParams';
 import { parseQueryParams } from '@utils/query/helper';

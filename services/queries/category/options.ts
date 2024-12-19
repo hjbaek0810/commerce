@@ -10,8 +10,6 @@ export const getCategoriesQueryOptions = () => ({
     fetchData<Array<CategoryVO>>(API.CATEGORY.BASE, 'GET', {
       next: { tags: [categoryTags.all, categoryTags.list] },
     }),
-  staleTime: Infinity,
-  gcTime: 60 * 60 * 1000,
 });
 
 export const getAdminCategoriesQueryOptions = () => ({
@@ -20,6 +18,4 @@ export const getAdminCategoriesQueryOptions = () => ({
     fetchData<Array<CategoryVO>>(API.ADMIN.CATEGORY, 'GET', {
       next: { tags: [categoryTags.all, categoryTags.adminList] },
     }),
-  staleTime: Infinity,
-  gcTime: 60 * 60 * 1000,
 });
