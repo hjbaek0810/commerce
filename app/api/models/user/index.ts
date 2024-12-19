@@ -37,6 +37,7 @@ const UserSchema = new Schema(
       enum: ['ADMIN', 'USER'],
       default: 'USER',
     },
+    telephone: { type: String, required: true },
     postCode: { type: String, default: '' },
     address: { type: String, default: '' },
     subAddress: { type: String, default: '' },

@@ -1,17 +1,25 @@
 export const userKeys = {
   all: [{ entity: 'users' }] as const,
-  getAll: () =>
-    [
-      {
-        ...userKeys.all[0],
-        scope: 'list',
-      },
-    ] as const,
-  getDetail: (userId: string) =>
+  // api 내부에서 session id 조회
+  getDetail: () =>
     [
       {
         ...userKeys.all[0],
         scope: 'item',
+      },
+    ] as const,
+  getAdminAll: () =>
+    [
+      {
+        ...userKeys.all[0],
+        scope: 'admin-list',
+      },
+    ] as const,
+  getAdminDetail: (userId: string) =>
+    [
+      {
+        ...userKeys.all[0],
+        scope: 'admin-item',
         userId,
       },
     ] as const,
@@ -19,6 +27,7 @@ export const userKeys = {
 
 export const userTags = {
   all: 'all-user',
-  list: 'users',
-  detail: (id?: string) => `user-${id}`,
+  detail: 'user',
+  adminList: 'admin-users',
+  adminDetail: (id?: string) => `admin-user-${id}`,
 };

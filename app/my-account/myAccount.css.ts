@@ -9,6 +9,13 @@ export const accountFormWrapper = style({
   alignItems: 'flex-end',
 });
 
+export const passwordWrapper = style({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: tokens.spacing['spacing-004'],
+  alignItems: 'flex-start',
+});
+
 export const buttonWrapper = style({
   display: 'flex',
   gap: tokens.spacing['spacing-004'],

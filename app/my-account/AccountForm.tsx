@@ -8,7 +8,6 @@ import Title from '@components/Title';
 import {
   emailRules,
   isConfirmPasswordValidate,
-  loginIdRules,
   passwordRules,
   telephoneRules,
 } from '@utils/validation';
@@ -23,7 +22,9 @@ const AccountForm = () => {
     editable,
     onlyCustomUserEditable,
     passwordValue,
+    editablePassword,
     isPending,
+    handleUpdatePasswordButtonClick,
     handleTelephoneInput,
     handleCancelClick,
     handleEditClick,
@@ -37,15 +38,24 @@ const AccountForm = () => {
         <div className={css.buttonWrapper}>
           {editable ? (
             <>
-              <Button color="secondary" onClick={handleCancelClick}>
+              <Button
+                size="medium"
+                color="secondary"
+                onClick={handleCancelClick}
+              >
                 Cancel
               </Button>
-              <Button fill type="submit">
+              <Button fill size="medium" type="submit">
                 Save
               </Button>
             </>
           ) : (
-            <Button fill onClick={handleEditClick} disabled={isPending}>
+            <Button
+              fill
+              size="medium"
+              onClick={handleEditClick}
+              disabled={isPending}
+            >
               Edit
             </Button>
           )}
@@ -92,48 +102,64 @@ const AccountForm = () => {
               <>
                 <Table.Tr>
                   <Table.Th scope="row">
-                    <Rhf.Label name="password" required>
-                      새 패스워드
+                    <Rhf.Label name="password" required={editablePassword}>
+                      비밀번호
                     </Rhf.Label>
                   </Table.Th>
                   <Table.Td colSpan={2}>
-                    <Rhf.Input
-                      name="password"
-                      type="password"
-                      required
-                      rules={passwordRules}
-                    />
-                    <Rhf.ErrorMessage name="password" />
+                    <div className={css.passwordWrapper}>
+                      <Button
+                        fill={editablePassword}
+                        onClick={handleUpdatePasswordButtonClick}
+                      >
+                        {editablePassword ? '변경 취소' : '변경하기'}
+                      </Button>
+                      {editablePassword && (
+                        <>
+                          <Rhf.Input
+                            name="password"
+                            type="password"
+                            autoComplete="one-time-code"
+                            required
+                            rules={passwordRules}
+                          />
+                          <Rhf.ErrorMessage name="password" />
+                        </>
+                      )}
+                    </div>
                   </Table.Td>
                 </Table.Tr>
-                <Table.Tr>
-                  <Table.Th scope="row">
-                    <Rhf.Label name="confirmPassword" required>
-                      패스워드 확인
-                    </Rhf.Label>
-                  </Table.Th>
-                  <Table.Td colSpan={2}>
-                    <Rhf.Input
-                      type="password"
-                      name="confirmPassword"
-                      required
-                      rules={{
-                        validate: value =>
-                          isConfirmPasswordValidate({
-                            password: passwordValue,
-                            confirmPassword: value,
-                          }),
-                      }}
-                    />
-                    <Rhf.ErrorMessage name="confirmPassword" />
-                  </Table.Td>
-                </Table.Tr>
+                {editablePassword && (
+                  <Table.Tr>
+                    <Table.Th scope="row">
+                      <Rhf.Label name="confirmPassword" required>
+                        패스워드 확인
+                      </Rhf.Label>
+                    </Table.Th>
+                    <Table.Td colSpan={2}>
+                      <Rhf.Input
+                        type="password"
+                        name="confirmPassword"
+                        required
+                        autoComplete="one-time-code"
+                        rules={{
+                          validate: value =>
+                            isConfirmPasswordValidate({
+                              password: passwordValue || '',
+                              confirmPassword: value,
+                            }),
+                        }}
+                      />
+                      <Rhf.ErrorMessage name="confirmPassword" />
+                    </Table.Td>
+                  </Table.Tr>
+                )}
               </>
             )}
 
             <Table.Tr>
               <Table.Th scope="row">
-                <Rhf.Label name="telephone" required={editable}>
+                <Rhf.Label name="telephone" required={onlyCustomUserEditable}>
                   연락처
                 </Rhf.Label>
               </Table.Th>
@@ -143,7 +169,7 @@ const AccountForm = () => {
                   placeholder="e.g. 010-1234-5678"
                   onInput={handleTelephoneInput}
                   maxLength={PHONE_MAX_LENGTH}
-                  required={editable}
+                  required={onlyCustomUserEditable}
                   rules={telephoneRules}
                   disabled={!editable}
                 />

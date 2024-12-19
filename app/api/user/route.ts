@@ -1,15 +1,66 @@
 import * as bcrypt from 'bcryptjs';
 import { NextResponse } from 'next/server';
 
+import { authOptions } from '@api/auth/[...nextauth]/route';
 import connectDB from '@api/config/connectDB';
+import { checkSession } from '@api/helper/session';
 import UserModel from '@api/models/user';
 
-import type { CreateUser } from '@api/user/types/dto';
+import type { UserModelType } from '@api/models/user';
+import type { CreateUser, UpdateUser } from '@api/user/types/dto';
 import type { NextRequest } from 'next/server';
 
 enum UserErrorCode {
   USER_ALREADY_EXISTS = 'U-001',
   EMAIL_ALREADY_EXISTS = 'U-002',
+  USER_NOT_FOUND = 'U-003',
+}
+
+export async function GET() {
+  try {
+    const sessionCheck = await checkSession(authOptions);
+
+    if (!sessionCheck.isValid) {
+      return NextResponse.json(
+        {
+          message: sessionCheck.message,
+          code: sessionCheck.code,
+        },
+        { status: sessionCheck.status },
+      );
+    }
+
+    await connectDB();
+
+    const user = await UserModel.findById(
+      sessionCheck.userId,
+    ).lean<UserModelType>();
+
+    if (!user) {
+      return NextResponse.json(
+        {
+          message: 'User not found',
+          code: UserErrorCode.USER_NOT_FOUND,
+        },
+        { status: 404 },
+      );
+    }
+
+    const { password, ...userWithoutPassword } = user;
+
+    return NextResponse.json(userWithoutPassword, {
+      status: 200,
+    });
+  } catch (error) {
+    console.error(error);
+
+    return NextResponse.json(
+      {
+        message: 'Failed to load user.',
+      },
+      { status: 500 },
+    );
+  }
 }
 
 export async function POST(req: NextRequest) {
@@ -45,7 +96,7 @@ export async function POST(req: NextRequest) {
       password: await bcrypt.hash(data.password, 10),
     });
 
-    const { password, ...userWithoutPassword } = user._doc;
+    const { password, ...userWithoutPassword } = user.lean();
 
     return NextResponse.json(userWithoutPassword, {
       status: 200,

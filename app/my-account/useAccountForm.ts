@@ -5,21 +5,47 @@ import { useForm, useWatch } from 'react-hook-form';
 import { useSession } from 'next-auth/react';
 
 import FindPostCodeModal from '@components/Modal/templates/FindPostCodeModal';
+import { useMyAccountQuery } from '@services/queries/user';
 import useModals from '@utils/hooks/useModals';
 import { formatPhoneNumber } from '@utils/validation';
 
+import type { UpdateUser } from '@api/user/types/dto';
+
+type AccountUseFormType = UpdateUser & {
+  name?: string;
+  loginId?: string;
+  confirmPassword?: string;
+};
+
 const useAccountForm = () => {
-  const accountForm = useForm();
+  const { data: myInfo } = useMyAccountQuery();
+
+  const defaultValue = {
+    name: myInfo?.name,
+    loginId: myInfo?.loginId,
+    email: myInfo?.email || '',
+    telephone: myInfo?.telephone || '',
+    postCode: myInfo?.postCode || '',
+    address: myInfo?.address || '',
+    subAddress: myInfo?.subAddress || '',
+  };
+
+  const accountForm = useForm<AccountUseFormType>({
+    values: defaultValue,
+  });
+
   const { setValue, control, reset } = accountForm;
-  const { data: session } = useSession();
-  const [editable, setEditable] = useState<boolean>(false);
-
-  const { openModal } = useModals();
-
   const passwordValue = useWatch({
     name: 'password',
     control,
   });
+
+  const { data: session } = useSession();
+
+  const [editablePassword, setEditablePassword] = useState<boolean>(false);
+  const [editable, setEditable] = useState<boolean>(false);
+
+  const { openModal } = useModals();
 
   const isCustomUser = session?.provider === 'credentials';
   const onlyCustomUserEditable = isCustomUser && editable;
@@ -30,7 +56,14 @@ const useAccountForm = () => {
 
   const handleCancelClick = () => {
     setEditable(false);
-    // reset(defaultValue);
+    setEditablePassword(false);
+    reset(defaultValue);
+  };
+
+  const handleUpdatePasswordButtonClick = () => {
+    if (editablePassword) setValue('password', '');
+
+    setEditablePassword(prev => !prev);
   };
 
   const handleTelephoneInput = (event: FormEvent<HTMLInputElement>) => {
@@ -43,6 +76,7 @@ const useAccountForm = () => {
       onSubmit: data => {
         setValue('postCode', data.zonecode);
         setValue('address', data.address);
+        setValue('subAddress', '');
       },
     });
   };
@@ -53,6 +87,8 @@ const useAccountForm = () => {
     editable,
     onlyCustomUserEditable,
     passwordValue,
+    editablePassword,
+    handleUpdatePasswordButtonClick,
     handleTelephoneInput,
     handleCancelClick,
     handleEditClick,
