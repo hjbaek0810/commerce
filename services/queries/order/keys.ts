@@ -18,14 +18,6 @@ export const orderKeys = {
         ...params,
       },
     ] as const,
-  getDetail: (orderId: string) =>
-    [
-      {
-        ...orderKeys.all[0],
-        scope: 'item',
-        orderId,
-      },
-    ] as const,
   getAdminDetail: (orderId: string) =>
     [
       {
@@ -40,6 +32,5 @@ export const orderTags = {
   all: 'all-orders',
   list: 'orders',
   adminList: 'admin-orders',
-  detail: (id?: string) => `order-${id}`,
   adminDetail: (id?: string) => `admin-order-${id}`,
 };

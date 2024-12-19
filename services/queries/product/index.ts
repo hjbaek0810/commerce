@@ -183,7 +183,7 @@ export const useAdminProductMutation = () => {
       await Promise.all([
         revalidateTags([productTags.list]),
         queryClient.invalidateQueries({
-          queryKey: [productKeys.getAdminAll()],
+          queryKey: productKeys.getAdminAll(),
           refetchType: 'all',
         }),
       ]);
@@ -248,7 +248,7 @@ export const useAdminProductDetailMutation = (id: string) => {
           orderTags.all,
         ]),
         queryClient.invalidateQueries({
-          queryKey: [productTags.adminDetail(variables._id)],
+          queryKey: productKeys.getAdminDetail(variables._id || ''),
         }),
         resetQueries(queryClient, [
           productKeys.getAdminAll(),
@@ -279,14 +279,14 @@ export const useAdminProductDeleteMutation = (id: string) => {
           orderTags.all,
         ]),
         queryClient.invalidateQueries({
-          queryKey: [productKeys.getAdminAll()],
+          queryKey: productKeys.getAdminAll(),
           refetchType: 'all',
         }),
         queryClient.resetQueries({
-          queryKey: [orderKeys.getAdminAll()],
+          queryKey: orderKeys.getAdminAll(),
         }),
         queryClient.removeQueries({
-          queryKey: [productTags.adminDetail(id)],
+          queryKey: productKeys.getAdminDetail(id),
         }),
       ]);
     },

@@ -117,7 +117,7 @@ export const useOrderStatusMutation = () => {
           orderTags.adminDetail(variables._id),
         ]),
         queryClient.invalidateQueries({
-          queryKey: [orderKeys.getAll()],
+          queryKey: orderKeys.getAll(),
         }),
         resetQueries(queryClient, [
           ...productQueriesToInvalidate,
@@ -156,7 +156,7 @@ export const useAdminOrderStatusMutation = () => {
           productTags.adminList,
         ]),
         queryClient.invalidateQueries({
-          queryKey: [orderKeys.getAdminDetail(variables._id)],
+          queryKey: orderKeys.getAdminDetail(variables._id),
         }),
         resetQueries(queryClient, [
           ...productQueriesToInvalidate,
