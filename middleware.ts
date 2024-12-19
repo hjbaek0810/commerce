@@ -12,7 +12,11 @@ export async function middleware(request: NextRequest) {
     secret: process.env.NEXTAUTH_SECRET,
   });
 
+  const requestHeaders = new Headers(request.headers);
+
   const { pathname } = request.nextUrl;
+
+  requestHeaders.set('x-current-path', pathname);
 
   const isAdmin = token?.user.role === UserRoleType.ADMIN;
 
@@ -39,7 +43,11 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(PATH.ADMIN.HOME, request.url));
   }
 
-  return NextResponse.next({});
+  return NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  });
 }
 
 export const config = {

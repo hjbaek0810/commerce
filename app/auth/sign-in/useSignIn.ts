@@ -27,6 +27,7 @@ const useSignIn = () => {
 
           if (session?.user.role === UserRoleType.ADMIN) {
             router.push(PATH.ADMIN.HOME);
+            router.refresh();
           } else {
             router.push('/');
           }
