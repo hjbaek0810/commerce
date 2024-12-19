@@ -10,5 +10,6 @@ export const getWishListQueryOptions = (headers?: HeadersInit) => ({
     fetchData<WishListVO>(API.WISH_LIST.BASE, 'GET', {
       headers,
       next: { tags: [wishListTags.all, wishListTags.list] },
+      cache: 'no-store',
     }),
 });

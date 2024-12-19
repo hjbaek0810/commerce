@@ -10,5 +10,6 @@ export const getMyAccountQueryOptions = (headers?: HeadersInit) => ({
     fetchData<UserVO>(API.USER.BASE, 'GET', {
       headers,
       next: { tags: [userTags.all, userTags.detail] },
+      cache: 'no-store',
     }),
 });

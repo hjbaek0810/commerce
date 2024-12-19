@@ -10,5 +10,6 @@ export const getCartListQueryOptions = (headers?: HeadersInit) => ({
     fetchData<CartListVO>(API.CART.BASE, 'GET', {
       headers,
       next: { tags: [cartTags.all, cartTags.list] },
+      cache: 'no-store',
     }),
 });

@@ -21,6 +21,7 @@ export const getOrderListInfiniteQueryOptions = (headers?: HeadersInit) => ({
       {
         headers,
         next: { tags: [orderTags.all, orderTags.list] },
+        cache: 'no-store',
       },
     ),
   getNextPageParam: (lastPage: PaginatedResponse<'orders', OrderVO>) => {

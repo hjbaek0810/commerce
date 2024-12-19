@@ -6,6 +6,7 @@ type FetchDataOptionsType<U> = {
   data?: U;
   headers?: HeadersInit;
   next?: NextFetchRequestConfig;
+  cache?: 'no-store' | 'force-cache' | 'no-cache';
 };
 
 export async function fetchData<T, U = unknown>(
@@ -34,6 +35,7 @@ export async function fetchData<T, U = unknown>(
     method,
     headers,
     next: options.next,
+    cache: options.cache,
   };
 
   if (options.data && method !== 'GET') {
