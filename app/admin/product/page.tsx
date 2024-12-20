@@ -8,7 +8,7 @@ import useAdminProductList from '@app/admin/product/useAdminProductList';
 import Button from '@components/Button';
 import Rhf from '@components/Form';
 import Pagination from '@components/Pagination';
-import { Table } from '@components/Table';
+import { Table, TableBadge } from '@components/Table';
 import Title from '@components/Title';
 import { sprinkles } from '@styles/sprinkles.css';
 import {
@@ -166,6 +166,7 @@ const ProductList = () => {
 
         {/* result */}
         <div>
+          <TableBadge>{`Total: ${formatNumber(paginationProps.totalCount)}`}</TableBadge>
           <Table>
             <Table.Header>
               <Table.Tr>

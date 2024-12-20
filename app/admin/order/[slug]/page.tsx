@@ -54,7 +54,8 @@ const AdminOrderDetail = () => {
 
   return (
     <>
-      <Title>주문 관리</Title>
+      <Title showBackButton>주문 관리</Title>
+
       <div className={css.orderWrapper}>
         <div className={css.orderManageWrapper}>
           <div className={css.orderInfoWrapper}>

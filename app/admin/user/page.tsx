@@ -101,6 +101,16 @@ const AdminUsers = () => {
           </Table.Tr>
         </Table.Header>
         <Table.Body>
+          {users.length === 0 && (
+            <Table.Tr>
+              <Table.Td
+                colSpan={5}
+                className={sprinkles({ textAlign: 'center' })}
+              >
+                no data available
+              </Table.Td>
+            </Table.Tr>
+          )}
           {users.map(
             ({
               _id,

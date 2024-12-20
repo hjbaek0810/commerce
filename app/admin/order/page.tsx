@@ -5,7 +5,7 @@ import Button from '@components/Button';
 import Rhf from '@components/Form';
 import OrderStatusBadge from '@components/OrderStatusBadge';
 import Pagination from '@components/Pagination';
-import { Table } from '@components/Table';
+import { Table, TableBadge } from '@components/Table';
 import Title from '@components/Title';
 import { sprinkles } from '@styles/sprinkles.css';
 import { OrderSortType } from '@utils/constants/order';
@@ -101,46 +101,52 @@ const AdminOrder = () => {
           </div>
         </Rhf.Form>
 
-        <Table>
-          <Table.Header>
-            <Table.Tr>
-              <Table.Th>주문번호</Table.Th>
-              <Table.Th>주문자번호</Table.Th>
-              <Table.Th>주문자</Table.Th>
-              <Table.Th>주문건</Table.Th>
-              <Table.Th>주문상태</Table.Th>
-              <Table.Th>주문날짜</Table.Th>
-            </Table.Tr>
-          </Table.Header>
-          <Table.Body>
-            {orderList.length === 0 && (
+        <div>
+          <TableBadge>{`Total: ${formatNumber(paginationProps.totalCount)}`}</TableBadge>
+          <Table>
+            <Table.Header>
               <Table.Tr>
-                <Table.Td
-                  colSpan={6}
-                  className={sprinkles({ textAlign: 'center' })}
-                >
-                  no data available
-                </Table.Td>
+                <Table.Th>주문번호</Table.Th>
+                <Table.Th>주문자번호</Table.Th>
+                <Table.Th>주문자</Table.Th>
+                <Table.Th>주문건</Table.Th>
+                <Table.Th>주문상태</Table.Th>
+                <Table.Th>주문날짜</Table.Th>
               </Table.Tr>
-            )}
-
-            {orderList.map(
-              ({ _id, userId, username, items, status, createdAt }) => (
-                <Table.Tr key={_id} onClick={() => handleGoToOrderDetail(_id)}>
-                  <Table.Td>{_id}</Table.Td>
-                  <Table.Td>{userId}</Table.Td>
-                  <Table.Td>{username}</Table.Td>
-                  <Table.Td>{formatNumber(items.length)}</Table.Td>
-                  <Table.Td>
-                    <OrderStatusBadge status={status} size="small" />
+            </Table.Header>
+            <Table.Body>
+              {orderList.length === 0 && (
+                <Table.Tr>
+                  <Table.Td
+                    colSpan={6}
+                    className={sprinkles({ textAlign: 'center' })}
+                  >
+                    no data available
                   </Table.Td>
-                  <Table.Td>{formatDateTime(createdAt)}</Table.Td>
                 </Table.Tr>
-              ),
-            )}
-          </Table.Body>
-        </Table>
-        <Pagination {...paginationProps} />
+              )}
+
+              {orderList.map(
+                ({ _id, userId, username, items, status, createdAt }) => (
+                  <Table.Tr
+                    key={_id}
+                    onClick={() => handleGoToOrderDetail(_id)}
+                  >
+                    <Table.Td>{_id}</Table.Td>
+                    <Table.Td>{userId}</Table.Td>
+                    <Table.Td>{username}</Table.Td>
+                    <Table.Td>{formatNumber(items.length)}</Table.Td>
+                    <Table.Td>
+                      <OrderStatusBadge status={status} size="small" />
+                    </Table.Td>
+                    <Table.Td>{formatDateTime(createdAt)}</Table.Td>
+                  </Table.Tr>
+                ),
+              )}
+            </Table.Body>
+          </Table>
+          <Pagination {...paginationProps} />
+        </div>
       </div>
     </>
   );

@@ -17,6 +17,7 @@ import type {
   UpdateAdminOrder,
 } from '@api/admin/order/types/dto';
 import type { OrderModelType } from '@api/models/order';
+import type { SortCriteria } from '@api/types';
 import type { FilterQuery } from 'mongoose';
 import type { NextRequest } from 'next/server';
 
@@ -74,7 +75,7 @@ export async function GET(req: NextRequest) {
       },
     ];
 
-    const sortOptions: Record<string, 1 | -1> = {
+    const sortOptions: SortCriteria = {
       createdAt: sort === OrderSortType.NEWEST ? -1 : 1,
     };
 

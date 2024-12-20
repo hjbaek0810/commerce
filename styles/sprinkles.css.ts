@@ -14,7 +14,8 @@ const displayProperties = defineProperties({
       'space-around',
       'space-evenly',
     ],
-    alignItems: ['center', 'flex-start', 'flex-end'],
+    alignItems: ['flex-start', 'center', 'flex-end'],
+    alignSelf: ['flex-start', 'center', 'flex-end'],
   },
 });
 

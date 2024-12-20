@@ -1,6 +1,8 @@
 import type { FormEvent } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { useSearchParams } from 'next/navigation';
+
 import { useAdminUsersQuery } from '@services/queries/user';
 import { UserSortType } from '@utils/constants/user';
 import { formatPhoneNumber } from '@utils/validation/telephone';
@@ -13,7 +15,17 @@ const useAdminUsers = () => {
     paginationProps,
     handleSearchParamsChange,
   } = useAdminUsersQuery();
-  const searchUserForm = useForm<AdminSearchUser>();
+  const searchParams = useSearchParams();
+
+  const searchUserForm = useForm<AdminSearchUser>({
+    values: {
+      name: searchParams.get('name') || '',
+      loginId: searchParams.get('loginId') || '',
+      email: searchParams.get('email') || '',
+      telephone: searchParams.get('telephone') || '',
+      sort: (searchParams.get('sort') as UserSortType) || UserSortType.NAME_ASC,
+    },
+  });
   const { reset, setValue } = searchUserForm;
 
   const handleTelephoneInput = (event: FormEvent<HTMLInputElement>) => {

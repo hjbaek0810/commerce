@@ -45,8 +45,8 @@ export const title = recipe({
 });
 
 export const backButton = style({
-  width: tokens.sizing['sizing-024'],
-  height: tokens.sizing['sizing-024'],
+  width: tokens.sizing['sizing-028'],
+  height: tokens.sizing['sizing-028'],
 });
 
 export const backButtonIcon = style({

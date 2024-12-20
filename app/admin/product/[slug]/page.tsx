@@ -59,13 +59,10 @@ const ProductDetail = () => {
         <div
           className={sprinkles({
             display: 'flex',
-            justifyContent: 'space-between',
+            justifyContent: 'flex-end',
             marginTop: 'spacing-040',
           })}
         >
-          <Button size="large" onClick={handleBackClick} disabled={isPending}>
-            돌아가기
-          </Button>
           <Button
             size="large"
             fill

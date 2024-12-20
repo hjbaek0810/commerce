@@ -135,7 +135,7 @@ const ProductForm = ({ savedImages, editable = true }: ProductFormType) => {
               }}
               disabled={!editable}
             >
-              {subCategories?.map(sub => (
+              {subCategories.map(sub => (
                 <Rhf.RadioOption key={sub._id} value={sub._id}>
                   {sub.name}
                 </Rhf.RadioOption>
