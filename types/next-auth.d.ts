@@ -5,14 +5,19 @@ import "next-auth/jwt";
 
 declare module "next-auth" {
   interface User {
-    id?: string; // google
-    _id?: string; // db
-    loginId?: string;
-    email?: string; // google
-    contactEmail?: string; // db
+    _id: ObjectId | string;
+    loginId: string;
+    password: string | null;
+    email: string;
+    contactEmail: string;
     name: string;
-    role?: string;
+    role: 'ADMIN'  | 'USER';
     image: string;
+    loginType: 'CREDENTIALS' | 'GOOGLE';
+    telephone: string;
+    postCode: string;
+    address: string;
+    subAddress: string;
     exp: number;
     iat: number;
     jti: string;

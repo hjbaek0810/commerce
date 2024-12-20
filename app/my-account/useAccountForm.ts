@@ -4,7 +4,6 @@ import { useForm, useWatch } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
 import { useQueryClient } from '@tanstack/react-query';
-import { useSession } from 'next-auth/react';
 
 import FindPostCodeModal from '@components/Modal/templates/FindPostCodeModal';
 import {
@@ -12,6 +11,7 @@ import {
   useMyAccountQuery,
 } from '@services/queries/user';
 import { userKeys } from '@services/queries/user/keys';
+import { UserLoginType } from '@utils/constants/user';
 import useModals from '@utils/hooks/useModals';
 import { formatPhoneNumber } from '@utils/validation';
 
@@ -29,20 +29,18 @@ const useAccountForm = () => {
   const { mutate: updateMyAccount, isPending } = useMyAccountMutation();
   const queryClient = useQueryClient();
 
-  const { data: session } = useSession();
-
   const [editablePassword, setEditablePassword] = useState<boolean>(false);
   const [editable, setEditable] = useState<boolean>(false);
 
   const { openModal } = useModals();
 
-  const isCustomUser = session?.provider === 'credentials';
+  const isCustomUser = myInfo?.loginType === UserLoginType.CREDENTIALS;
   const onlyCustomUserEditable = isCustomUser && editable;
 
   const defaultValue = {
     name: myInfo?.name,
     loginId: myInfo?.loginId,
-    contactEmail: isCustomUser ? myInfo?.contactEmail : myInfo?.email || '',
+    email: myInfo?.email || '',
     telephone: myInfo?.telephone || '',
     postCode: myInfo?.postCode || '',
     address: myInfo?.address || '',
@@ -91,13 +89,12 @@ const useAccountForm = () => {
   };
 
   const handleUpdateMyAccount = (data: AccountUseFormType) => {
-    const { name, loginId, confirmPassword, contactEmail, ...requestData } =
-      data;
+    const { name, loginId, confirmPassword, email, ...requestData } = data;
 
     updateMyAccount(
       {
         ...requestData,
-        ...(isCustomUser && { contactEmail }),
+        ...(isCustomUser && { email }),
       },
       {
         onSuccess: () => {

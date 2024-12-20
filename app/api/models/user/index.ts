@@ -8,19 +8,10 @@ const UserSchema = new Schema(
       type: String,
       require: true,
     },
-    email: {
-      type: String,
-      unique: true,
-    },
     image: {
       type: String,
       default: '',
     },
-    emailVerified: {
-      type: Boolean,
-      default: null,
-    },
-    // New
     loginId: {
       type: String,
       unique: true,
@@ -39,10 +30,20 @@ const UserSchema = new Schema(
       enum: ['ADMIN', 'USER'],
       default: 'USER',
     },
-    telephone: { type: String, required: true },
-    postCode: { type: String },
-    address: { type: String },
-    subAddress: { type: String },
+    loginType: {
+      type: String,
+      enum: ['CREDENTIALS', 'GOOGLE'],
+      default: 'CREDENTIALS',
+      required: true,
+    },
+    telephone: { type: String, required: true, default: '' },
+    postCode: { type: String, default: '' },
+    address: { type: String, default: '' },
+    subAddress: { type: String, default: '' },
+    emailVerified: {
+      type: Boolean,
+      default: null,
+    },
   },
   { collection: 'users' },
 );

@@ -82,13 +82,13 @@ const SignUp = () => {
             </Table.Tr>
             <Table.Tr>
               <Table.Th scope="row">
-                <Rhf.Label name="contactEmail" required>
+                <Rhf.Label name="email" required>
                   이메일
                 </Rhf.Label>
               </Table.Th>
               <Table.Td colSpan={2}>
-                <Rhf.Input name="contactEmail" required rules={emailRules} />
-                <Rhf.ErrorMessage name="contactEmail" />
+                <Rhf.Input name="email" required rules={emailRules} />
+                <Rhf.ErrorMessage name="email" />
               </Table.Td>
             </Table.Tr>
             <Table.Tr>

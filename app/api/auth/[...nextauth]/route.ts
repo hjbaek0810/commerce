@@ -6,7 +6,7 @@ import GoogleProvider from 'next-auth/providers/google';
 import client from '@api/config/client';
 import { fetchData } from '@services/utils/fetch';
 import { API } from '@services/utils/path';
-import { UserRoleType } from '@utils/constants/user';
+import { UserLoginType, UserRoleType } from '@utils/constants/user';
 
 import type { SignInUser } from '@api/auth/sign-in/types/dto';
 import type { NextAuthOptions, User } from 'next-auth';
@@ -60,6 +60,22 @@ export const authOptions: NextAuthOptions = {
     maxAge: 60 * 60 * 24, // 1day
   },
   callbacks: {
+    async signIn({ user, account }) {
+      if (account && account.provider === 'google') {
+        // add db
+        user.password = null;
+        user.role = UserRoleType.USER;
+        user.loginId = user.email;
+        user.contactEmail = user.email;
+        user.loginType = UserLoginType.GOOGLE;
+        user.postCode = '';
+        user.address = '';
+        user.subAddress = '';
+        user.telephone = '';
+      }
+
+      return true;
+    },
     async jwt({ token, user, account }) {
       // TODO: 소셜 로그인이 아닌 경우 token 관리 & id가 아닌 token을 이용한 api 호출
       if (account) {
@@ -75,9 +91,10 @@ export const authOptions: NextAuthOptions = {
           user: {
             id: user?.id || user?._id,
             name: user.name,
-            loginId: user?.loginId,
-            email: user?.email || user?.contactEmail,
-            role: user?.role || UserRoleType.USER,
+            loginId: user.loginId,
+            email: user.contactEmail,
+            role: user.role || UserRoleType.USER,
+            loginType: user.loginType,
             image: user.image || '',
           },
         };

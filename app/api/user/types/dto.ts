@@ -1,8 +1,8 @@
-import type { UserRoleType } from '@utils/constants/user';
+import type { UserLoginType, UserRoleType } from '@utils/constants/user';
 
 export type CreateUser = {
   name: string;
-  contactEmail: string;
+  email: string;
   loginId: string;
   password: string;
   role: UserRoleType;
@@ -10,10 +10,11 @@ export type CreateUser = {
   postCode?: string;
   address?: string;
   subAddress?: string;
+  loginType: UserLoginType;
 };
 
 export type UpdateUser = {
-  contactEmail?: string;
+  email?: string;
   password?: string;
   telephone?: string;
   postCode?: string;

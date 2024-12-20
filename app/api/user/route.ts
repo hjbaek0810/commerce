@@ -48,9 +48,14 @@ export async function GET() {
       );
     }
 
-    return NextResponse.json(user, {
-      status: 200,
-    });
+    const { contactEmail, ...restUserInfo } = user;
+
+    return NextResponse.json(
+      { email: contactEmail, ...restUserInfo },
+      {
+        status: 200,
+      },
+    );
   } catch (error) {
     console.error(error);
 
@@ -80,18 +85,27 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const { email, ...restData } = data;
+
     const user = await UserModel.create({
-      ...data,
+      ...restData,
+      contactEmail: data.email,
       password: await bcrypt.hash(data.password, 10),
     });
 
-    const { password, ...userWithoutPassword } = user._doc;
+    const { password, contactEmail, ...restUserInfo } = user._doc;
 
     revalidateTag(userTags.adminList);
 
-    return NextResponse.json(userWithoutPassword, {
-      status: 200,
-    });
+    return NextResponse.json(
+      {
+        ...restUserInfo,
+        email: contactEmail,
+      },
+      {
+        status: 200,
+      },
+    );
   } catch (error) {
     console.error(error);
 
@@ -121,9 +135,10 @@ export async function PUT(req: NextRequest) {
     await connectDB();
 
     const data: UpdateUser = await req.json();
+    const { email, ...restData } = data;
 
     const updatedUser = await UserModel.findByIdAndUpdate(sessionCheck.userId, {
-      $set: data,
+      $set: { ...restData, ...(email && { contactEmail: email }) },
     });
 
     if (!updatedUser) {

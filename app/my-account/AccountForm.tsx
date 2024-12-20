@@ -89,21 +89,18 @@ const AccountForm = () => {
 
             <Table.Tr>
               <Table.Th scope="row">
-                <Rhf.Label
-                  name="contactEmail"
-                  required={onlyCustomUserEditable}
-                >
-                  이메일
+                <Rhf.Label name="email" required={onlyCustomUserEditable}>
+                  {isCustomUser ? '이메일' : '아이디(이메일)'}
                 </Rhf.Label>
               </Table.Th>
               <Table.Td colSpan={2}>
                 <Rhf.Input
-                  name="contactEmail"
+                  name="email"
                   required={onlyCustomUserEditable}
                   rules={emailRules}
                   disabled={!onlyCustomUserEditable}
                 />
-                <Rhf.ErrorMessage name="contactEmail" />
+                <Rhf.ErrorMessage name="email" />
               </Table.Td>
             </Table.Tr>
             {onlyCustomUserEditable && (
