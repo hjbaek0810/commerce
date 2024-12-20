@@ -1,6 +1,7 @@
 import { productKeys, productTags } from '@services/queries/product/keys';
 import { fetchData } from '@services/utils/fetch';
 import { API } from '@services/utils/path';
+import { ProductSortType } from '@utils/constants/product';
 import { createQueryString } from '@utils/query/helper';
 
 import type { SearchAdminProduct } from '@api/admin/product/types/dto';
@@ -14,7 +15,6 @@ import type {
   PaginatedResponse,
   PaginationQueryParamsType,
 } from '@services/utils/types/pagination';
-import type { ProductSortType } from '@utils/constants/product';
 
 const PRODUCT_LIST_LIMIT_ITEM = 12;
 
@@ -38,13 +38,18 @@ export const getSortedProductListQueryOptions = (sort: ProductSortType) => ({
 export const getProductListInfiniteQueryOptions = (
   searchParams: PaginationQueryParamsType<SearchProduct>,
 ) => ({
-  queryKey: productKeys.getAll(searchParams),
+  queryKey: productKeys.getAll({
+    ...searchParams,
+    limit: PRODUCT_LIST_LIMIT_ITEM,
+    sort: searchParams.sort || ProductSortType.NEWEST,
+  }),
   queryFn: ({ pageParam = 1 }) =>
     fetchData<PaginatedResponse<'products', ProductVO>>(
       createQueryString(API.PRODUCT.BASE, {
         ...searchParams,
         page: pageParam,
         limit: PRODUCT_LIST_LIMIT_ITEM,
+        sort: searchParams.sort,
       }),
       'GET',
       { next: { tags: [productTags.all, productTags.list] } },
@@ -80,12 +85,15 @@ export const getAdminProductListQueryOptions = ({
     ...searchParams,
     page,
     limit,
+    sort: searchParams.sort || ProductSortType.NEWEST,
   }),
   queryFn: () =>
     fetchData<PaginatedResponse<'products', AdminProductVO>>(
       createQueryString(API.ADMIN.PRODUCT.BASE, {
+        ...searchParams,
         page,
         limit,
+        sort: searchParams.sort,
       }),
       'GET',
       { next: { tags: [productTags.all, productTags.adminList] } },
