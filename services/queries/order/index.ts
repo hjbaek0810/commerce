@@ -38,6 +38,7 @@ export const useOrderListInfiniteQuery = () => {
 export const useAdminOrderListQuery = () => {
   const searchParams = useSearchParams();
   const queryParams = parseQueryParams(searchParams);
+
   const { paginationProps, handleSearchParamsChange } =
     usePaginationQueryParams();
 
@@ -48,6 +49,7 @@ export const useAdminOrderListQuery = () => {
       limit: paginationProps.currentLimit,
     }),
     placeholderData: keepPreviousData,
+    enabled: !!searchParams,
   });
 
   return {

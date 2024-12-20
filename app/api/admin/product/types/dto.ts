@@ -1,9 +1,13 @@
-import type { ProductStatusType } from '@utils/constants/product';
+import type {
+  ProductSortType,
+  ProductStatusType,
+} from '@utils/constants/product';
 
 export type SearchAdminProduct = {
   category?: string;
   subCategory?: string;
   name?: string;
+  sort?: ProductSortType;
 };
 
 export type CreateAdminProduct = {

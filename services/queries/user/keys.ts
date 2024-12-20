@@ -1,3 +1,6 @@
+import type { AdminSearchUser } from '@api/admin/user/types/dto';
+import type { PaginationQueryParamsType } from '@services/utils/types/pagination';
+
 export const userKeys = {
   all: [{ entity: 'users' }] as const,
   // api 내부에서 session id 조회
@@ -8,11 +11,12 @@ export const userKeys = {
         scope: 'item',
       },
     ] as const,
-  getAdminAll: () =>
+  getAdminAll: (params?: PaginationQueryParamsType<AdminSearchUser>) =>
     [
       {
         ...userKeys.all[0],
         scope: 'admin-list',
+        ...params,
       },
     ] as const,
   getAdminDetail: (userId: string) =>

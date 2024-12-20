@@ -76,6 +76,7 @@ export const useAdminProductListQuery = () => {
       limit: paginationProps.currentLimit,
     }),
     placeholderData: keepPreviousData,
+    enabled: !!searchParams,
   });
 
   return {

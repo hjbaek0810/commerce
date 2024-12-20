@@ -1,4 +1,4 @@
-import type { SearchAdminProduct } from '@api/admin/product/types/dto';
+import type { SearchAdminOrder } from '@api/admin/order/types/dto';
 import type { PaginationQueryParamsType } from '@services/utils/types/pagination';
 
 export const orderKeys = {
@@ -10,7 +10,7 @@ export const orderKeys = {
         scope: 'list',
       },
     ] as const,
-  getAdminAll: (params?: PaginationQueryParamsType<SearchAdminProduct>) =>
+  getAdminAll: (params?: PaginationQueryParamsType<SearchAdminOrder>) =>
     [
       {
         ...orderKeys.all[0],

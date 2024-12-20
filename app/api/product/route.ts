@@ -2,14 +2,14 @@ import mongoose from 'mongoose';
 import { NextResponse } from 'next/server';
 
 import connectDB from '@api/config/connectDB';
+import { shouldFilterKey } from '@api/helper/filter';
 import ProductModel from '@api/models/product';
 import { ProductSortType, ProductStatusType } from '@utils/constants/product';
 
 import type { SearchProduct } from './types/dto';
+import type { SortCriteria } from '@api/types';
 import type { FilterQuery } from 'mongoose';
 import type { NextRequest } from 'next/server';
-
-type SortCriteria = Record<string, 1 | -1>;
 
 export async function GET(req: NextRequest) {
   try {
@@ -46,13 +46,7 @@ export async function GET(req: NextRequest) {
     const filters: FilterQuery<SearchProduct> = {};
 
     searchParams.forEach((value, key) => {
-      if (
-        value &&
-        key !== 'page' &&
-        key !== 'limit' &&
-        key !== 'sort' &&
-        key !== 'hiddenSoldOut'
-      ) {
+      if (shouldFilterKey(key, value, ['hiddenSoldOut'])) {
         switch (key) {
           case 'category':
             filters['categoryIds._id'] = new mongoose.Types.ObjectId(value);

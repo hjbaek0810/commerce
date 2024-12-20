@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 
 import { authOptions } from '@api/auth/[...nextauth]/route';
 import connectDB from '@api/config/connectDB';
+import { shouldFilterKey } from '@api/helper/filter';
 import { checkSession } from '@api/helper/session';
 import OrderModel from '@api/models/order';
 import ProductModel from '@api/models/product';
@@ -50,13 +51,7 @@ export async function GET(req: NextRequest) {
     const filters: FilterQuery<SearchAdminOrder> = {};
 
     searchParams.forEach((value, key) => {
-      if (
-        value &&
-        key !== 'page' &&
-        key !== 'limit' &&
-        key !== 'sort' &&
-        key !== 'username'
-      ) {
+      if (shouldFilterKey(key, value, ['username'])) {
         filters[key] = value;
       }
     });
