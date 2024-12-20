@@ -68,10 +68,10 @@ export const authOptions: NextAuthOptions = {
         user.loginId = user.email;
         user.contactEmail = user.email;
         user.loginType = UserLoginType.GOOGLE;
-        user.postCode = '';
-        user.address = '';
-        user.subAddress = '';
-        user.telephone = '';
+        user.postCode = user?.postCode || '';
+        user.address = user?.address || '';
+        user.subAddress = user?.subAddress || '';
+        user.telephone = user?.telephone || '';
       }
 
       return true;
