@@ -36,6 +36,12 @@ const ADMIN_LIST: Array<SideMenuListType> = [
       path: PATH.ADMIN.ORDER.LIST,
     },
   },
+  {
+    title: 'Users',
+    href: {
+      path: PATH.ADMIN.USER.LIST,
+    },
+  },
 ];
 
 const AdminSideMenu = () => {

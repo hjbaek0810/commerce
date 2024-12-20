@@ -3,6 +3,7 @@ import { recipe } from '@vanilla-extract/recipes';
 
 import { ColorPalettes } from '@styles/palette';
 import { sprinkles } from '@styles/sprinkles.css';
+import { tokens } from '@styles/token.css';
 
 export const root = style({
   width: '100%',
@@ -61,4 +62,17 @@ export const tr = recipe({
       false: {},
     },
   },
+});
+
+export const tableBadge = style({
+  display: 'inline-block',
+  width: '20%',
+  paddingTop: tokens.spacing['spacing-012'],
+  paddingBottom: tokens.spacing['spacing-008'],
+  backgroundColor: '#eae5dd',
+  fontSize: tokens.fontSize['font-size-014'],
+  fontWeight: 600,
+  textAlign: 'center',
+  borderTopLeftRadius: '10px',
+  borderTopRightRadius: '10px',
 });

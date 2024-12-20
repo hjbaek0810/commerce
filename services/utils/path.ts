@@ -16,6 +16,9 @@ export const API = {
       BASE: 'admin/order',
       DETAIL: (orderId: string) => `admin/order/${orderId}`,
     },
+    USER: {
+      BASE: 'admin/user',
+    },
   },
   CATEGORY: {
     BASE: 'category',
@@ -33,5 +36,4 @@ export const API = {
   ORDER: {
     BASE: 'order',
   },
-  REVALIDATE: (tag: string) => `revalidate?tag=${tag}`,
 };

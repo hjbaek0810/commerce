@@ -70,6 +70,10 @@ const TableTr = ({
   </tr>
 );
 
+export const TableBadge = ({ children }: PropsWithChildren) => (
+  <span className={css.tableBadge}>{children}</span>
+);
+
 export const Table = Object.assign(TableRoot, {
   Header: TableHeader,
   Th: TableTh,

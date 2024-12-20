@@ -3,14 +3,17 @@ import { NextResponse } from 'next/server';
 
 import { authOptions } from '@api/auth/[...nextauth]/route';
 import connectDB from '@api/config/connectDB';
+import { shouldFilterKey } from '@api/helper/filter';
 import { checkSession } from '@api/helper/session';
 import CategoryModel from '@api/models/category';
 import ProductModel from '@api/models/product';
 import SubCategoryModel from '@api/models/subCategory';
 import { productTags } from '@services/queries/product/keys';
+import { ProductSortType } from '@utils/constants/product';
 
 import type { CreateAdminProduct, SearchAdminProduct } from './types/dto';
 import type { ProductModelType } from '@api/models/product';
+import type { SortCriteria } from '@api/types';
 import type { FilterQuery } from 'mongoose';
 import type { NextRequest } from 'next/server';
 
@@ -75,11 +78,32 @@ export async function GET(req: NextRequest) {
 
     const pageNumber = Number(searchParams.get('page'));
     const limitNumber = Number(searchParams.get('limit'));
+    const sort = searchParams.get('sort') || ProductSortType.NEWEST;
+
+    let sortCriteria: SortCriteria = { createdAt: -1 }; // 기본값: 최신 순
+
+    switch (sort) {
+      case ProductSortType.NEWEST:
+        sortCriteria = { createdAt: -1 };
+        break;
+      case ProductSortType.OLDEST:
+        sortCriteria = { createdAt: 1 };
+        break;
+      case ProductSortType.POPULARITY:
+        sortCriteria = { views: -1 };
+        break;
+      case ProductSortType.PRICE_HIGH:
+        sortCriteria = { effectivePrice: -1 };
+        break;
+      case ProductSortType.PRICE_LOW:
+        sortCriteria = { effectivePrice: 1 };
+        break;
+    }
 
     const filters: FilterQuery<SearchAdminProduct> = {};
 
     searchParams.forEach((value, key) => {
-      if (value && key !== 'page' && key !== 'limit') {
+      if (shouldFilterKey(key, value)) {
         switch (key) {
           case 'category':
             filters['categoryIds._id'] = value;
@@ -97,7 +121,7 @@ export async function GET(req: NextRequest) {
     const products = await ProductModel.find(filters)
       .limit(limitNumber)
       .skip((pageNumber - 1) * limitNumber)
-      .sort('-createdAt')
+      .sort(sortCriteria)
       .populate({
         path: 'categoryIds._id',
         select: 'name',

@@ -1,6 +1,7 @@
 const ADMIN_HOME = '/admin';
 const PRODUCT = '/product';
 const ORDER = '/order';
+const USER = '/user';
 
 export const PATH = {
   SIGN_IN: '/auth/sign-in',
@@ -16,6 +17,9 @@ export const PATH = {
     ORDER: {
       LIST: ADMIN_HOME + ORDER,
       DETAIL: (orderId: string) => ADMIN_HOME + ORDER + `/${orderId}`,
+    },
+    USER: {
+      LIST: ADMIN_HOME + USER,
     },
   },
   PRODUCT: {
