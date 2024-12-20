@@ -11,6 +11,7 @@ import {
 import { isEmpty } from 'lodash-es';
 import { useSearchParams } from 'next/navigation';
 
+import { getCategoriesQueryOptions } from '@services/queries/category/options';
 import { orderKeys } from '@services/queries/order/keys';
 import { productKeys } from '@services/queries/product/keys';
 import {
@@ -64,28 +65,45 @@ async function uploadImagesAndGetUrls(
   }
 }
 
-export const useAdminProductListQuery = () => {
+export const useAdminProductListWithCategoryQueries = () => {
   const searchParams = useSearchParams();
   const queryParams = parseQueryParams(searchParams);
-  const { paginationProps } = usePaginationQueryParams();
+  const { paginationProps, handleSearchParamsChange } =
+    usePaginationQueryParams();
 
-  const { data, ...rest } = useQuery({
-    ...getAdminProductListQueryOptions({
-      searchParams: queryParams,
-      page: paginationProps.currentPage,
-      limit: paginationProps.currentLimit,
-    }),
-    placeholderData: keepPreviousData,
-    enabled: !!searchParams,
+  const [products, categories] = useQueries({
+    queries: [
+      {
+        ...getAdminProductListQueryOptions({
+          searchParams: queryParams,
+          page: paginationProps.currentPage,
+          limit: paginationProps.currentLimit,
+        }),
+        placeholderData: keepPreviousData,
+        enabled: !!searchParams,
+      },
+      {
+        ...getCategoriesQueryOptions(),
+        staleTime: Infinity,
+        gcTime: 60 * 60 * 1000,
+      },
+    ],
   });
 
   return {
-    ...rest,
-    data: data?.products || [],
-    paginationProps: {
-      ...paginationProps,
-      totalCount: data?.totalCount || 0,
+    products: {
+      ...products,
+      data: products?.data?.products || [],
+      paginationProps: {
+        ...paginationProps,
+        totalCount: products?.data?.totalCount || 0,
+      },
     },
+    categories: {
+      ...categories,
+      data: categories?.data || [],
+    },
+    handleSearchParamsChange,
   };
 };
 

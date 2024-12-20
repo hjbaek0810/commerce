@@ -111,6 +111,9 @@ export async function GET(req: NextRequest) {
           case 'subCategory':
             filters['categoryIds.subCategoryId'] = value;
             break;
+          case 'name':
+            filters[key] = { $regex: `^${value}`, $options: 'i' };
+            break;
           default:
             filters[key] = value;
             break;

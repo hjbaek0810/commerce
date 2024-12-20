@@ -7,6 +7,7 @@ export type SearchAdminProduct = {
   category?: string;
   subCategory?: string;
   name?: string;
+  status?: ProductStatusType;
   sort?: ProductSortType;
 };
 

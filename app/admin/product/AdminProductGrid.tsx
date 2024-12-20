@@ -8,7 +8,7 @@ import { sprinkles } from '@styles/sprinkles.css';
 import { getProductStatusText } from '@utils/constants/product';
 import { formatNumber } from '@utils/formatter/number';
 
-import useAdminProductList from './useProductList';
+import useAdminProductList from './useAdminProductList';
 
 const AdminProductGrid = () => {
   const { products, paginationProps, handleTableRowClick } =
