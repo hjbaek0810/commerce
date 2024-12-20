@@ -15,7 +15,7 @@ const ProductDetail = async ({ params }: { params: { slug: string } }) => {
 
   return (
     <>
-      <Title>상품 상세</Title>
+      <Title showBackButton>상품 상세</Title>
       <HydrationBoundary state={dehydrate(queryClient)}>
         <ProductInfo id={id} />
       </HydrationBoundary>

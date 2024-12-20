@@ -13,7 +13,7 @@ const AdminProduct = () => {
 
   return (
     <>
-      <Title>상품 등록</Title>
+      <Title showBackButton>상품 등록</Title>
       <Rhf.Form {...productForm} onSubmit={handleSubmit}>
         <ProductForm />
 

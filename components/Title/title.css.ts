@@ -1,9 +1,17 @@
+import { style } from '@vanilla-extract/css';
 import { recipe } from '@vanilla-extract/recipes';
 
 import { ColorPalettes } from '@styles/palette';
 import { sprinkles } from '@styles/sprinkles.css';
+import { tokens } from '@styles/token.css';
 
 import type { RecipeVariants } from '@vanilla-extract/recipes';
+
+export const titleWrapper = style({
+  display: 'flex',
+  gap: tokens.spacing['spacing-008'],
+  alignItems: 'center',
+});
 
 export const title = recipe({
   base: [
@@ -34,6 +42,16 @@ export const title = recipe({
       end: { textAlign: 'end' },
     },
   },
+});
+
+export const backButton = style({
+  width: tokens.sizing['sizing-024'],
+  height: tokens.sizing['sizing-024'],
+});
+
+export const backButtonIcon = style({
+  color: ColorPalettes.Grey['40'],
+  fontSize: tokens.sizing['sizing-016'],
 });
 
 export type TitleVariants = NonNullable<RecipeVariants<typeof title>>;

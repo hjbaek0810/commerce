@@ -23,7 +23,7 @@ const ProductDetail = () => {
 
   return (
     <>
-      <Title>상품 상세</Title>
+      <Title showBackButton>상품 상세</Title>
 
       <Rhf.Form {...productForm} onSubmit={handleSubmit}>
         <div
