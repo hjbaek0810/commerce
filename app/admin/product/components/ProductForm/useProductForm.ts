@@ -30,6 +30,11 @@ const useProductForm = () => {
 
   const { control, setValue, getValues } = useFormContext<ProductUseFormType>();
 
+  const quantityValue = useWatch({
+    name: 'quantity',
+    control,
+  });
+
   const priceValue = useWatch({
     name: 'price',
     control,
@@ -128,6 +133,7 @@ const useProductForm = () => {
     saleRate,
     categories,
     subCategories,
+    quantityValue,
     selectedImages: selectedImages ? Array.from(selectedImages) : [],
     validateSubCategory,
     validateImage,

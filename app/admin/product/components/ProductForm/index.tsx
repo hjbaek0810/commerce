@@ -21,6 +21,7 @@ const ProductForm = ({ savedImages, editable = true }: ProductFormType) => {
     categories,
     subCategories,
     saleRate,
+    quantityValue,
     selectedImages,
     validateSubCategory,
     validateImage,
@@ -152,15 +153,23 @@ const ProductForm = ({ savedImages, editable = true }: ProductFormType) => {
               name="status"
               className={css.subCategoryRadioGroup}
               required={editable}
-              disabled={!editable}
             >
-              <Rhf.RadioOption value={ProductStatusType.IN_PROGRESS}>
+              <Rhf.RadioOption
+                value={ProductStatusType.IN_PROGRESS}
+                disabled={quantityValue <= 0 || !editable}
+              >
                 판매
               </Rhf.RadioOption>
-              <Rhf.RadioOption value={ProductStatusType.STOPPED}>
+              <Rhf.RadioOption
+                value={ProductStatusType.STOPPED}
+                disabled={!editable}
+              >
                 판매 중지
               </Rhf.RadioOption>
-              <Rhf.RadioOption value={ProductStatusType.HIDDEN}>
+              <Rhf.RadioOption
+                value={ProductStatusType.HIDDEN}
+                disabled={!editable}
+              >
                 상품 숨김
               </Rhf.RadioOption>
             </Rhf.Radio>
