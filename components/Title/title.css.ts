@@ -7,10 +7,19 @@ import { tokens } from '@styles/token.css';
 
 import type { RecipeVariants } from '@vanilla-extract/recipes';
 
-export const titleWrapper = style({
-  display: 'flex',
-  gap: tokens.spacing['spacing-008'],
-  alignItems: 'center',
+export const titleWrapper = recipe({
+  base: {
+    display: 'flex',
+    gap: tokens.spacing['spacing-008'],
+    alignItems: 'center',
+  },
+  variants: {
+    align: {
+      start: { justifyContent: 'flex-start' },
+      center: { justifyContent: 'center' },
+      end: { justifyContent: 'flex-end' },
+    },
+  },
 });
 
 export const title = recipe({
@@ -36,7 +45,7 @@ export const title = recipe({
         fontSize: 'font-size-020',
       }),
     },
-    align: {
+    textAlign: {
       start: { textAlign: 'start' },
       center: { textAlign: 'center' },
       end: { textAlign: 'end' },
@@ -54,4 +63,5 @@ export const backButtonIcon = style({
   fontSize: tokens.sizing['sizing-016'],
 });
 
-export type TitleVariants = NonNullable<RecipeVariants<typeof title>>;
+export type TitleVariants = NonNullable<RecipeVariants<typeof titleWrapper>> &
+  NonNullable<RecipeVariants<typeof title>>;

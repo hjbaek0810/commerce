@@ -14,6 +14,7 @@ import type { TitleVariants } from './title.css';
 
 const Title = ({
   size = 'large',
+  textAlign = 'start',
   align = 'start',
   showBackButton = false,
   children,
@@ -21,7 +22,7 @@ const Title = ({
   const router = useRouter();
 
   return (
-    <div className={css.titleWrapper}>
+    <div className={css.titleWrapper({ align })}>
       {showBackButton && (
         <Button
           size="small"
@@ -31,7 +32,7 @@ const Title = ({
           <FontAwesomeIcon className={css.backButtonIcon} icon={faArrowLeft} />
         </Button>
       )}
-      <h2 className={css.title({ size, align })}>{children}</h2>
+      <h2 className={css.title({ size, textAlign })}>{children}</h2>
     </div>
   );
 };
