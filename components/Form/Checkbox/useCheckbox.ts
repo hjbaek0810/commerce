@@ -60,7 +60,8 @@ const useCheckbox = ({
       return false;
     }
 
-    return ListController(checkedValues).equal(options);
+    return options.every(item => checkedValues.includes(item));
+    // return ListController(checkedValues).equal(options);
   }, [checkedValues, options]);
 
   const isPartiallyChecked = () => {
@@ -80,10 +81,18 @@ const useCheckbox = ({
     [checkedValues, isChecked],
   );
 
-  const toggleAllChecked = useCallback(
-    () => (isAllChecked() ? [] : options),
-    [isAllChecked, options],
-  );
+  const toggleAllChecked = useCallback(() => {
+    if (isAllChecked()) {
+      return checkedValues.filter(item => !options.includes(item));
+    } else {
+      return [...checkedValues, ...options];
+    }
+  }, [isAllChecked, options, checkedValues]);
+
+  // const toggleAllChecked = useCallback(
+  //   () => (isAllChecked() ? [] : options),
+  //   [isAllChecked, options],
+  // );
 
   const updateCheckedValue = useCallback(
     (value: CheckboxValueType) => setCheckedValues(toggleChecked(value)),
