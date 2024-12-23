@@ -8,10 +8,16 @@ import { checkSession } from '@api/helper/session';
 import CategoryModel from '@api/models/category';
 import ProductModel from '@api/models/product';
 import SubCategoryModel from '@api/models/subCategory';
+import { cartTags } from '@services/queries/cart/keys';
+import { orderTags } from '@services/queries/order/keys';
 import { productTags } from '@services/queries/product/keys';
 import { ProductSortType } from '@utils/constants/product';
 
-import type { CreateAdminProduct, SearchAdminProduct } from './types/dto';
+import type {
+  CreateAdminProduct,
+  DeleteAdminProducts,
+  SearchAdminProduct,
+} from './types/dto';
 import type { ProductModelType } from '@api/models/product';
 import type { SortCriteria } from '@api/types';
 import type { FilterQuery } from 'mongoose';
@@ -158,7 +164,7 @@ export async function GET(req: NextRequest) {
       };
     });
 
-    const count = await ProductModel.countDocuments();
+    const count = await ProductModel.countDocuments(filters);
 
     return NextResponse.json(
       {
@@ -184,6 +190,8 @@ export async function GET(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
+  const data: DeleteAdminProducts = await req.json();
+
   try {
     const sessionCheck = await checkSession(authOptions, true);
 
@@ -198,26 +206,40 @@ export async function DELETE(req: NextRequest) {
     }
 
     await connectDB();
-    const { _id } = await req.json();
 
-    const deleteProduct = await ProductModel.findOneAndDelete({ _id });
-    if (!deleteProduct) {
+    const productIds = data.map(({ _id }) => _id);
+
+    const deletedProducts = await ProductModel.deleteMany({
+      _id: { $in: productIds },
+    });
+
+    if (!deletedProducts) {
       return NextResponse.json(
         {
-          message: 'Product not found',
+          message: 'Product not found.',
           code: AdminProductErrorType.PRODUCT_NOT_FOUND,
         },
         { status: 404 },
       );
     }
 
-    return NextResponse.json({ message: 'success', status: 200 });
+    productIds.forEach(id => {
+      revalidateTag(productTags.detail(id));
+    });
+    revalidateTag(productTags.list);
+    revalidateTag(orderTags.all);
+    revalidateTag(cartTags.all);
+
+    return NextResponse.json({
+      message: 'success',
+      status: 200,
+    });
   } catch (error) {
     console.error(error);
 
     return NextResponse.json(
       {
-        message: 'Failed to delete the product.',
+        message: 'Failed to delete admin product list.',
       },
       { status: 500 },
     );

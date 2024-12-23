@@ -58,7 +58,7 @@ export async function GET() {
 
     const items = productIds
       ?.map(item => ({
-        product: item.productId || null,
+        product: item.productId || {},
         quantity: item.quantity,
         addedAt: item.addedAt,
       }))

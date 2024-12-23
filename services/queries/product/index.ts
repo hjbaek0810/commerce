@@ -24,7 +24,7 @@ import {
 import { getWishListQueryOptions } from '@services/queries/wish-list/options';
 import { deleteImages, uploadImages } from '@services/upload';
 import { fetchData } from '@services/utils/fetch';
-import { resetQueries } from '@services/utils/helper';
+import { removeQueries, resetQueries } from '@services/utils/helper';
 import { API } from '@services/utils/path';
 import { ProductSortType } from '@utils/constants/product';
 import usePaginationQueryParams from '@utils/hooks/usePaginationQueryParams';
@@ -33,10 +33,11 @@ import { parseQueryParams } from '@utils/query/helper';
 
 import type {
   CreateAdminProduct,
+  DeleteAdminProduct,
+  DeleteAdminProducts,
   UpdateAdminProduct,
 } from '@api/admin/product/types/dto';
 import type {
-  AdminImageVO,
   AdminProductDetailVO,
   AdminProductVO,
 } from '@api/admin/product/types/vo';
@@ -267,17 +268,63 @@ export const useAdminProductDetailMutation = (id: string) => {
   });
 };
 
-export const useAdminProductDeleteMutation = (id: string) => {
+export const useAdminProductDeleteMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (images?: AdminImageVO[]) =>
-      Promise.all([
-        fetchData(API.ADMIN.PRODUCT.DETAIL(id), 'DELETE'),
-        ...(images ? images.map(({ publicId }) => deleteImages(publicId)) : []),
-      ]),
-    onSuccess: async () => {
+    mutationFn: (data: DeleteAdminProduct) => {
+      const deleteImageIds = data?.deleteImageIds || [];
+
+      return Promise.all([
+        fetchData(API.ADMIN.PRODUCT.DETAIL(data._id), 'DELETE', { data }),
+        ...(deleteImageIds.length > 0
+          ? deleteImageIds.map(publicId => deleteImages(publicId))
+          : []),
+      ]);
+    },
+    onSuccess: async (_, variables) => {
+      // TODO:: check
       await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: productKeys.getAdminAll(),
+          refetchType: 'all',
+        }),
+
+        queryClient.removeQueries({
+          queryKey: productKeys.getAdminDetail(variables._id),
+        }),
+      ]);
+    },
+    onError: () => {
+      toast.error('상품 삭제에 실패하였습니다. 잠시 후 시도해주시길 바랍니다.');
+    },
+  });
+};
+
+export const useAdminProductMultiDeleteMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: DeleteAdminProducts) => {
+      const deleteImageIds = data
+        .map(({ deleteImageIds }) => deleteImageIds || [])
+        .flat();
+
+      return Promise.all([
+        fetchData(API.ADMIN.PRODUCT.BASE, 'DELETE', {
+          data,
+        }),
+        ...(deleteImageIds.length > 0
+          ? deleteImageIds.map(publicId => deleteImages(publicId))
+          : []),
+      ]);
+    },
+    onSuccess: (_, variables) => {
+      const deleteImageIds = variables
+        .map(({ deleteImageIds }) => deleteImageIds || [])
+        .flat();
+
+      Promise.all([
         queryClient.invalidateQueries({
           queryKey: productKeys.getAdminAll(),
           refetchType: 'all',
@@ -285,9 +332,10 @@ export const useAdminProductDeleteMutation = (id: string) => {
         queryClient.resetQueries({
           queryKey: orderKeys.getAdminAll(),
         }),
-        queryClient.removeQueries({
-          queryKey: productKeys.getAdminDetail(id),
-        }),
+        removeQueries(
+          queryClient,
+          deleteImageIds.map(id => productKeys.getAdminDetail(id)),
+        ),
       ]);
     },
     onError: () => {

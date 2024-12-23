@@ -97,7 +97,7 @@ export async function GET(req: NextRequest) {
         username: userId.name,
         items:
           productIds?.map(item => ({
-            product: item.productId || null,
+            product: item.productId || {},
             quantity: item.quantity,
             price: item.price,
           })) || [],

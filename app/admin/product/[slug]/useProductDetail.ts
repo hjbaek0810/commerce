@@ -23,7 +23,7 @@ const useProductDetail = () => {
   const { mutate: updateProduct, isPending } =
     useAdminProductDetailMutation(id);
   const { mutate: deleteProduct, isPending: isDeletePending } =
-    useAdminProductDeleteMutation(id);
+    useAdminProductDeleteMutation();
 
   const [editable, setEditable] = useState<boolean>(false);
 
@@ -66,15 +66,19 @@ const useProductDetail = () => {
     productForm.reset(defaultValue);
   };
 
-  const handleBackClick = () => router.back();
-
   const handleDeleteClick = () => {
     openModal(PromptModal, {
       message: '해당 상품을 삭제하시겠습니까?',
       onSubmit: () => {
-        deleteProduct(product?.images, {
-          onSuccess: router.back,
-        });
+        deleteProduct(
+          {
+            _id: id,
+            deleteImageIds: product?.images.map(({ publicId }) => publicId),
+          },
+          {
+            onSuccess: router.back,
+          },
+        );
       },
     });
   };
@@ -86,7 +90,6 @@ const useProductDetail = () => {
     isPending: isPending || isDeletePending,
     handleEditClick,
     handleCancelClick,
-    handleBackClick,
     handleDeleteClick,
     handleSubmit,
   };

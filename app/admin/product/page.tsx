@@ -25,11 +25,13 @@ const ProductList = () => {
     products,
     paginationProps,
     searchAdminProductForm,
+    deleteProductForm,
     handleTableRowClick,
     handleFilterResetButtonClick,
     handleGoToProductRegisterButtonClick,
     handleAdminSearchProduct,
     handleSortChange,
+    handleRemoveProduct,
   } = useAdminProductList();
 
   return (
@@ -166,75 +168,106 @@ const ProductList = () => {
 
         {/* result */}
         <div>
-          <TableBadge>{`Total: ${formatNumber(paginationProps.totalCount)}`}</TableBadge>
-          <Table>
-            <Table.Header>
-              <Table.Tr>
-                <Table.Th>상품명</Table.Th>
-                <Table.Th>수량</Table.Th>
-                <Table.Th>판매가격</Table.Th>
-                <Table.Th>카테고리명</Table.Th>
-                <Table.Th>서브 카테고리명</Table.Th>
-                <Table.Th>상품상태</Table.Th>
-                <Table.Th>preview</Table.Th>
-              </Table.Tr>
-            </Table.Header>
-            <Table.Body>
-              {products.length === 0 && (
-                <Table.Tr>
-                  <Table.Td
-                    colSpan={7}
-                    className={sprinkles({ textAlign: 'center' })}
-                  >
-                    no data available
-                  </Table.Td>
-                </Table.Tr>
-              )}
-              {products.map(
-                ({
-                  _id,
-                  name,
-                  quantity,
-                  price,
-                  salePrice,
-                  status,
-                  category,
-                  images,
-                }) => (
-                  <Table.Tr
-                    key={_id}
-                    onClick={() => {
-                      handleTableRowClick(_id);
-                    }}
-                  >
-                    <Table.Td>{name}</Table.Td>
-                    <Table.Td>{formatNumber(quantity)}</Table.Td>
-                    <Table.Td>{formatNumber(salePrice || price)}</Table.Td>
-                    <Table.Td>{category.name}</Table.Td>
-                    <Table.Td>{category.subCategory.name}</Table.Td>
-                    <Table.Td>{getProductStatusText(status)}</Table.Td>
-                    <Table.Td>
-                      {images && images[0] && (
-                        <Image
-                          style={{
-                            objectFit: 'contain',
-                            width: 'auto',
-                            height: 'auto',
+          <Rhf.Form
+            {...deleteProductForm}
+            onSubmit={handleRemoveProduct}
+            className={sprinkles({
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 'spacing-004',
+              alignItems: 'flex-end',
+            })}
+          >
+            <Button size="small" type="submit">
+              선택 삭제
+            </Button>
+            <div>
+              <TableBadge>{`Total: ${formatNumber(paginationProps.totalCount)}`}</TableBadge>
+              <Table>
+                <Rhf.CheckboxGroup
+                  options={products.map(({ _id }) => _id)}
+                  name="productIds"
+                >
+                  <Table.Header>
+                    <Table.Tr>
+                      <Table.Th width="sizing-056">
+                        <Rhf.Checkbox partiallyChecked />
+                      </Table.Th>
+                      <Table.Th>상품명</Table.Th>
+                      <Table.Th>수량</Table.Th>
+                      <Table.Th>판매가격</Table.Th>
+                      <Table.Th>카테고리명</Table.Th>
+                      <Table.Th>서브 카테고리명</Table.Th>
+                      <Table.Th>상품상태</Table.Th>
+                      <Table.Th>preview</Table.Th>
+                    </Table.Tr>
+                  </Table.Header>
+                  <Table.Body>
+                    {products.length === 0 && (
+                      <Table.Tr>
+                        <Table.Td
+                          colSpan={8}
+                          className={sprinkles({ textAlign: 'center' })}
+                        >
+                          no data available
+                        </Table.Td>
+                      </Table.Tr>
+                    )}
+                    {products.map(
+                      ({
+                        _id,
+                        name,
+                        quantity,
+                        price,
+                        salePrice,
+                        status,
+                        category,
+                        images,
+                      }) => (
+                        <Table.Tr
+                          key={_id}
+                          onClick={() => {
+                            handleTableRowClick(_id);
                           }}
-                          alt={name}
-                          src={images[0].secureUrl}
-                          width={150}
-                          height={100}
-                          priority
-                        />
-                      )}
-                    </Table.Td>
-                  </Table.Tr>
-                ),
-              )}
-            </Table.Body>
-          </Table>
-
+                        >
+                          <Table.Td>
+                            <Rhf.Checkbox
+                              value={_id}
+                              onChange={e => e.stopPropagation()}
+                            />
+                          </Table.Td>
+                          <Table.Td>{name}</Table.Td>
+                          <Table.Td>{formatNumber(quantity)}</Table.Td>
+                          <Table.Td>
+                            {formatNumber(salePrice || price)}
+                          </Table.Td>
+                          <Table.Td>{category.name}</Table.Td>
+                          <Table.Td>{category.subCategory.name}</Table.Td>
+                          <Table.Td>{getProductStatusText(status)}</Table.Td>
+                          <Table.Td>
+                            {images && images[0] && (
+                              <Image
+                                style={{
+                                  objectFit: 'contain',
+                                  width: 'auto',
+                                  height: 'auto',
+                                }}
+                                alt={name}
+                                src={images[0].secureUrl}
+                                width={150}
+                                height={100}
+                                priority
+                              />
+                            )}
+                          </Table.Td>
+                        </Table.Tr>
+                      ),
+                    )}
+                  </Table.Body>
+                </Rhf.CheckboxGroup>
+              </Table>
+            </div>
+          </Rhf.Form>
           <Pagination {...paginationProps} />
         </div>
 

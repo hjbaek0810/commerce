@@ -53,7 +53,7 @@ export async function GET(
       userId: userId?._id,
       username: userId?.name,
       items: productIds?.map(item => ({
-        product: item.productId,
+        product: item.productId || {},
         quantity: item.quantity,
         price: item.price,
       })),

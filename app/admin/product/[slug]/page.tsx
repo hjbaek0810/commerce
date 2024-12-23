@@ -16,7 +16,6 @@ const ProductDetail = () => {
     isPending,
     handleEditClick,
     handleCancelClick,
-    handleBackClick,
     handleDeleteClick,
     handleSubmit,
   } = useProductDetail();
@@ -55,24 +54,24 @@ const ProductDetail = () => {
         </div>
 
         <ProductForm savedImages={savedImages} editable={editable} />
-
-        <div
-          className={sprinkles({
-            display: 'flex',
-            justifyContent: 'flex-end',
-            marginTop: 'spacing-040',
-          })}
-        >
-          <Button
-            size="large"
-            fill
-            onClick={handleDeleteClick}
-            disabled={isPending}
-          >
-            삭제
-          </Button>
-        </div>
       </Rhf.Form>
+
+      <div
+        className={sprinkles({
+          display: 'flex',
+          justifyContent: 'flex-end',
+          marginTop: 'spacing-040',
+        })}
+      >
+        <Button
+          size="large"
+          fill
+          onClick={handleDeleteClick}
+          disabled={isPending}
+        >
+          삭제
+        </Button>
+      </div>
     </>
   );
 };

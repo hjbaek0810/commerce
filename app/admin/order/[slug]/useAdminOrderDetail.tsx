@@ -73,6 +73,8 @@ const useAdminOrderDetail = () => {
   };
 
   const handleGoToProductDetail = (id: string) => {
+    if (!id) return;
+
     router.push(PATH.ADMIN.PRODUCT.DETAIL(id));
   };
 

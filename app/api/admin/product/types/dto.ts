@@ -33,3 +33,13 @@ export type UpdateAdminProduct = CreateAdminProduct & {
   _id: string;
   deleteImageIds?: string[];
 };
+
+export type DeleteAdminProduct = {
+  _id: string;
+  deleteImageIds?: string[];
+};
+
+export type DeleteAdminProducts = {
+  _id: string;
+  deleteImageIds?: string[];
+}[];
