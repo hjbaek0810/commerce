@@ -31,7 +31,7 @@ const ProductSlider = ({
 
   return (
     <div className={css.sliderWrapper}>
-      <Title size="large" align="center">
+      <Title size="large" align="center" textAlign="center">
         {title}
         {subTitle && <span className={css.subTitle}>{subTitle}</span>}
       </Title>
