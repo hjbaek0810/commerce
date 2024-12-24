@@ -7,7 +7,6 @@ import { shouldFilterKey } from '@api/helper/filter';
 import { checkSession } from '@api/helper/session';
 import OrderModel from '@api/models/order';
 import ProductModel from '@api/models/product';
-import UserModel from '@api/models/user';
 import { productTags } from '@services/queries/product/keys';
 import { OrderSortType, OrderStatus } from '@utils/constants/order';
 import { ProductStatusType } from '@utils/constants/product';
@@ -17,6 +16,7 @@ import type {
   UpdateAdminOrder,
 } from '@api/admin/order/types/dto';
 import type { OrderModelType } from '@api/models/order';
+import type { UserModelType } from '@api/models/user';
 import type { SortCriteria } from '@api/types';
 import type { FilterQuery } from 'mongoose';
 import type { NextRequest } from 'next/server';
@@ -70,7 +70,9 @@ export async function GET(req: NextRequest) {
       createdAt: sort === OrderSortType.NEWEST ? -1 : 1,
     };
 
-    const adminOrderList = await OrderModel.aggregate([
+    const adminOrderList = await OrderModel.aggregate<
+      Omit<OrderModelType, 'userId'> & { user: UserModelType }
+    >([
       {
         $match: filters,
       },
