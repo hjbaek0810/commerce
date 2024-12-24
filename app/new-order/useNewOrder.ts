@@ -7,8 +7,10 @@ import { useRouter, useSearchParams } from 'next/navigation';
 
 import FindPostCodeModal from '@components/Modal/templates/FindPostCodeModal';
 import { useCartListWhenNewOrderQuery } from '@services/queries/cart';
+import { cartKeys } from '@services/queries/cart/keys';
 import { useOrderListMutation } from '@services/queries/order';
 import { useProductDetailWhenNewOrderQuery } from '@services/queries/product';
+import { productKeys } from '@services/queries/product/keys';
 import { useMyAccountWhenNewOrder } from '@services/queries/user';
 import { OrderStatus, PaymentType } from '@utils/constants/order';
 import useModals from '@utils/hooks/useModals';
@@ -131,9 +133,26 @@ const useNewOrder = () => {
       fromCart,
     };
 
+    const pushOrderList = async () => {
+      router.push(PATH.ORDER);
+    };
+
     orderRequest(requestData, {
-      onSuccess: () => {
-        router.push(PATH.ORDER);
+      onSuccess: async (_, variables) => {
+        // page 이동하고 resetQueries (페이지 이동 전 ui 변경되는 현상)
+        await pushOrderList();
+
+        variables.products.forEach(product => {
+          queryClient.resetQueries({
+            queryKey: productKeys.getDetail(product._id),
+          });
+        });
+
+        if (variables.fromCart) {
+          queryClient.resetQueries({
+            queryKey: cartKeys.getAll(),
+          });
+        }
       },
     });
   };

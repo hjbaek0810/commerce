@@ -69,23 +69,11 @@ export const useOrderListMutation = () => {
   return useMutation({
     mutationFn: (data: CreateOrder) =>
       fetchData<unknown, CreateOrder>(API.ORDER.BASE, 'POST', { data }),
-    onSuccess: async (_, variables) => {
+    onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: orderKeys.getAll(),
         refetchType: 'all',
       });
-
-      variables.products.forEach(product => {
-        queryClient.resetQueries({
-          queryKey: productKeys.getDetail(product._id),
-        });
-      });
-
-      if (variables.fromCart) {
-        queryClient.resetQueries({
-          queryKey: cartKeys.getAll(),
-        });
-      }
     },
   });
 };
