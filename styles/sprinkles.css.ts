@@ -6,6 +6,7 @@ const displayProperties = defineProperties({
   properties: {
     display: ['flex', 'block', 'inline', 'inline-block', 'none'],
     flexDirection: ['row', 'column'],
+    flexWrap: ['nowrap', 'wrap'],
     justifyContent: [
       'flex-start',
       'flex-end',
