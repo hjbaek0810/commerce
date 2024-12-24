@@ -7,13 +7,9 @@ import { useRouter, useSearchParams } from 'next/navigation';
 
 import FindPostCodeModal from '@components/Modal/templates/FindPostCodeModal';
 import { useCartListWhenNewOrderQuery } from '@services/queries/cart';
-import { cartKeys } from '@services/queries/cart/keys';
 import { useOrderListMutation } from '@services/queries/order';
-import { orderKeys } from '@services/queries/order/keys';
 import { useProductDetailWhenNewOrderQuery } from '@services/queries/product';
-import { productKeys } from '@services/queries/product/keys';
 import { useMyAccountWhenNewOrder } from '@services/queries/user';
-import { resetQueries } from '@services/utils/helper';
 import { OrderStatus, PaymentType } from '@utils/constants/order';
 import useModals from '@utils/hooks/useModals';
 import { PATH } from '@utils/path';
