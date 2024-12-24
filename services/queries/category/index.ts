@@ -18,7 +18,6 @@ import type { CategoryVO } from '@api/category/types/vo';
 export const useCategoriesQuery = () => {
   const { data, ...rest } = useQuery({
     ...getCategoriesQueryOptions(),
-    staleTime: Infinity,
     gcTime: 60 * 60 * 1000,
   });
 
@@ -31,7 +30,6 @@ export const useCategoriesQuery = () => {
 export const useAdminCategoriesQuery = () => {
   const { data, ...rest } = useQuery({
     ...getAdminCategoriesQueryOptions(),
-    staleTime: Infinity,
     gcTime: 60 * 60 * 1000,
   });
 

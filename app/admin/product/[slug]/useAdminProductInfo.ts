@@ -14,7 +14,7 @@ import useModals from '@utils/hooks/useModals';
 
 import type { ProductUseFormType } from '../components/ProductForm/useProductForm';
 
-const useProductDetail = () => {
+const useAdminProductInfo = () => {
   const router = useRouter();
   const params = useParams();
   const id = params.slug as string;
@@ -97,4 +97,4 @@ const useProductDetail = () => {
   };
 };
 
-export default useProductDetail;
+export default useAdminProductInfo;

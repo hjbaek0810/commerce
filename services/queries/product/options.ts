@@ -102,10 +102,14 @@ export const getAdminProductListQueryOptions = ({
     ),
 });
 
-export const getAdminProductDetailQueryOptions = (id: string) => ({
+export const getAdminProductDetailQueryOptions = (
+  id: string,
+  headers?: HeadersInit,
+) => ({
   queryKey: productKeys.getAdminDetail(id),
   queryFn: () =>
     fetchData<AdminProductDetailVO>(API.ADMIN.PRODUCT.DETAIL(id), 'GET', {
+      headers,
       next: { tags: [productTags.all, productTags.adminDetail(id)] },
     }),
 });

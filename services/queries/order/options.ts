@@ -42,10 +42,12 @@ export const getAdminOrderListQueryOptions = ({
   searchParams,
   page,
   limit,
+  headers,
 }: {
   searchParams: PaginationQueryParamsType<SearchAdminOrder>;
   page: number;
   limit: number;
+  headers?: HeadersInit;
 }) => ({
   queryKey: orderKeys.getAdminAll({
     ...searchParams,
@@ -62,14 +64,18 @@ export const getAdminOrderListQueryOptions = ({
         sort: searchParams.sort,
       }),
       'GET',
-      { next: { tags: [orderTags.all, orderTags.adminList] } },
+      { headers, next: { tags: [orderTags.all, orderTags.adminList] } },
     ),
 });
 
-export const getAdminOrderDetailQueryOptions = (id: string) => ({
+export const getAdminOrderDetailQueryOptions = (
+  id: string,
+  headers?: HeadersInit,
+) => ({
   queryKey: orderKeys.getAdminDetail(id),
   queryFn: () =>
     fetchData<OrderVO>(API.ADMIN.ORDER.DETAIL(id), 'GET', {
+      headers,
       next: { tags: [orderTags.all, orderTags.adminDetail(id)] },
     }),
 });

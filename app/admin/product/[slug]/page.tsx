@@ -1,79 +1,26 @@
-'use client';
+import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
+import { headers } from 'next/headers';
 
-import Button from '@components/Button';
-import Rhf from '@components/Form';
-import Title from '@components/Title';
-import { sprinkles } from '@styles/sprinkles.css';
+import AdminProductInfo from '@app/admin/product/[slug]/AdminProductInfo';
+import { getAdminCategoriesQueryOptions } from '@services/queries/category/options';
+import { getAdminProductDetailQueryOptions } from '@services/queries/product/options';
+import { getQueryClient } from '@utils/query/queryClient';
 
-import useProductDetail from './useProductDetail';
-import ProductForm from '../components/ProductForm';
+const AdminProductDetail = async ({ params }: { params: { slug: string } }) => {
+  const id = params.slug as string;
 
-const ProductDetail = () => {
-  const {
-    productForm,
-    savedImages,
-    editable,
-    isPending,
-    handleEditClick,
-    handleCancelClick,
-    handleDeleteClick,
-    handleSubmit,
-  } = useProductDetail();
+  const queryClient = getQueryClient();
+
+  await Promise.all([
+    queryClient.prefetchQuery(getAdminProductDetailQueryOptions(id, headers())),
+    queryClient.prefetchQuery(getAdminCategoriesQueryOptions(headers())),
+  ]);
 
   return (
-    <>
-      <Title showBackButton>상품 상세</Title>
-
-      <Rhf.Form {...productForm} onSubmit={handleSubmit}>
-        <div
-          className={sprinkles({
-            display: 'flex',
-            justifyContent: 'flex-end',
-            gap: 'spacing-004',
-            marginBottom: 'spacing-008',
-          })}
-        >
-          {editable ? (
-            <>
-              <Button
-                size="medium"
-                color="secondary"
-                onClick={handleCancelClick}
-              >
-                Cancel
-              </Button>
-              <Button size="medium" fill type="submit" disabled={isPending}>
-                Save
-              </Button>
-            </>
-          ) : (
-            <Button size="medium" fill onClick={handleEditClick}>
-              Edit
-            </Button>
-          )}
-        </div>
-
-        <ProductForm savedImages={savedImages} editable={editable} />
-      </Rhf.Form>
-
-      <div
-        className={sprinkles({
-          display: 'flex',
-          justifyContent: 'flex-end',
-          marginTop: 'spacing-040',
-        })}
-      >
-        <Button
-          size="large"
-          fill
-          onClick={handleDeleteClick}
-          disabled={isPending}
-        >
-          삭제
-        </Button>
-      </div>
-    </>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <AdminProductInfo />
+    </HydrationBoundary>
   );
 };
 
-export default ProductDetail;
+export default AdminProductDetail;

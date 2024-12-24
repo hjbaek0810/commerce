@@ -5,7 +5,7 @@ import Rhf from '@components/Form';
 import { Table } from '@components/Table';
 
 import useSubCategoryForm from './useSubCategoryForm';
-import * as css from '../../category.css';
+import * as css from '../category.css';
 
 type SubCategoryFormPropsType = {
   nestIndex: number;

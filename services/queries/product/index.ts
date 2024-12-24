@@ -85,7 +85,6 @@ export const useAdminProductListWithCategoryQueries = () => {
       },
       {
         ...getAdminCategoriesQueryOptions(),
-        staleTime: Infinity,
         gcTime: 60 * 60 * 1000,
       },
     ],
@@ -158,7 +157,10 @@ export const useProductListInfiniteQuery = () => {
 };
 
 export const useAdminProductDetailQuery = (id: string) =>
-  useQuery(getAdminProductDetailQueryOptions(id));
+  useQuery({
+    ...getAdminProductDetailQueryOptions(id),
+    enabled: !id,
+  });
 
 export const useAdminProductMutation = () => {
   const queryClient = useQueryClient();
@@ -346,7 +348,16 @@ export const useAdminProductMultiDeleteMutation = () => {
 
 export const useProductDetailQuery = (id: string) => {
   const [productDetail, wish] = useQueries({
-    queries: [getProductDetailQueryOptions(id), getWishListQueryOptions()],
+    queries: [
+      {
+        ...getProductDetailQueryOptions(id),
+        enabled: !id,
+      },
+      {
+        ...getWishListQueryOptions(),
+        enabled: !id,
+      },
+    ],
   });
 
   const isWished = wish.data?.items?.some(item => item._id.toString() === id);
@@ -382,5 +393,5 @@ export const useProductDetailWhenNewOrderQuery = (
         ],
       };
     },
-    enabled: !fromCart,
+    enabled: !fromCart || !id,
   });

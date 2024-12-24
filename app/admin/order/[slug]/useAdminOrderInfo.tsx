@@ -16,7 +16,7 @@ import type { AdminOrderVO } from '@api/admin/order/types/vo';
 
 type AdminOrderStatusUseForm = Pick<UpdateAdminOrder, 'status'>;
 
-const useAdminOrderDetail = () => {
+const useAdminOrderInfo = () => {
   const params = useParams();
   const id = params.slug as string;
   const router = useRouter();
@@ -115,4 +115,4 @@ const useAdminOrderDetail = () => {
   };
 };
 
-export default useAdminOrderDetail;
+export default useAdminOrderInfo;

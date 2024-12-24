@@ -20,7 +20,7 @@ const defaultValues: AdminCreateCategory = {
   subCategories: [],
 };
 
-const useCategory = () => {
+const useCategoryForm = () => {
   const { data: categories, isPending } = useAdminCategoriesQuery();
 
   const [editable, setEditable] = useState<boolean>(false);
@@ -75,4 +75,4 @@ const useCategory = () => {
   };
 };
 
-export default useCategory;
+export default useCategoryForm;

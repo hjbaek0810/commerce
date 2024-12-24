@@ -9,7 +9,7 @@ import useAdminProductView from '@app/admin/product/AdminProductView/useAdminPro
 import Button from '@components/Button';
 import Title from '@components/Title';
 
-import * as css from '../adminProductList.css';
+import * as css from '../adminProduct.css';
 
 const AdminProductView = () => {
   const {

@@ -26,10 +26,12 @@ export const getAdminUsersQueryOptions = ({
   searchParams,
   page,
   limit,
+  headers,
 }: {
   searchParams: PaginationQueryParamsType<AdminSearchUser>;
   page: number;
   limit: number;
+  headers?: HeadersInit;
 }) => ({
   queryKey: userKeys.getAdminAll({
     ...searchParams,
@@ -46,6 +48,6 @@ export const getAdminUsersQueryOptions = ({
         sort: searchParams.sort,
       }),
       'GET',
-      { next: { tags: [userTags.all, userTags.adminList] } },
+      { headers, next: { tags: [userTags.all, userTags.adminList] } },
     ),
 });

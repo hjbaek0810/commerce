@@ -113,7 +113,10 @@ export const useOrderStatusMutation = () => {
 };
 
 export const useAdminOrderDetailQuery = (id: string) =>
-  useQuery(getAdminOrderDetailQueryOptions(id));
+  useQuery({
+    ...getAdminOrderDetailQueryOptions(id),
+    enabled: !id,
+  });
 
 export const useAdminOrderStatusMutation = () => {
   const queryClient = useQueryClient();

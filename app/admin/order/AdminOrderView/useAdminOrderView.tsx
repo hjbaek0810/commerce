@@ -25,11 +25,11 @@ const orderStatusOptions = [
   OrderStatus.SHIPPING_PENDING,
 ];
 
-const useAdminOrder = () => {
+const useAdminOrderView = () => {
   const router = useRouter();
 
   const {
-    data: orderList,
+    data: orders,
     paginationProps,
     handleSearchParamsChange,
   } = useAdminOrderListQuery();
@@ -79,15 +79,19 @@ const useAdminOrder = () => {
     router.push(PATH.ADMIN.ORDER.DETAIL(id));
 
   return {
-    orderList,
-    paginationProps,
-    searchOrderForm,
-    getOrderStatusOptions,
-    handleSearchOrder,
-    handleSortChange,
-    handleFilterResetButtonClick,
-    handleGoToOrderDetail,
+    searchFilterProps: {
+      searchForm: searchOrderForm,
+      getOrderStatusOptions,
+      handleSearchOrder,
+      handleFilterResetButtonClick,
+      handleSortChange,
+    },
+    resultProps: {
+      orders,
+      paginationProps,
+      handleGoToOrderDetail,
+    },
   };
 };
 
-export default useAdminOrder;
+export default useAdminOrderView;

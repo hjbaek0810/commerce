@@ -10,14 +10,14 @@ import { sprinkles } from '@styles/sprinkles.css';
 import { getProductStatusText } from '@utils/constants/product';
 import { formatNumber } from '@utils/formatter/number';
 
-import * as css from '../adminProductList.css';
+import * as css from '../adminProduct.css';
 
 import type { AdminDeleteProductUseFormType } from './useAdminProductView';
 import type { AdminProductVO } from '@api/admin/product/types/vo';
 import type { PaginationProsType } from '@components/Pagination';
 
 type AdminProductGridPropsType = {
-  deleteForm: UseFormReturn<AdminDeleteProductUseFormType, any, undefined>;
+  deleteForm: UseFormReturn<AdminDeleteProductUseFormType>;
   products: AdminProductVO[];
   paginationProps: PaginationProsType;
   handleTableRowClick: (id: string) => void;

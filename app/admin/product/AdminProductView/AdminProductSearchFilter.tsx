@@ -6,7 +6,7 @@ import { Table } from '@components/Table';
 import { sprinkles } from '@styles/sprinkles.css';
 import { ProductSortType, ProductStatusType } from '@utils/constants/product';
 
-import * as css from '../adminProductList.css';
+import * as css from '../adminProduct.css';
 
 import type {
   AdminCategoryVO,
@@ -17,7 +17,7 @@ import type { SearchAdminProduct } from '@api/admin/product/types/dto';
 type AdminProductSearchFilterPropsType = {
   categories: AdminCategoryVO[];
   subCategories: Omit<AdminSubCategoryVO, 'deletable'>[];
-  searchForm: UseFormReturn<SearchAdminProduct, any, undefined>;
+  searchForm: UseFormReturn<SearchAdminProduct>;
   handleAdminSearchProduct: (data: SearchAdminProduct) => void;
   handleFilterResetButtonClick: () => void;
   handleChangeCategory: () => void;

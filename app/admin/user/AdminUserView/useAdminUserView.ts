@@ -9,7 +9,7 @@ import { formatPhoneNumber } from '@utils/validation/telephone';
 
 import type { AdminSearchUser } from '@api/admin/user/types/dto';
 
-const useAdminUsers = () => {
+const useAdminUserView = () => {
   const {
     data: users,
     paginationProps,
@@ -50,13 +50,17 @@ const useAdminUsers = () => {
   };
 
   return {
-    users,
-    paginationProps,
-    searchUserForm,
-    handleSearchUser,
-    handleTelephoneInput,
-    handleFilterResetButtonClick,
+    searchFilterProps: {
+      searchForm: searchUserForm,
+      handleSearchUser,
+      handleTelephoneInput,
+      handleFilterResetButtonClick,
+    },
+    resultProps: {
+      users,
+      paginationProps,
+    },
   };
 };
 
-export default useAdminUsers;
+export default useAdminUserView;

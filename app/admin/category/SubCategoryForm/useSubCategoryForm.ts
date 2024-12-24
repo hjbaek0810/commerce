@@ -1,6 +1,6 @@
 import { useFieldArray, useFormContext } from 'react-hook-form';
 
-import type { CategoryUseFormType } from '../../useCategory';
+import type { CategoryUseFormType } from '@app/admin/category/useCategoryForm';
 
 const useSubCategoryForm = (nestIndex: number) => {
   const { control } = useFormContext<CategoryUseFormType>();
