@@ -4,7 +4,7 @@ export type SearchAdminOrder = {
   _id?: string;
   userId?: string;
   username?: string;
-  status?: OrderStatus;
+  status?: OrderStatus[];
   sort?: OrderSortType;
 };
 

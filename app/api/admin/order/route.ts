@@ -45,74 +45,116 @@ export async function GET(req: NextRequest) {
 
     const pageNumber = Number(searchParams.get('page')) || 1;
     const limitNumber = Number(searchParams.get('limit')) || 10;
-    const useName = searchParams.get('username');
-
     const sort = searchParams.get('sort') || OrderSortType.NEWEST;
+    const status = (searchParams.get('status') || '').split(',');
+    const orderId = searchParams.get('_id');
+    const userId = searchParams.get('userId');
+    const useName = searchParams.get('username');
 
     const filters: FilterQuery<SearchAdminOrder> = {};
 
     searchParams.forEach((value, key) => {
-      if (shouldFilterKey(key, value, ['username'])) {
-        filters[key] = value;
+      if (shouldFilterKey(key, value, ['userId', 'username', '_id'])) {
+        switch (key) {
+          case 'status':
+            filters['$or'] = status?.map(status => ({ status }));
+            break;
+          default:
+            filters[key] = value;
+            break;
+        }
       }
     });
-
-    const userNameMatch = useName
-      ? { name: { $regex: `^${useName}`, $options: 'i' } }
-      : {};
-
-    const populateOptions = [
-      {
-        path: 'productIds.productId',
-        model: ProductModel,
-        select: '_id name images quantity',
-      },
-      {
-        path: 'userId',
-        model: UserModel,
-        select: '_id name',
-        match: userNameMatch,
-      },
-    ];
 
     const sortOptions: SortCriteria = {
       createdAt: sort === OrderSortType.NEWEST ? -1 : 1,
     };
 
-    const adminOrderList = await OrderModel.find(filters)
-      .limit(limitNumber)
-      .skip((pageNumber - 1) * limitNumber)
-      .sort(sortOptions)
-      .populate(populateOptions)
-      .lean<OrderModelType[]>();
+    const adminOrderList = await OrderModel.aggregate([
+      {
+        $match: filters,
+      },
+      {
+        $lookup: {
+          from: 'products',
+          localField: 'productIds.productId',
+          foreignField: '_id',
+          as: 'products',
+        },
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'userId',
+          foreignField: '_id',
+          as: 'user',
+        },
+      },
+      {
+        $unwind: {
+          path: '$user',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $addFields: {
+          orderNum: { $toString: '$_id' },
+          userNum: { $toString: '$userId' },
+          items: {
+            $map: {
+              input: '$productIds',
+              as: 'item',
+              in: {
+                product: {
+                  $ifNull: ['$productInfo', {}], // productInfo가 없으면 빈 객체
+                },
+                quantity: '$$item.quantity',
+                price: '$$item.price',
+              },
+            },
+          },
+          totalPrice: {
+            $sum: {
+              $map: {
+                input: '$productIds',
+                as: 'item',
+                in: { $multiply: ['$$item.price', '$$item.quantity'] },
+              },
+            },
+          },
+        },
+      },
+      {
+        $match: {
+          orderNum: { $regex: `^${orderId || ''}`, $options: 'i' },
+          userNum: { $regex: `^${userId || ''}`, $options: 'i' },
+          'user.name': { $regex: `^${useName || ''}`, $options: 'i' },
+        },
+      },
+      { $sort: sortOptions },
+      { $skip: (pageNumber - 1) * limitNumber },
+      { $limit: limitNumber },
+      {
+        $project: {
+          userId: 0,
+          products: 0,
+          productIds: 0,
+        },
+      },
+    ]);
 
-    const count = await OrderModel.find(filters)
-      .populate(populateOptions)
-      .countDocuments();
-
-    const orders = adminOrderList.map(
-      ({ _id, userId, productIds, ...order }) => ({
-        _id: _id.toString(),
-        userId: userId._id,
-        username: userId.name,
-        items:
-          productIds?.map(item => ({
-            product: item.productId || {},
-            quantity: item.quantity,
-            price: item.price,
-          })) || [],
-        ...order,
-        totalPrice: productIds
-          .map(item => item.price * item.quantity)
-          .reduce((total: number, price: number) => total + price, 0),
-      }),
-    );
+    const orders = adminOrderList?.map(({ _id, user, ...order }) => ({
+      _id: _id.toString(),
+      userId: user._id.toString(),
+      username: user.name,
+      ...order,
+    }));
 
     const response = {
       orders,
       currentPage: pageNumber,
       currentLimit: limitNumber,
-      totalCount: count,
+      totalCount: adminOrderList?.length || 0,
     };
 
     return NextResponse.json(response, {

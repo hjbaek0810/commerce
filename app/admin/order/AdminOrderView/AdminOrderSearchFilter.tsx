@@ -51,14 +51,18 @@ const AdminOrderSearchFilter = ({
                 <Rhf.Label name="status">주문상태</Rhf.Label>
               </Table.Th>
               <Table.Td>
-                <Rhf.Select name="status" hiddenPlaceholder>
-                  <Rhf.SelectOption value="">ALL</Rhf.SelectOption>
+                <Rhf.CheckboxGroup
+                  name="status"
+                  options={getOrderStatusOptions.map(item => item.value)}
+                >
                   {getOrderStatusOptions.map(item => (
-                    <Rhf.SelectOption key={item.value} value={item.value}>
-                      {item.name}
-                    </Rhf.SelectOption>
+                    <Rhf.Checkbox
+                      key={item.value}
+                      value={item.value}
+                      label={item.name}
+                    />
                   ))}
-                </Rhf.Select>
+                </Rhf.CheckboxGroup>
               </Table.Td>
             </Table.Tr>
             <Table.Tr>
