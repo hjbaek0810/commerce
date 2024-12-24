@@ -1,302 +1,35 @@
-'use client';
+import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
+import { headers } from 'next/headers';
 
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Image from 'next/image';
+import AdminProductView from '@app/admin/product/AdminProductView';
+import { getAdminCategoriesQueryOptions } from '@services/queries/category/options';
+import { getAdminProductListQueryOptions } from '@services/queries/product/options';
+import { getQueryClient } from '@utils/query/queryClient';
 
-import useAdminProductList from '@app/admin/product/useAdminProductList';
-import Button from '@components/Button';
-import Rhf from '@components/Form';
-import Pagination from '@components/Pagination';
-import { Table, TableBadge } from '@components/Table';
-import Title from '@components/Title';
-import { sprinkles } from '@styles/sprinkles.css';
-import {
-  ProductSortType,
-  ProductStatusType,
-  getProductStatusText,
-} from '@utils/constants/product';
-import { formatNumber } from '@utils/formatter/number';
+const AdminProductList = async ({
+  searchParams,
+}: {
+  searchParams: Record<string, string>;
+}) => {
+  const queryClient = getQueryClient();
 
-const ProductList = () => {
-  const {
-    categories,
-    subCategories,
-    products,
-    paginationProps,
-    searchAdminProductForm,
-    deleteProductForm,
-    handleTableRowClick,
-    handleFilterResetButtonClick,
-    handleGoToProductRegisterButtonClick,
-    handleAdminSearchProduct,
-    handleSortChange,
-    handleRemoveProduct,
-    handleChangeCategory,
-  } = useAdminProductList();
+  await Promise.all([
+    queryClient.prefetchQuery(
+      getAdminProductListQueryOptions({
+        searchParams,
+        page: Number(searchParams.page) || 1,
+        limit: Number(searchParams.limit) || 10,
+        headers: headers(),
+      }),
+    ),
+    queryClient.prefetchQuery(getAdminCategoriesQueryOptions(headers())),
+  ]);
 
   return (
-    <>
-      <Title>상품 목록</Title>
-      <div
-        className={sprinkles({
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 'spacing-024',
-          alignItems: 'flex-end',
-        })}
-      >
-        <Rhf.Form
-          {...searchAdminProductForm}
-          className={sprinkles({
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 'spacing-024',
-            alignItems: 'center',
-          })}
-          onSubmit={handleAdminSearchProduct}
-        >
-          <div
-            className={sprinkles({
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 'spacing-012',
-              alignItems: 'flex-end',
-            })}
-          >
-            <Button size="small" onClick={handleFilterResetButtonClick}>
-              Reset
-            </Button>
-            <Table>
-              <Table.Body>
-                <Table.Tr>
-                  <Table.Th scope="row">
-                    <Rhf.Label name="category">카테고리</Rhf.Label>
-                  </Table.Th>
-                  <Table.Td>
-                    <Rhf.Select
-                      name="category"
-                      hiddenPlaceholder
-                      onChange={handleChangeCategory}
-                    >
-                      <Rhf.SelectOption value="">ALL</Rhf.SelectOption>
-                      {categories.map(({ _id, name }) => (
-                        <Rhf.SelectOption key={_id} value={_id}>
-                          {name}
-                        </Rhf.SelectOption>
-                      ))}
-                    </Rhf.Select>
-                  </Table.Td>
-                  <Table.Td colSpan={2}>
-                    <Rhf.CheckboxGroup
-                      options={subCategories.map(({ _id }) => _id)}
-                      name="subCategory"
-                    >
-                      <div
-                        className={sprinkles({
-                          display: 'flex',
-                          gap: 'spacing-012',
-                          flexWrap: 'wrap',
-                        })}
-                      >
-                        {subCategories.map(sub => (
-                          <Rhf.Checkbox
-                            key={sub._id}
-                            value={sub._id}
-                            label={sub.name}
-                          />
-                        ))}
-                      </div>
-                    </Rhf.CheckboxGroup>
-                  </Table.Td>
-                </Table.Tr>
-                <Table.Tr>
-                  <Table.Th scope="row">
-                    <Rhf.Label name="name">상품명</Rhf.Label>
-                  </Table.Th>
-                  <Table.Td>
-                    <Rhf.Input name="name" />
-                  </Table.Td>
-                  <Table.Th scope="row">
-                    <Rhf.Label name="status">상품상태</Rhf.Label>
-                  </Table.Th>
-                  <Table.Td>
-                    <Rhf.CheckboxGroup
-                      options={[
-                        ProductStatusType.IN_PROGRESS,
-                        ProductStatusType.STOPPED,
-                        ProductStatusType.HIDDEN,
-                      ]}
-                      name="status"
-                    >
-                      <Rhf.Checkbox
-                        value={ProductStatusType.IN_PROGRESS}
-                        label="판매"
-                      />
-                      <Rhf.Checkbox
-                        value={ProductStatusType.STOPPED}
-                        label="판매 중지"
-                      />
-                      <Rhf.Checkbox
-                        value={ProductStatusType.HIDDEN}
-                        label="상품 숨김"
-                      />
-                    </Rhf.CheckboxGroup>
-                  </Table.Td>
-                </Table.Tr>
-              </Table.Body>
-            </Table>
-          </div>
-
-          <Button type="submit" size="large" fill>
-            Search
-          </Button>
-
-          <div
-            className={sprinkles({
-              width: 'sizing-half',
-              alignSelf: 'flex-end',
-            })}
-          >
-            <Rhf.Select
-              name="sort"
-              onChange={handleSortChange}
-              hiddenPlaceholder
-            >
-              <Rhf.SelectOption value={ProductSortType.NEWEST}>
-                최신 순
-              </Rhf.SelectOption>
-              <Rhf.SelectOption value={ProductSortType.OLDEST}>
-                오래된 순
-              </Rhf.SelectOption>
-              <Rhf.SelectOption value={ProductSortType.POPULARITY}>
-                인기 순
-              </Rhf.SelectOption>
-              <Rhf.SelectOption value={ProductSortType.PRICE_HIGH}>
-                가격 높은 순
-              </Rhf.SelectOption>
-              <Rhf.SelectOption value={ProductSortType.PRICE_LOW}>
-                가격 낮은 순
-              </Rhf.SelectOption>
-            </Rhf.Select>
-          </div>
-        </Rhf.Form>
-
-        {/* result */}
-        <div>
-          <Rhf.Form
-            {...deleteProductForm}
-            onSubmit={handleRemoveProduct}
-            className={sprinkles({
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 'spacing-004',
-              alignItems: 'flex-end',
-            })}
-          >
-            <Button size="small" type="submit">
-              선택 삭제
-            </Button>
-            <div>
-              <TableBadge>{`Total: ${formatNumber(paginationProps.totalCount)}`}</TableBadge>
-              <Table>
-                <Rhf.CheckboxGroup
-                  options={products.map(({ _id }) => _id)}
-                  name="productIds"
-                >
-                  <Table.Header>
-                    <Table.Tr>
-                      <Table.Th width="sizing-056">
-                        <Rhf.Checkbox partiallyChecked />
-                      </Table.Th>
-                      <Table.Th>상품명</Table.Th>
-                      <Table.Th>수량</Table.Th>
-                      <Table.Th>판매가격</Table.Th>
-                      <Table.Th>카테고리명</Table.Th>
-                      <Table.Th>서브 카테고리명</Table.Th>
-                      <Table.Th>상품상태</Table.Th>
-                      <Table.Th>preview</Table.Th>
-                    </Table.Tr>
-                  </Table.Header>
-                  <Table.Body>
-                    {products.length === 0 && (
-                      <Table.Tr>
-                        <Table.Td
-                          colSpan={8}
-                          className={sprinkles({ textAlign: 'center' })}
-                        >
-                          no data available
-                        </Table.Td>
-                      </Table.Tr>
-                    )}
-                    {products.map(
-                      ({
-                        _id,
-                        name,
-                        quantity,
-                        price,
-                        salePrice,
-                        status,
-                        category,
-                        images,
-                      }) => (
-                        <Table.Tr
-                          key={_id}
-                          onClick={() => {
-                            handleTableRowClick(_id);
-                          }}
-                        >
-                          <Table.Td>
-                            <Rhf.Checkbox
-                              value={_id}
-                              onChange={e => e.stopPropagation()}
-                            />
-                          </Table.Td>
-                          <Table.Td>{name}</Table.Td>
-                          <Table.Td>{formatNumber(quantity)}</Table.Td>
-                          <Table.Td>
-                            {formatNumber(salePrice || price)}
-                          </Table.Td>
-                          <Table.Td>{category.name}</Table.Td>
-                          <Table.Td>{category.subCategory.name}</Table.Td>
-                          <Table.Td>{getProductStatusText(status)}</Table.Td>
-                          <Table.Td>
-                            {images && images[0] && (
-                              <Image
-                                style={{
-                                  objectFit: 'contain',
-                                  width: 'auto',
-                                  height: 'auto',
-                                }}
-                                alt={name}
-                                src={images[0].secureUrl}
-                                width={150}
-                                height={100}
-                                priority
-                              />
-                            )}
-                          </Table.Td>
-                        </Table.Tr>
-                      ),
-                    )}
-                  </Table.Body>
-                </Rhf.CheckboxGroup>
-              </Table>
-            </div>
-          </Rhf.Form>
-          <Pagination {...paginationProps} />
-        </div>
-
-        <Button
-          size="large"
-          fill
-          onClick={handleGoToProductRegisterButtonClick}
-        >
-          <FontAwesomeIcon icon={faPlus} />
-        </Button>
-      </div>
-    </>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <AdminProductView />
+    </HydrationBoundary>
   );
 };
 
-export default ProductList;
+export default AdminProductList;

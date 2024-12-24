@@ -11,10 +11,7 @@ import {
 import { isEmpty } from 'lodash-es';
 import { useSearchParams } from 'next/navigation';
 
-import {
-  getAdminCategoriesQueryOptions,
-  getCategoriesQueryOptions,
-} from '@services/queries/category/options';
+import { getAdminCategoriesQueryOptions } from '@services/queries/category/options';
 import { orderKeys } from '@services/queries/order/keys';
 import { productKeys } from '@services/queries/product/keys';
 import {

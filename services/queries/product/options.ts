@@ -76,10 +76,12 @@ export const getAdminProductListQueryOptions = ({
   searchParams,
   page,
   limit,
+  headers,
 }: {
   searchParams: PaginationQueryParamsType<SearchAdminProduct>;
   page: number;
   limit: number;
+  headers?: HeadersInit;
 }) => ({
   queryKey: productKeys.getAdminAll({
     ...searchParams,
@@ -96,7 +98,7 @@ export const getAdminProductListQueryOptions = ({
         sort: searchParams.sort,
       }),
       'GET',
-      { next: { tags: [productTags.all, productTags.adminList] } },
+      { headers, next: { tags: [productTags.all, productTags.adminList] } },
     ),
 });
 

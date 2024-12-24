@@ -17,7 +17,7 @@ import type {
   SearchAdminProduct,
 } from '@api/admin/product/types/dto';
 
-type AdminDeleteProductUseFormType = {
+export type AdminDeleteProductUseFormType = {
   productIds: string[];
 };
 
@@ -27,15 +27,12 @@ const INITIAL_STATUS_VALUES = [
   ProductStatusType.STOPPED,
 ];
 
-const useAdminProductList = () => {
+const useAdminProductView = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const { products, categories, handleSearchParamsChange } =
     useAdminProductListWithCategoryQueries();
-  const { mutate: deleteProducts } = useAdminProductMultiDeleteMutation();
-
-  const deleteProductForm = useForm<AdminDeleteProductUseFormType>();
 
   const [subCategories, setSubCategories] = useState<
     Array<Omit<AdminSubCategoryVO, 'deletable'>>
@@ -44,13 +41,12 @@ const useAdminProductList = () => {
   const defaultStatusValue = searchParams.get('status')
     ? (searchParams.get('status')?.split(',') as ProductStatusType[])
     : INITIAL_STATUS_VALUES;
+
   const defaultCategoryValue = searchParams.get('category') || '';
 
   const defaultSubCategoryValue = searchParams.get('subCategory')
     ? searchParams.get('subCategory')?.split(',')
     : [];
-
-  console.log(defaultCategoryValue);
 
   const searchAdminProductForm = useForm<SearchAdminProduct>({
     values: {
@@ -64,9 +60,6 @@ const useAdminProductList = () => {
   });
 
   const { control, reset, setValue, getValues } = searchAdminProductForm;
-
-  const [requestDeleteProducts, setRequestDeleteProducts] =
-    useState<DeleteAdminProducts>([]);
 
   const selectedCategoryId = useWatch({
     name: 'category',
@@ -85,6 +78,13 @@ const useAdminProductList = () => {
     control,
     defaultValue: defaultStatusValue,
   });
+
+  const { mutate: deleteProducts } = useAdminProductMultiDeleteMutation();
+
+  const deleteProductForm = useForm<AdminDeleteProductUseFormType>();
+
+  const [requestDeleteProducts, setRequestDeleteProducts] =
+    useState<DeleteAdminProducts>([]);
 
   const selectedDeleteProductIds = useWatch({
     name: 'productIds',
@@ -110,33 +110,41 @@ const useAdminProductList = () => {
   useEffect(() => {
     if (!categories.data) return;
 
-    // all click
-    if (!selectedCategoryId && !isEmpty(subCategories)) {
+    const resetSubCategories = () => {
       setSubCategories([]);
       setValue('subCategory', []);
+    };
+
+    // all click
+    if (!selectedCategoryId) {
+      if (!isEmpty(subCategories)) {
+        resetSubCategories();
+      }
 
       return;
     }
-
-    if (!selectedCategoryId) return;
 
     const category = categories.data.find(
       category => category._id === selectedCategoryId,
     );
 
-    if (isEmpty(category?.subCategories) && !isEmpty(subCategories)) {
-      setSubCategories([]);
-      setValue('subCategory', []);
+    // 선택한 카테고리에 서브카테고리가 없는 경우
+    if (isEmpty(category?.subCategories)) {
+      if (!isEmpty(subCategories)) {
+        resetSubCategories();
+      }
+
+      return;
     }
 
-    if (category?.subCategories && !isEmpty(category.subCategories)) {
-      if (!isEqual(category.subCategories, subCategories)) {
-        setSubCategories(category.subCategories);
-        setValue(
-          'subCategory',
-          category.subCategories.map(item => item._id),
-        );
-      }
+    // 선택한 카테고리에 서브카테고리가 있는 경우
+    if (
+      category?.subCategories &&
+      !isEqual(category.subCategories, subCategories)
+    ) {
+      const subCategoryIds = category.subCategories.map(item => item._id);
+      setSubCategories(category.subCategories);
+      setValue('subCategory', subCategoryIds);
     }
   }, [categories.data, selectedCategoryId, setValue, subCategories]);
 
@@ -181,10 +189,6 @@ const useAdminProductList = () => {
     });
   }, [selectedDeleteProductIds, products, requestDeleteProducts]);
 
-  const handleTableRowClick = (id: string) => {
-    router.push(PATH.ADMIN.PRODUCT.DETAIL(id));
-  };
-
   const handleChangeCategory = () => {
     setValue('subCategory', []);
   };
@@ -221,14 +225,18 @@ const useAdminProductList = () => {
     });
   };
 
-  const handleGoToProductRegisterButtonClick = () =>
-    router.push(PATH.ADMIN.PRODUCT.REGISTER);
-
   const handleSortChange = () => {
     const sort = getValues('sort');
 
     handleSearchParamsChange({ sort });
     deleteProductForm.reset();
+  };
+
+  const handleGoToProductRegisterButtonClick = () =>
+    router.push(PATH.ADMIN.PRODUCT.REGISTER);
+
+  const handleTableRowClick = (id: string) => {
+    router.push(PATH.ADMIN.PRODUCT.DETAIL(id));
   };
 
   const handleRemoveProduct = () => {
@@ -238,20 +246,24 @@ const useAdminProductList = () => {
   };
 
   return {
-    categories: categories.data,
-    subCategories,
-    products: products.data,
-    paginationProps: products.paginationProps,
-    searchAdminProductForm,
-    deleteProductForm,
-    handleTableRowClick,
-    handleAdminSearchProduct,
-    handleFilterResetButtonClick,
+    searchFilterProps: {
+      categories: categories.data,
+      subCategories,
+      searchForm: searchAdminProductForm,
+      handleAdminSearchProduct,
+      handleFilterResetButtonClick,
+      handleChangeCategory,
+      handleSortChange,
+    },
+    resultProps: {
+      deleteForm: deleteProductForm,
+      products: products.data,
+      paginationProps: products.paginationProps,
+      handleTableRowClick,
+      handleRemoveProduct,
+    },
     handleGoToProductRegisterButtonClick,
-    handleSortChange,
-    handleRemoveProduct,
-    handleChangeCategory,
   };
 };
 
-export default useAdminProductList;
+export default useAdminProductView;

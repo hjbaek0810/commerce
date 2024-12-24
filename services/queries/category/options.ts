@@ -2,6 +2,7 @@ import { categoryKeys, categoryTags } from '@services/queries/category/keys';
 import { fetchData } from '@services/utils/fetch';
 import { API } from '@services/utils/path';
 
+import type { AdminCategoryVO } from '@api/admin/category/types/vo';
 import type { CategoryVO } from '@api/category/types/vo';
 
 export const getCategoriesQueryOptions = () => ({
@@ -12,10 +13,11 @@ export const getCategoriesQueryOptions = () => ({
     }),
 });
 
-export const getAdminCategoriesQueryOptions = () => ({
+export const getAdminCategoriesQueryOptions = (headers?: HeadersInit) => ({
   queryKey: categoryKeys.getAdminAll(),
   queryFn: () =>
-    fetchData<Array<CategoryVO>>(API.ADMIN.CATEGORY, 'GET', {
+    fetchData<Array<AdminCategoryVO>>(API.ADMIN.CATEGORY, 'GET', {
+      headers,
       next: { tags: [categoryTags.all, categoryTags.adminList] },
     }),
 });
