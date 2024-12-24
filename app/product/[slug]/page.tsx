@@ -1,7 +1,9 @@
 import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
+import { headers } from 'next/headers';
 
 import Title from '@components/Title';
 import { getProductDetailQueryOptions } from '@services/queries/product/options';
+import { getWishListQueryOptions } from '@services/queries/wish-list/options';
 import { getQueryClient } from '@utils/query/queryClient';
 
 import ProductInfo from './ProductInfo';
@@ -11,7 +13,10 @@ const ProductDetail = async ({ params }: { params: { slug: string } }) => {
 
   const queryClient = getQueryClient();
 
-  await queryClient.prefetchQuery(getProductDetailQueryOptions(id));
+  await Promise.all([
+    queryClient.prefetchQuery(getProductDetailQueryOptions(id)),
+    queryClient.prefetchQuery(getWishListQueryOptions(headers())),
+  ]);
 
   return (
     <>
