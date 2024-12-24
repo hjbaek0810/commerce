@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import { useQueryClient } from '@tanstack/react-query';
 import { isEmpty, isEqual } from 'lodash-es';
 import { useRouter, useSearchParams } from 'next/navigation';
 
@@ -9,8 +8,7 @@ import {
   useAdminProductListWithCategoryQueries,
   useAdminProductMultiDeleteMutation,
 } from '@services/queries/product';
-import { productKeys } from '@services/queries/product/keys';
-import { ProductSortType } from '@utils/constants/product';
+import { ProductSortType, ProductStatusType } from '@utils/constants/product';
 import { PATH } from '@utils/path';
 
 import type { AdminSubCategoryVO } from '@api/admin/category/types/vo';
@@ -18,11 +16,16 @@ import type {
   DeleteAdminProducts,
   SearchAdminProduct,
 } from '@api/admin/product/types/dto';
-import type { ProductStatusType } from '@utils/constants/product';
 
 type AdminDeleteProductUseFormType = {
   productIds: string[];
 };
+
+const INITIAL_STATUS_VALUES = [
+  ProductStatusType.IN_PROGRESS,
+  ProductStatusType.HIDDEN,
+  ProductStatusType.STOPPED,
+];
 
 const useAdminProductList = () => {
   const router = useRouter();
@@ -32,23 +35,35 @@ const useAdminProductList = () => {
     useAdminProductListWithCategoryQueries();
   const { mutate: deleteProducts } = useAdminProductMultiDeleteMutation();
 
-  const searchAdminProductForm = useForm<SearchAdminProduct>({
-    values: {
-      category: searchParams.get('category') || '',
-      subCategory: searchParams.get('subCategory') || '',
-      name: searchParams.get('name') || '',
-      status: (searchParams.get('status') as ProductStatusType) || '',
-      sort:
-        (searchParams.get('sort') as ProductSortType) || ProductSortType.NEWEST,
-    },
-  });
-  const { control, reset, setValue, getValues } = searchAdminProductForm;
-
   const deleteProductForm = useForm<AdminDeleteProductUseFormType>();
 
   const [subCategories, setSubCategories] = useState<
     Array<Omit<AdminSubCategoryVO, 'deletable'>>
   >([]);
+
+  const defaultStatusValue = searchParams.get('status')
+    ? (searchParams.get('status')?.split(',') as ProductStatusType[])
+    : INITIAL_STATUS_VALUES;
+  const defaultCategoryValue = searchParams.get('category') || '';
+
+  const defaultSubCategoryValue = searchParams.get('subCategory')
+    ? searchParams.get('subCategory')?.split(',')
+    : [];
+
+  console.log(defaultCategoryValue);
+
+  const searchAdminProductForm = useForm<SearchAdminProduct>({
+    values: {
+      category: defaultCategoryValue,
+      subCategory: defaultSubCategoryValue,
+      name: searchParams.get('name') || '',
+      status: defaultStatusValue,
+      sort:
+        (searchParams.get('sort') as ProductSortType) || ProductSortType.NEWEST,
+    },
+  });
+
+  const { control, reset, setValue, getValues } = searchAdminProductForm;
 
   const [requestDeleteProducts, setRequestDeleteProducts] =
     useState<DeleteAdminProducts>([]);
@@ -56,7 +71,19 @@ const useAdminProductList = () => {
   const selectedCategoryId = useWatch({
     name: 'category',
     control,
-    defaultValue: '',
+    defaultValue: defaultCategoryValue,
+  });
+
+  const selectedSubCategories = useWatch({
+    name: 'subCategory',
+    control,
+    defaultValue: defaultSubCategoryValue,
+  });
+
+  const selectedStatus = useWatch({
+    name: 'status',
+    control,
+    defaultValue: defaultStatusValue,
   });
 
   const selectedDeleteProductIds = useWatch({
@@ -66,11 +93,27 @@ const useAdminProductList = () => {
   });
 
   useEffect(() => {
+    if (!selectedStatus || isEmpty(selectedStatus)) {
+      setValue('status', INITIAL_STATUS_VALUES);
+    }
+  }, [selectedStatus, setValue]);
+
+  useEffect(() => {
+    if (subCategories.length > 0 && isEmpty(selectedSubCategories)) {
+      setValue(
+        'subCategory',
+        subCategories.map(sub => sub._id),
+      );
+    }
+  }, [selectedSubCategories, setValue, subCategories]);
+
+  useEffect(() => {
     if (!categories.data) return;
 
+    // all click
     if (!selectedCategoryId && !isEmpty(subCategories)) {
-      setValue('subCategory', '');
       setSubCategories([]);
+      setValue('subCategory', []);
 
       return;
     }
@@ -81,12 +124,21 @@ const useAdminProductList = () => {
       category => category._id === selectedCategoryId,
     );
 
-    if (!category?.subCategories.length) {
-      setValue('subCategory', '');
+    if (isEmpty(category?.subCategories) && !isEmpty(subCategories)) {
+      setSubCategories([]);
+      setValue('subCategory', []);
     }
 
-    setSubCategories(category?.subCategories ?? []);
-  }, [selectedCategoryId, categories, setValue, subCategories]);
+    if (category?.subCategories && !isEmpty(category.subCategories)) {
+      if (!isEqual(category.subCategories, subCategories)) {
+        setSubCategories(category.subCategories);
+        setValue(
+          'subCategory',
+          category.subCategories.map(item => item._id),
+        );
+      }
+    }
+  }, [categories.data, selectedCategoryId, setValue, subCategories]);
 
   useEffect(() => {
     if (!products.data || !selectedDeleteProductIds) return;
@@ -133,9 +185,27 @@ const useAdminProductList = () => {
     router.push(PATH.ADMIN.PRODUCT.DETAIL(id));
   };
 
+  const handleChangeCategory = () => {
+    setValue('subCategory', []);
+  };
+
   const handleAdminSearchProduct = (data: SearchAdminProduct) => {
     deleteProductForm.reset();
-    handleSearchParamsChange(data);
+
+    const { subCategory: checkedSubCategories, status, ...restData } = data;
+
+    const isSearchSubCategory =
+      subCategories.length !== 0 &&
+      checkedSubCategories?.length !== subCategories.length;
+
+    const isSearchStatus =
+      status && status.length !== INITIAL_STATUS_VALUES.length;
+
+    handleSearchParamsChange({
+      subCategory: isSearchSubCategory ? checkedSubCategories : '',
+      status: isSearchStatus ? status : '',
+      ...restData,
+    });
   };
 
   const handleFilterResetButtonClick = () => {
@@ -180,6 +250,7 @@ const useAdminProductList = () => {
     handleGoToProductRegisterButtonClick,
     handleSortChange,
     handleRemoveProduct,
+    handleChangeCategory,
   };
 };
 

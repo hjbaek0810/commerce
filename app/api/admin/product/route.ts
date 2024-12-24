@@ -85,6 +85,8 @@ export async function GET(req: NextRequest) {
     const pageNumber = Number(searchParams.get('page'));
     const limitNumber = Number(searchParams.get('limit'));
     const sort = searchParams.get('sort') || ProductSortType.NEWEST;
+    const subCategory = (searchParams.get('subCategory') || '').split(',');
+    const status = (searchParams.get('status') || '').split(',');
 
     let sortCriteria: SortCriteria = { createdAt: -1 }; // 기본값: 최신 순
 
@@ -115,10 +117,15 @@ export async function GET(req: NextRequest) {
             filters['categoryIds._id'] = value;
             break;
           case 'subCategory':
-            filters['categoryIds.subCategoryId'] = value;
+            filters['$or'] = subCategory?.map(subCategory => ({
+              'categoryIds.subCategoryId': subCategory,
+            }));
             break;
           case 'name':
             filters[key] = { $regex: `^${value}`, $options: 'i' };
+            break;
+          case 'status':
+            filters['$or'] = status?.map(status => ({ status }));
             break;
           default:
             filters[key] = value;

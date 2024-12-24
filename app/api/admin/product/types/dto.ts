@@ -5,9 +5,9 @@ import type {
 
 export type SearchAdminProduct = {
   category?: string;
-  subCategory?: string;
+  subCategory?: string[];
   name?: string;
-  status?: ProductStatusType;
+  status?: ProductStatusType[];
   sort?: ProductSortType;
 };
 

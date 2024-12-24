@@ -11,7 +11,10 @@ import {
 import { isEmpty } from 'lodash-es';
 import { useSearchParams } from 'next/navigation';
 
-import { getCategoriesQueryOptions } from '@services/queries/category/options';
+import {
+  getAdminCategoriesQueryOptions,
+  getCategoriesQueryOptions,
+} from '@services/queries/category/options';
 import { orderKeys } from '@services/queries/order/keys';
 import { productKeys } from '@services/queries/product/keys';
 import {
@@ -84,7 +87,7 @@ export const useAdminProductListWithCategoryQueries = () => {
         enabled: !!searchParams,
       },
       {
-        ...getCategoriesQueryOptions(),
+        ...getAdminCategoriesQueryOptions(),
         staleTime: Infinity,
         gcTime: 60 * 60 * 1000,
       },

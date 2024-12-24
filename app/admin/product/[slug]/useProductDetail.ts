@@ -76,7 +76,9 @@ const useProductDetail = () => {
             deleteImageIds: product?.images.map(({ publicId }) => publicId),
           },
           {
-            onSuccess: router.back,
+            onSuccess: () => {
+              router.back();
+            },
           },
         );
       },

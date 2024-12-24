@@ -32,6 +32,7 @@ const ProductList = () => {
     handleAdminSearchProduct,
     handleSortChange,
     handleRemoveProduct,
+    handleChangeCategory,
   } = useAdminProductList();
 
   return (
@@ -73,7 +74,11 @@ const ProductList = () => {
                     <Rhf.Label name="category">카테고리</Rhf.Label>
                   </Table.Th>
                   <Table.Td>
-                    <Rhf.Select name="category" hiddenPlaceholder>
+                    <Rhf.Select
+                      name="category"
+                      hiddenPlaceholder
+                      onChange={handleChangeCategory}
+                    >
                       <Rhf.SelectOption value="">ALL</Rhf.SelectOption>
                       {categories.map(({ _id, name }) => (
                         <Rhf.SelectOption key={_id} value={_id}>
@@ -82,25 +87,27 @@ const ProductList = () => {
                       ))}
                     </Rhf.Select>
                   </Table.Td>
-                  <Table.Th scope="row">
-                    <Rhf.Label name="subCategory">서브 카테고리</Rhf.Label>
-                  </Table.Th>
-                  <Table.Td>
-                    <Rhf.Radio
+                  <Table.Td colSpan={2}>
+                    <Rhf.CheckboxGroup
+                      options={subCategories.map(({ _id }) => _id)}
                       name="subCategory"
-                      className={sprinkles({
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: 'spacing-004',
-                      })}
                     >
-                      <Rhf.RadioOption value="">ALL</Rhf.RadioOption>
-                      {subCategories.map(sub => (
-                        <Rhf.RadioOption key={sub._id} value={sub._id}>
-                          {sub.name}
-                        </Rhf.RadioOption>
-                      ))}
-                    </Rhf.Radio>
+                      <div
+                        className={sprinkles({
+                          display: 'flex',
+                          gap: 'spacing-012',
+                          flexWrap: 'wrap',
+                        })}
+                      >
+                        {subCategories.map(sub => (
+                          <Rhf.Checkbox
+                            key={sub._id}
+                            value={sub._id}
+                            label={sub.name}
+                          />
+                        ))}
+                      </div>
+                    </Rhf.CheckboxGroup>
                   </Table.Td>
                 </Table.Tr>
                 <Table.Tr>
@@ -114,18 +121,27 @@ const ProductList = () => {
                     <Rhf.Label name="status">상품상태</Rhf.Label>
                   </Table.Th>
                   <Table.Td>
-                    <Rhf.Select name="status" hiddenPlaceholder>
-                      <Rhf.SelectOption value="">ALL</Rhf.SelectOption>
-                      <Rhf.SelectOption value={ProductStatusType.IN_PROGRESS}>
-                        판매
-                      </Rhf.SelectOption>
-                      <Rhf.SelectOption value={ProductStatusType.STOPPED}>
-                        판매 중지
-                      </Rhf.SelectOption>
-                      <Rhf.SelectOption value={ProductStatusType.HIDDEN}>
-                        상품 숨김
-                      </Rhf.SelectOption>
-                    </Rhf.Select>
+                    <Rhf.CheckboxGroup
+                      options={[
+                        ProductStatusType.IN_PROGRESS,
+                        ProductStatusType.STOPPED,
+                        ProductStatusType.HIDDEN,
+                      ]}
+                      name="status"
+                    >
+                      <Rhf.Checkbox
+                        value={ProductStatusType.IN_PROGRESS}
+                        label="판매"
+                      />
+                      <Rhf.Checkbox
+                        value={ProductStatusType.STOPPED}
+                        label="판매 중지"
+                      />
+                      <Rhf.Checkbox
+                        value={ProductStatusType.HIDDEN}
+                        label="상품 숨김"
+                      />
+                    </Rhf.CheckboxGroup>
                   </Table.Td>
                 </Table.Tr>
               </Table.Body>
