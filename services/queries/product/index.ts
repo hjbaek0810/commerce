@@ -285,7 +285,6 @@ export const useAdminProductDeleteMutation = () => {
       ]);
     },
     onSuccess: async (_, variables) => {
-      // TODO:: check
       await Promise.all([
         queryClient.invalidateQueries({
           queryKey: productKeys.getAdminAll(),
