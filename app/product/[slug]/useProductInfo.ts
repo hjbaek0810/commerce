@@ -23,7 +23,7 @@ const useProductInfo = (id: string) => {
   const queryClient = useQueryClient();
   const { data: product, isWished } = useProductDetailQuery(id);
   const { mutate: updateWish } = useWishListMutation();
-  const { mutate: updateCart } = useCartListMutation();
+  const { mutate: updateCart } = useCartListMutation(true);
 
   const router = useRouter();
   const [quantity, setQuantity] = useState<number>(1);

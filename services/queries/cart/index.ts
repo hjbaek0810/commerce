@@ -1,9 +1,4 @@
-import {
-  keepPreviousData,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { cartKeys } from '@services/queries/cart/keys';
 import { getCartListQueryOptions } from '@services/queries/cart/options';
@@ -38,7 +33,7 @@ export const useCartListWhenNewOrderQuery = (
     enabled: fromCart,
   });
 
-export const useCartListMutation = () => {
+export const useCartListMutation = (shouldRefetch?: boolean) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -48,7 +43,7 @@ export const useCartListMutation = () => {
     onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: cartKeys.getAll(),
-        refetchType: 'all',
+        refetchType: shouldRefetch ? 'all' : 'none',
       });
     },
   });
