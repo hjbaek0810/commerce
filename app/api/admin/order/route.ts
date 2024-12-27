@@ -25,6 +25,15 @@ enum AdminOrderListErrorType {
   ORDER_LIST_NOT_FOUND = 'AOI-001',
 }
 
+type CustomAdminOrderModelType = Omit<OrderModelType, 'userId'> & {
+  user: UserModelType;
+};
+
+type CustomAdminOrderDataType = {
+  data: Array<CustomAdminOrderModelType>;
+  totalCount: number;
+};
+
 export async function GET(req: NextRequest) {
   try {
     const sessionCheck = await checkSession(authOptions, true);
@@ -70,80 +79,113 @@ export async function GET(req: NextRequest) {
       createdAt: sort === OrderSortType.NEWEST ? -1 : 1,
     };
 
-    const adminOrderList = await OrderModel.aggregate<
-      Omit<OrderModelType, 'userId'> & { user: UserModelType }
-    >([
-      {
-        $match: filters,
-      },
-      {
-        $lookup: {
-          from: 'products',
-          localField: 'productIds.productId',
-          foreignField: '_id',
-          as: 'products',
+    const adminOrderData = await OrderModel.aggregate<CustomAdminOrderDataType>(
+      [
+        {
+          $match: filters,
         },
-      },
-      {
-        $lookup: {
-          from: 'users',
-          localField: 'userId',
-          foreignField: '_id',
-          as: 'user',
-        },
-      },
-      {
-        $unwind: {
-          path: '$user',
-          preserveNullAndEmptyArrays: true,
-        },
-      },
-      {
-        $addFields: {
-          orderNum: { $toString: '$_id' },
-          userNum: { $toString: '$userId' },
-          items: {
-            $map: {
-              input: '$productIds',
-              as: 'item',
-              in: {
-                product: {
-                  $ifNull: ['$productInfo', {}], // productInfo가 없으면 빈 객체
-                },
-                quantity: '$$item.quantity',
-                price: '$$item.price',
-              },
-            },
+        {
+          $lookup: {
+            from: 'products',
+            localField: 'productIds.productId',
+            foreignField: '_id',
+            as: 'products',
           },
-          totalPrice: {
-            $sum: {
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'userId',
+            foreignField: '_id',
+            as: 'user',
+          },
+        },
+        {
+          $unwind: {
+            path: '$user',
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $addFields: {
+            orderNum: { $toString: '$_id' },
+            userNum: { $toString: '$userId' },
+            items: {
               $map: {
                 input: '$productIds',
                 as: 'item',
-                in: { $multiply: ['$$item.price', '$$item.quantity'] },
+                in: {
+                  product: {
+                    $cond: {
+                      if: { $not: ['$$item.productId'] }, // productId가 없거나 null인 경우
+                      then: {},
+                      else: '$$item.productId',
+                    },
+                  },
+                  quantity: '$$item.quantity',
+                  price: '$$item.price',
+                },
+              },
+            },
+            totalPrice: {
+              $sum: {
+                $map: {
+                  input: '$productIds',
+                  as: 'item',
+                  in: { $multiply: ['$$item.price', '$$item.quantity'] },
+                },
               },
             },
           },
         },
-      },
-      {
-        $match: {
-          orderNum: { $regex: `^${orderId || ''}`, $options: 'i' },
-          userNum: { $regex: `^${userId || ''}`, $options: 'i' },
-          'user.name': { $regex: `^${useName || ''}`, $options: 'i' },
+        {
+          $facet: {
+            totalCount: [
+              {
+                $match: {
+                  orderNum: { $regex: `^${orderId || ''}`, $options: 'i' },
+                  userNum: { $regex: `^${userId || ''}`, $options: 'i' },
+                  'user.name': { $regex: `^${useName || ''}`, $options: 'i' },
+                },
+              },
+              {
+                $count: 'totalCount',
+              },
+            ],
+            data: [
+              {
+                $match: {
+                  orderNum: { $regex: `^${orderId || ''}`, $options: 'i' },
+                  userNum: { $regex: `^${userId || ''}`, $options: 'i' },
+                  'user.name': { $regex: `^${useName || ''}`, $options: 'i' },
+                },
+              },
+              { $sort: sortOptions },
+              { $skip: (pageNumber - 1) * limitNumber },
+              { $limit: limitNumber },
+              {
+                $project: {
+                  userId: 0,
+                  products: 0,
+                  productIds: 0,
+                  orderNum: 0,
+                  userNum: 0,
+                },
+              },
+            ],
+          },
         },
-      },
-      { $sort: sortOptions },
-      { $skip: (pageNumber - 1) * limitNumber },
-      { $limit: limitNumber },
-      {
-        $project: {
-          userId: 0,
-          products: 0,
-          productIds: 0,
+        {
+          $project: {
+            totalCount: { $arrayElemAt: ['$totalCount.totalCount', 0] },
+            data: 1,
+          },
         },
-      },
-    ]);
+      ],
+    );
+
+    const totalCount = adminOrderData[0]?.totalCount || 0;
+    const adminOrderList = adminOrderData[0]?.data || [];
 
     const orders = adminOrderList?.map(({ _id, user, ...order }) => ({
       _id: _id.toString(),
@@ -156,7 +198,7 @@ export async function GET(req: NextRequest) {
       orders,
       currentPage: pageNumber,
       currentLimit: limitNumber,
-      totalCount: adminOrderList?.length || 0,
+      totalCount,
     };
 
     return NextResponse.json(response, {
