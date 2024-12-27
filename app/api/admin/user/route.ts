@@ -36,8 +36,6 @@ export async function GET(req: NextRequest) {
 
     const sort = searchParams.get('sort') || UserSortType.NAME_ASC;
 
-    const status = (searchParams.get('status') || '').split(',');
-
     const filters: FilterQuery<AdminSearchUser> = {
       role: { $ne: UserRoleType.ADMIN },
     };
