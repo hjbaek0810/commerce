@@ -18,6 +18,8 @@ declare module "next-auth" {
     postCode: string;
     address: string;
     subAddress: string;
+    createdAt: Date;
+    updatedAt: Date;
     exp: number;
     iat: number;
     jti: string;

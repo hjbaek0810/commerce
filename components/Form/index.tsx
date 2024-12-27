@@ -12,6 +12,7 @@ import {
   RHFCheckbox,
   RHFCheckboxGroup,
 } from '@components/Form/Checkbox/RHFCheckbox';
+import RHFDateInput from '@components/Form/DateInput/RHFDateInput';
 import RHFErrorMessage from '@components/Form/ErrorMessage';
 import RHFInput from '@components/Form/Input/RHFInput';
 import RHFLabel from '@components/Form/Label/RHFLabel';
@@ -59,6 +60,7 @@ const Rhf = {
   Form,
   Label: RHFLabel,
   Input: RHFInput,
+  DateInput: RHFDateInput,
   Select: RHFSelect,
   SelectOption: Select.Option,
   CheckboxGroup: RHFCheckboxGroup,

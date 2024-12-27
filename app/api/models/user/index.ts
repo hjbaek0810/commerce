@@ -45,7 +45,7 @@ const UserSchema = new Schema(
       default: null,
     },
   },
-  { collection: 'users' },
+  { timestamps: true, collection: 'users' },
 );
 
 const UserModel = models.User || model('User', UserSchema);

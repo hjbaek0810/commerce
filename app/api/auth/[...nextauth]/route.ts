@@ -72,6 +72,8 @@ export const authOptions: NextAuthOptions = {
         user.address = user?.address || '';
         user.subAddress = user?.subAddress || '';
         user.telephone = user?.telephone || '';
+        user.createdAt = user?.createdAt || new Date();
+        user.updatedAt = user?.updatedAt || new Date();
       }
 
       return true;

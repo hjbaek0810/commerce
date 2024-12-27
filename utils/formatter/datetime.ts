@@ -1,10 +1,18 @@
+import { format, parseISO } from 'date-fns';
 import { isNil } from 'lodash-es';
 
-export function formatDateTime(dateTime?: string) {
+export function formatDate(dateTime?: string): string {
   if (isNil(dateTime)) return '';
 
-  const date = new Date(dateTime);
-  const formattedDate = date.toISOString().slice(0, 19).replace('T', ' ');
+  const parsedDate = parseISO(dateTime);
 
-  return formattedDate;
+  return format(parsedDate, 'yyyy-MM-dd');
+}
+
+export function formatDateTime(dateTime?: string): string {
+  if (isNil(dateTime)) return '';
+
+  const parsedDate = parseISO(dateTime);
+
+  return format(parsedDate, 'yyyy-MM-dd HH:mm:ss'); // 원하는 형식으로 변환
 }

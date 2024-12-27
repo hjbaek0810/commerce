@@ -12,7 +12,7 @@ export function createQueryString(url: string, params: NewObject) {
 
   const queryString = searchParams.toString();
 
-  return `${url}?${queryString}`;
+  return `${url}${queryString && `?${queryString}`}`;
 }
 
 export const parseQueryParams = (searchParams: URLSearchParams) => {

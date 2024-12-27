@@ -19,6 +19,10 @@ export const API = {
     USER: {
       BASE: 'admin/user',
     },
+    DASHBOARD: {
+      BASE: 'admin/dashboard',
+      USER: 'admin/dashboard/user',
+    },
   },
   CATEGORY: {
     BASE: 'category',

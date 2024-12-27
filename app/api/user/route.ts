@@ -6,6 +6,7 @@ import { authOptions } from '@api/auth/[...nextauth]/route';
 import connectDB from '@api/config/connectDB';
 import { checkSession } from '@api/helper/session';
 import UserModel from '@api/models/user';
+import { dashboardTags } from '@services/queries/dashboard/keys';
 import { userTags } from '@services/queries/user/keys';
 
 import type { UserModelType } from '@api/models/user';
@@ -96,6 +97,7 @@ export async function POST(req: NextRequest) {
     const { password, contactEmail, ...restUserInfo } = user._doc;
 
     revalidateTag(userTags.adminList);
+    revalidateTag(dashboardTags.user);
 
     return NextResponse.json(
       {
