@@ -1,24 +1,30 @@
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
 
-import { getAdminDashboardUsersQueryOptions } from '@services/queries/dashboard/options';
-import useQueryParams from '@utils/hooks/useQueryParams';
-import { parseQueryParams } from '@utils/query/helper';
+import {
+  getAdminDashboardOrdersQueryOptions,
+  getAdminUserDashboardQueryOptions,
+} from '@services/queries/dashboard/options';
 
-export const useAdminDashboardUserQuery = () => {
-  const searchParams = useSearchParams();
-  const queryParams = parseQueryParams(searchParams);
+import type {
+  SearchAdminOrderDashboard,
+  SearchAdminUserDashboard,
+} from '@api/admin/dashboard/types/dto';
 
-  const { changeSearchParams } = useQueryParams();
-
-  const queries = useQuery(
-    getAdminDashboardUsersQueryOptions({
-      searchParams: queryParams,
+export const useAdminUserDashboardQuery = (
+  searchParams: SearchAdminUserDashboard,
+) =>
+  useQuery(
+    getAdminUserDashboardQueryOptions({
+      searchParams,
     }),
   );
 
-  return {
-    ...queries,
-    changeSearchParams,
-  };
-};
+export const useAdminDashboardOrderQuery = (
+  queryParams: SearchAdminOrderDashboard,
+) =>
+  useQuery(
+    getAdminDashboardOrdersQueryOptions({
+      searchParams: queryParams,
+    }),
+  );

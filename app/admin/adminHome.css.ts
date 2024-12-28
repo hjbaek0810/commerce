@@ -1,22 +1,57 @@
-import { sprinkles } from '@styles/sprinkles.css';
+import { style } from '@vanilla-extract/css';
 
-export const userDashboardWrapper = sprinkles({
-  width: 'sizing-fill',
+import { sprinkles } from '@styles/sprinkles.css';
+import { tokens } from '@styles/token.css';
+
+export const dashboardWrapper = sprinkles({
+  display: 'flex',
+  justifyContent: 'space-between',
   height: 'sizing-560',
 });
 
-export const userFormWrapper = sprinkles({
+export const userSearchFormWrapper = sprinkles({
   display: 'flex',
-  justifyContent: 'space-between',
+  flexDirection: 'column',
+  gap: 'spacing-008',
+  paddingY: 'spacing-024',
 });
 
-export const searchUserDateButtonWrapper = sprinkles({
+export const searchDateWrapper = sprinkles({
   display: 'flex',
-  gap: 'spacing-004',
+  flexDirection: 'column',
+  gap: 'spacing-008',
 });
 
 export const dateInputWrapper = sprinkles({
   display: 'flex',
-  gap: 'spacing-004',
   alignItems: 'center',
+});
+
+export const userSearchDateButtonWrapper = sprinkles({
+  display: 'flex',
+  gap: 'spacing-004',
+  justifyContent: 'flex-end',
+});
+
+export const dashboardContainer = style({
+  width: '70%',
+});
+
+export const searchForm = style({
+  width: '35%',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: tokens.spacing['spacing-008'],
+  marginLeft: 'auto',
+});
+
+export const totalAmountBox = style({
+  width: '50%',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  backgroundColor: '#3892ed',
+  color: 'white',
+  fontSize: tokens.fontSize['font-size-020'],
+  borderRadius: '0.4rem',
 });

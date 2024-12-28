@@ -22,6 +22,7 @@ export const API = {
     DASHBOARD: {
       BASE: 'admin/dashboard',
       USER: 'admin/dashboard/user',
+      ORDER: 'admin/dashboard/order',
     },
   },
   CATEGORY: {
