@@ -5,8 +5,8 @@ import { tokens } from '@styles/token.css';
 
 export const dashboardWrapper = sprinkles({
   display: 'flex',
-  justifyContent: 'space-between',
-  height: 'sizing-560',
+  flexDirection: 'column',
+  gap: 'spacing-040',
 });
 
 export const searchDateWrapper = sprinkles({

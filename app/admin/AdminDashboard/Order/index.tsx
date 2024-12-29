@@ -17,15 +17,14 @@ import {
 } from 'recharts';
 
 import useAdminOrderDashboard from '@app/admin/AdminDashboard/Order/useAdminOrderDashboard';
-import Button from '@components/Button';
-import Rhf from '@components/Form';
+import DashboardSearchForm from '@app/admin/AdminDashboard/SearchForm';
 import Title from '@components/Title';
 import { sprinkles } from '@styles/sprinkles.css';
-import { DashboardDateRangeType } from '@utils/constants/dashboard';
 import { formatNumber } from '@utils/formatter/number';
 
 import * as css from '../../adminHome.css';
 
+import type { SearchAdminOrderDashboard } from '@api/admin/dashboard/types/dto';
 import type { PieLabelRenderProps } from 'recharts';
 
 const RADIAN = Math.PI / 180;
@@ -35,16 +34,8 @@ const AdminOrderDashboard = () => {
     statusList,
     totalPriceList,
     statusColorMap,
-    searchOrderForm,
-    startDate,
-    endDate,
     totalAmountMessage,
-    activeButton,
-    handleStartDateChange,
-    handleEndDateChange,
-    handleResetButtonClick,
-    handleDateFilterSelection,
-    handleSearchButtonClick,
+    searchFormProps,
   } = useAdminOrderDashboard();
 
   const renderCustomizedLabel = useMemo(
@@ -95,121 +86,7 @@ const AdminOrderDashboard = () => {
           gap: 'spacing-032',
         })}
       >
-        <div className={css.searchForm}>
-          <div
-            className={sprinkles({
-              display: 'flex',
-              gap: 'spacing-004',
-            })}
-          >
-            <Button
-              fullWidth
-              fill={activeButton('today')}
-              size="small"
-              onClick={() => handleDateFilterSelection('today')}
-            >
-              오늘
-            </Button>
-            <Button
-              fullWidth
-              fill={activeButton('thisMonth')}
-              size="small"
-              onClick={() => handleDateFilterSelection('thisMonth')}
-            >
-              이번 달
-            </Button>
-          </div>
-          <div
-            className={sprinkles({
-              display: 'flex',
-              gap: 'spacing-004',
-            })}
-          >
-            <Button
-              fullWidth
-              fill={activeButton('7days')}
-              size="small"
-              onClick={() => handleDateFilterSelection('7days')}
-            >
-              7일전
-            </Button>
-            <Button
-              fullWidth
-              fill={activeButton('15days')}
-              size="small"
-              onClick={() => handleDateFilterSelection('15days')}
-            >
-              15일전
-            </Button>
-            <Button
-              fullWidth
-              fill={activeButton('30days')}
-              size="small"
-              onClick={() => handleDateFilterSelection('30days')}
-            >
-              30일전
-            </Button>
-          </div>
-
-          <Rhf.Form
-            {...searchOrderForm}
-            onSubmit={handleSearchButtonClick}
-            className={css.searchDateWrapper}
-          >
-            <div className={css.dateInputWrapper}>
-              <Rhf.DateInput
-                name="startDate"
-                selectsStart
-                onChange={handleStartDateChange}
-                startDate={startDate}
-                endDate={endDate}
-              />
-              <span
-                className={sprinkles({
-                  paddingX: 'spacing-004',
-                })}
-              >
-                -
-              </span>
-              <Rhf.DateInput
-                name="endDate"
-                selectsEnd
-                onChange={handleEndDateChange}
-                startDate={startDate}
-                endDate={endDate}
-                minDate={startDate}
-              />
-            </div>
-
-            <Rhf.Radio
-              name="dateRangeType"
-              className={sprinkles({
-                display: 'flex',
-                gap: 'spacing-008',
-                justifyContent: 'flex-end',
-              })}
-            >
-              <Rhf.RadioOption value={DashboardDateRangeType.DAILY}>
-                일 별
-              </Rhf.RadioOption>
-              <Rhf.RadioOption value={DashboardDateRangeType.MONTHLY}>
-                월 별
-              </Rhf.RadioOption>
-            </Rhf.Radio>
-
-            <div
-              className={sprinkles({
-                display: 'flex',
-                gap: 'spacing-004',
-                justifyContent: 'flex-end',
-              })}
-            >
-              <Button type="submit">Search</Button>
-              <Button onClick={handleResetButtonClick}>Reset</Button>
-            </div>
-          </Rhf.Form>
-        </div>
-
+        <DashboardSearchForm<SearchAdminOrderDashboard> {...searchFormProps} />
         <div
           className={sprinkles({
             display: 'flex',

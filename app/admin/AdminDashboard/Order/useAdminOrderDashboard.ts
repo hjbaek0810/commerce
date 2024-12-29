@@ -154,16 +154,18 @@ const useAdminOrderDashboard = () => {
     statusList,
     totalPriceList,
     statusColorMap,
-    searchOrderForm,
-    startDate,
-    endDate,
     totalAmountMessage,
-    activeButton,
-    handleStartDateChange,
-    handleEndDateChange,
-    handleResetButtonClick,
-    handleDateFilterSelection,
-    handleSearchButtonClick,
+    searchFormProps: {
+      searchForm: searchOrderForm,
+      startDate,
+      endDate,
+      activeButton,
+      handleStartDateChange,
+      handleEndDateChange,
+      handleResetButtonClick,
+      handleDateFilterSelection,
+      handleSearchButtonClick,
+    },
   };
 };
 

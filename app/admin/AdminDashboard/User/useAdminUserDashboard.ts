@@ -100,15 +100,17 @@ const useAdminUserDashboard = () => {
     userData,
     filteredTotalUserCount,
     totalUserCount: users?.totalUserCount || 0,
-    searchUserForm,
-    startDate,
-    endDate,
-    activeButton,
-    handleStartDateChange,
-    handleEndDateChange,
-    handleDateFilterSelection,
-    handleSearchButtonClick,
-    handleResetButtonClick,
+    searchFormProps: {
+      searchForm: searchUserForm,
+      startDate,
+      endDate,
+      activeButton,
+      handleStartDateChange,
+      handleEndDateChange,
+      handleDateFilterSelection,
+      handleSearchButtonClick,
+      handleResetButtonClick,
+    },
   };
 };
 

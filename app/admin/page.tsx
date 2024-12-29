@@ -10,6 +10,8 @@ import {
 import { DashboardDateRangeType } from '@utils/constants/dashboard';
 import { getQueryClient } from '@utils/query/queryClient';
 
+import * as css from './adminHome.css';
+
 const Admin = async () => {
   const queryClient = getQueryClient();
 
@@ -36,14 +38,14 @@ const Admin = async () => {
   ]);
 
   return (
-    <>
+    <div className={css.dashboardWrapper}>
       <HydrationBoundary state={dehydrate(queryClient)}>
         <AdminUserDashboard />
       </HydrationBoundary>
       <HydrationBoundary state={dehydrate(queryClient)}>
         <AdminOrderDashboard />
       </HydrationBoundary>
-    </>
+    </div>
   );
 };
 
