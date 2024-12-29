@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { format, isToday, parseISO, subDays } from 'date-fns';
+import { isToday, parseISO } from 'date-fns';
 import { isEqual } from 'lodash-es';
 
+import { calculateRange } from '@app/admin/AdminDashboard/utils';
 import { useAdminDashboardOrderQuery } from '@services/queries/dashboard';
 import { DashboardDateRangeType } from '@utils/constants/dashboard';
 import { createEnumObject } from '@utils/constants/helper';
@@ -11,8 +12,8 @@ import { OrderStatus, getOrderStatusText } from '@utils/constants/order';
 import { formatNumber } from '@utils/formatter/number';
 
 import type { SearchAdminOrderDashboard } from '@api/admin/dashboard/types/dto';
+import type { SearchDateType } from '@app/admin/AdminDashboard/utils';
 
-type SearchDateType = '7days' | '15days' | '30days' | 'today' | 'thisMonth';
 const ALL_ORDER_STATUS = createEnumObject(OrderStatus);
 
 const statusColorMap = {
@@ -26,50 +27,6 @@ const statusColorMap = {
   [OrderStatus.REFUND_COMPLETED]: '#7FAF7C',
   [OrderStatus.RETURN_PENDING]: '#F8D300',
   [OrderStatus.RETURN_COMPLETED]: '#7DCA7D',
-};
-
-const calculatePastDate = (daysAgo: number) => {
-  if (daysAgo < 0) throw new Error('Days ago cannot be negative');
-
-  return format(subDays(new Date(), daysAgo), 'yyyy-MM-dd');
-};
-
-const calculateRange = (filter: SearchDateType) => {
-  const today = new Date();
-
-  switch (filter) {
-    case '7days':
-      return {
-        startDate: calculatePastDate(7),
-        endDate: undefined,
-      };
-    case '15days':
-      return {
-        startDate: calculatePastDate(15),
-        endDate: undefined,
-      };
-    case '30days':
-      return {
-        startDate: calculatePastDate(30),
-        endDate: undefined,
-      };
-    case 'today':
-      return {
-        startDate: format(today, 'yyyy-MM-dd'),
-        endDate: undefined,
-      };
-    // BE: default
-    case 'thisMonth':
-      return {
-        startDate: undefined,
-        endDate: undefined,
-      };
-    default:
-      return {
-        startDate: undefined,
-        endDate: undefined,
-      };
-  }
 };
 
 const useAdminOrderDashboard = () => {

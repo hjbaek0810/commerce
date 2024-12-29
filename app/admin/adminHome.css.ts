@@ -9,13 +9,6 @@ export const dashboardWrapper = sprinkles({
   height: 'sizing-560',
 });
 
-export const userSearchFormWrapper = sprinkles({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: 'spacing-008',
-  paddingY: 'spacing-024',
-});
-
 export const searchDateWrapper = sprinkles({
   display: 'flex',
   flexDirection: 'column',
@@ -25,16 +18,6 @@ export const searchDateWrapper = sprinkles({
 export const dateInputWrapper = sprinkles({
   display: 'flex',
   alignItems: 'center',
-});
-
-export const userSearchDateButtonWrapper = sprinkles({
-  display: 'flex',
-  gap: 'spacing-004',
-  justifyContent: 'flex-end',
-});
-
-export const dashboardContainer = style({
-  width: '70%',
 });
 
 export const searchForm = style({
@@ -53,5 +36,16 @@ export const totalAmountBox = style({
   backgroundColor: '#3892ed',
   color: 'white',
   fontSize: tokens.fontSize['font-size-020'],
+  borderRadius: '0.4rem',
+});
+
+export const totalUserText = style({
+  padding: tokens.spacing['spacing-012'],
+  marginLeft: 'auto',
+  width: 'fit-content',
+  color: 'white',
+  fontSize: tokens.fontSize['font-size-016'],
+  fontWeight: 600,
+  backgroundColor: '#85a1b7',
   borderRadius: '0.4rem',
 });

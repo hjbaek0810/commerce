@@ -21,7 +21,7 @@ export const getAdminUserDashboardQueryOptions = ({
 }) => ({
   queryKey: dashboardKeys.getUser(searchParams),
   queryFn: () =>
-    fetchData<AdminUserDashboardVO[]>(
+    fetchData<AdminUserDashboardVO>(
       createQueryString(API.ADMIN.DASHBOARD.USER, searchParams),
       'GET',
       { headers, next: { tags: [dashboardTags.all, dashboardTags.user] } },

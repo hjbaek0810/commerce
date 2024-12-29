@@ -2,11 +2,19 @@ import { NextResponse } from 'next/server';
 
 import { authOptions } from '@api/auth/[...nextauth]/route';
 import connectDB from '@api/config/connectDB';
+import {
+  isValidDateRange,
+  setEndOfDay,
+  setEndOfMonth,
+  setStartOfDay,
+  setStartOfMonth,
+} from '@api/helper/filter';
 import { checkSession } from '@api/helper/session';
 import UserModel from '@api/models/user';
+import { DashboardDateRangeType } from '@utils/constants/dashboard';
 import { UserRoleType } from '@utils/constants/user';
 
-import type { AdminSearchUser } from '@api/admin/user/types/dto';
+import type { SearchAdminUserDashboard } from '@api/admin/dashboard/types/dto';
 import type { UserLoginType } from '@utils/constants/user';
 import type { FilterQuery } from 'mongoose';
 import type { NextRequest } from 'next/server';
@@ -14,38 +22,6 @@ import type { NextRequest } from 'next/server';
 enum AdminDashboardUserErrorType {
   DATE_RANGE_INVALID = 'A-DR-001',
 }
-
-const isValidDateRange = (start: string, end: string) => {
-  const startD = new Date(start);
-  const endD = new Date(end);
-
-  if (startD > endD) {
-    return false;
-  }
-
-  return true;
-};
-
-const setStartOfDay = (date: string) => {
-  const d = new Date(date);
-  d.setUTCHours(0, 0, 0, 0);
-
-  return d;
-};
-
-const setEndOfDay = (date: string) => {
-  const d = new Date(date);
-  d.setUTCHours(23, 59, 59, 999);
-
-  return d;
-};
-
-const getThirtyDaysAgo = () => {
-  const today = new Date();
-  today.setDate(today.getDate() - 30);
-
-  return today.toISOString().split('T')[0];
-};
 
 type CustomDashboardUserType = {
   _id: string;
@@ -75,13 +51,14 @@ export async function GET(req: NextRequest) {
 
     const startDate = searchParams.get('startDate');
     const endDate = searchParams.get('endDate');
+    const dateRangeType = searchParams.get('dateRangeType');
 
-    const filters: FilterQuery<AdminSearchUser> = {
+    const filters: FilterQuery<SearchAdminUserDashboard> = {
       role: { $ne: UserRoleType.ADMIN },
     };
 
     if (startDate && endDate) {
-      if (!isValidDateRange) {
+      if (!isValidDateRange(startDate, endDate)) {
         return NextResponse.json(
           {
             message: 'Start date cannot be greater than end date.',
@@ -104,10 +81,22 @@ export async function GET(req: NextRequest) {
         $lte: setEndOfDay(endDate),
       };
     } else {
-      const defaultStartDate = getThirtyDaysAgo();
-
+      // 이번달로 기본설정
       filters.createdAt = {
-        $gte: setStartOfDay(defaultStartDate),
+        $gte: setStartOfMonth(),
+        $lte: setEndOfMonth(),
+      };
+    }
+
+    let groupByDateField;
+
+    if (dateRangeType === DashboardDateRangeType.DAILY) {
+      groupByDateField = {
+        $dateToString: { format: '%Y-%m-%d', date: '$createdAt' }, // 일별로 그룹화
+      };
+    } else {
+      groupByDateField = {
+        $dateToString: { format: '%Y-%m', date: '$createdAt' }, // 월별로 그룹화
       };
     }
 
@@ -117,12 +106,7 @@ export async function GET(req: NextRequest) {
       },
       {
         $project: {
-          createdAt: {
-            $dateToString: {
-              format: '%Y-%m-%d',
-              date: '$createdAt',
-            },
-          },
+          createdAt: groupByDateField,
           _id: 1,
           name: 1,
           loginType: 1,
@@ -147,6 +131,10 @@ export async function GET(req: NextRequest) {
       },
     ]);
 
+    const totalUserCount = await UserModel.countDocuments({
+      role: { $ne: UserRoleType.ADMIN },
+    });
+
     const result = users.map(dateGroup => {
       const groupedByLoginType: Record<
         UserLoginType,
@@ -168,9 +156,15 @@ export async function GET(req: NextRequest) {
       };
     });
 
-    return NextResponse.json(result, {
-      status: 200,
-    });
+    return NextResponse.json(
+      {
+        items: result || [],
+        totalUserCount: totalUserCount || 0,
+      },
+      {
+        status: 200,
+      },
+    );
   } catch (error) {
     console.error(error);
 

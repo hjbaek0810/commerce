@@ -8,6 +8,7 @@ import CartModel from '@api/models/cart';
 import OrderModel from '@api/models/order';
 import ProductModel from '@api/models/product';
 import UserModel from '@api/models/user';
+import { dashboardTags } from '@services/queries/dashboard/keys';
 import { orderTags } from '@services/queries/order/keys';
 import { productTags } from '@services/queries/product/keys';
 import { OrderStatus } from '@utils/constants/order';
@@ -135,6 +136,7 @@ export async function POST(req: NextRequest) {
     });
 
     revalidateTag(orderTags.adminList);
+    revalidateTag(dashboardTags.order);
 
     for (const item of products) {
       const product = await ProductModel.findById(item._id);
@@ -288,6 +290,7 @@ export async function PUT(req: NextRequest) {
 
     revalidateTag(orderTags.adminList);
     revalidateTag(orderTags.adminDetail(data._id));
+    revalidateTag(dashboardTags.order);
 
     return NextResponse.json({
       message: 'success',

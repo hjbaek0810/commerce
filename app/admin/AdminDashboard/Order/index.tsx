@@ -1,13 +1,12 @@
 'use client';
 
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 
 import {
   Bar,
   BarChart,
   CartesianGrid,
   Cell,
-  Label,
   Legend,
   Pie,
   PieChart,
@@ -198,7 +197,13 @@ const AdminOrderDashboard = () => {
               </Rhf.RadioOption>
             </Rhf.Radio>
 
-            <div className={css.userSearchDateButtonWrapper}>
+            <div
+              className={sprinkles({
+                display: 'flex',
+                gap: 'spacing-004',
+                justifyContent: 'flex-end',
+              })}
+            >
               <Button type="submit">Search</Button>
               <Button onClick={handleResetButtonClick}>Reset</Button>
             </div>

@@ -7,6 +7,8 @@ import { shouldFilterKey } from '@api/helper/filter';
 import { checkSession } from '@api/helper/session';
 import OrderModel from '@api/models/order';
 import ProductModel from '@api/models/product';
+import { dashboardTags } from '@services/queries/dashboard/keys';
+import { orderTags } from '@services/queries/order/keys';
 import { productTags } from '@services/queries/product/keys';
 import { OrderSortType, OrderStatus } from '@utils/constants/order';
 import { ProductStatusType } from '@utils/constants/product';
@@ -296,6 +298,9 @@ export async function PUT(req: NextRequest) {
         { status: 404 },
       );
     }
+
+    revalidateTag(dashboardTags.order);
+    revalidateTag(orderTags.list);
 
     return NextResponse.json({
       message: 'success',

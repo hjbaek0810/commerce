@@ -1,23 +1,21 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { format, subDays } from 'date-fns';
-import { useSearchParams } from 'next/navigation';
+import { isEqual } from 'lodash-es';
 
-import { useAdminDashboardUserQuery } from '@services/queries/dashboard';
+import {
+  type SearchDateType,
+  calculateRange,
+} from '@app/admin/AdminDashboard/utils';
+import { useAdminUserDashboardQuery } from '@services/queries/dashboard';
+import { DashboardDateRangeType } from '@utils/constants/dashboard';
 
-import type { SearchUserAdminDashboard } from '@api/admin/dashboard/types/dto';
-
-const DEFAULT_START_DATE = 30;
+import type { SearchAdminUserDashboard } from '@api/admin/dashboard/types/dto';
 
 const useAdminUserDashboard = () => {
-  const { data: userData, changeSearchParams } = useAdminDashboardUserQuery();
-  const searchParams = useSearchParams();
-
-  const searchUserForm = useForm<SearchUserAdminDashboard>({
-    values: {
-      startDate: searchParams.get('startDate') || '',
-      endDate: searchParams.get('endDate') || '',
+  const searchUserForm = useForm<SearchAdminUserDashboard>({
+    defaultValues: {
+      dateRangeType: DashboardDateRangeType.MONTHLY,
     },
   });
   const { setValue } = searchUserForm;
@@ -25,36 +23,53 @@ const useAdminUserDashboard = () => {
   const [startDate, setStartDate] = useState<Date | undefined>();
   const [endDate, setEndDate] = useState<Date | undefined>();
 
-  const calculatePastDate = (daysAgo: number) => {
-    if (daysAgo < 0) throw new Error('Days ago cannot be negative');
+  const [searchParams, setSearchParams] = useState<SearchAdminUserDashboard>({
+    startDate: undefined,
+    endDate: undefined,
+    dateRangeType: DashboardDateRangeType.MONTHLY,
+  });
 
-    return format(subDays(new Date(), daysAgo), 'yyyy-MM-dd');
+  const { data: users } = useAdminUserDashboardQuery({
+    startDate: searchParams.startDate,
+    endDate: searchParams.endDate,
+    dateRangeType: searchParams.dateRangeType,
+  });
+
+  const userData =
+    users?.items?.map(item => ({
+      name: item.date,
+      google: item.loginTypes.GOOGLE.length,
+      credentials: item.loginTypes.CREDENTIALS.length,
+    })) || [];
+
+  const filteredTotalUserCount = users?.items.reduce((total, currentUser) => {
+    const loginTypesLength = Object.values(currentUser.loginTypes).reduce(
+      (sum, loginTypeArray) => sum + loginTypeArray.length,
+      0,
+    );
+
+    return total + loginTypesLength;
+  }, 0);
+
+  const activeButton = (filter: SearchDateType) => {
+    const { dateRangeType, ...filteredSearchParams } = searchParams;
+
+    return isEqual(filteredSearchParams, calculateRange(filter));
   };
 
-  const activeButton = (daysAgo: number) => {
-    const calculatedStartDate = `startDate=${calculatePastDate(daysAgo)}`;
+  const handleDateFilterSelection = (filter: SearchDateType) => {
+    const { startDate, endDate } = calculateRange(filter);
 
-    const isDefault = daysAgo === DEFAULT_START_DATE;
-
-    if (isDefault) {
-      return !searchParams.toString();
-    } else {
-      return calculatedStartDate === searchParams.toString();
-    }
-  };
-
-  const handleDateFilterSelection = (daysAgo: number) => {
-    if (daysAgo < 0) return;
-    const isDefault = daysAgo === DEFAULT_START_DATE;
-
-    changeSearchParams({
-      startDate: isDefault ? '' : calculatePastDate(daysAgo),
-      endDate: '',
+    setSearchParams({
+      startDate,
+      endDate,
+      dateRangeType: searchParams.dateRangeType,
     });
   };
 
   const handleStartDateChange = (date: Date | null) => {
     if (date && endDate && date.getTime() > endDate.getTime()) {
+      setStartDate(date);
       setEndDate(undefined);
       setValue('endDate', undefined);
     } else setStartDate(date ?? undefined);
@@ -64,8 +79,8 @@ const useAdminUserDashboard = () => {
     setEndDate(date ?? undefined);
   };
 
-  const handleSearchButtonClick = (data: SearchUserAdminDashboard) => {
-    changeSearchParams(data);
+  const handleSearchButtonClick = (data: SearchAdminUserDashboard) => {
+    setSearchParams(data);
   };
 
   const handleResetButtonClick = () => {
@@ -74,14 +89,17 @@ const useAdminUserDashboard = () => {
     setValue('startDate', undefined);
     setValue('endDate', undefined);
 
-    changeSearchParams({
-      startDate: '',
-      endDate: '',
+    setSearchParams({
+      startDate: undefined,
+      endDate: undefined,
+      dateRangeType: DashboardDateRangeType.MONTHLY,
     });
   };
 
   return {
-    user: userData || [],
+    userData,
+    filteredTotalUserCount,
+    totalUserCount: users?.totalUserCount || 0,
     searchUserForm,
     startDate,
     endDate,
