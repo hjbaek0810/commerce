@@ -1,24 +1,13 @@
 import { globalStyle, style } from '@vanilla-extract/css';
-import { recipe } from '@vanilla-extract/recipes';
 
 import { ColorPalettes } from '@styles/palette';
 import { sprinkles } from '@styles/sprinkles.css';
 import { tokens } from '@styles/token.css';
-import { fontSize } from '@styles/tokens';
 
 export const wrapper = style({
+  width: '100%',
   position: 'relative',
   zIndex: tokens.zIndex['z-index-dropdown'],
-});
-
-export const wrapperClassName = recipe({
-  base: { width: '100%' },
-  variants: {
-    isFocused: {
-      true: {},
-      false: {},
-    },
-  },
 });
 
 export const calenderWrapper = style({

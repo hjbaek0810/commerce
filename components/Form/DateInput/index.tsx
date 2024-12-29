@@ -46,7 +46,7 @@ const DateInput = forwardRef<HTMLInputElement, DateInputPropsType>(
           ref={ref}
           hidden={hidden}
         />
-        {!disabled && (
+        {!error && !disabled && (
           <FontAwesomeIcon icon={faCalendarDay} className={css.calendarIcon} />
         )}
 
