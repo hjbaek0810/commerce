@@ -1,5 +1,4 @@
 import { style } from '@vanilla-extract/css';
-import { calc } from '@vanilla-extract/css-utils';
 
 import { ColorPalettes } from '@styles/palette';
 import { tokens } from '@styles/token.css';
