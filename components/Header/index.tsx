@@ -24,6 +24,7 @@ export type HeaderListType = {
     query?: ParsedUrlQueryInput | string;
   };
   customSelected?: boolean;
+  shallow?: boolean;
 };
 
 type HeaderPropsType = {
@@ -42,7 +43,7 @@ const Header = ({ list }: HeaderPropsType) => {
 
       <nav className={css.bar}>
         <ul className={css.menu}>
-          {list.map(({ title, href, customSelected }) => (
+          {list.map(({ title, href, customSelected, shallow }) => (
             <li
               key={title}
               className={css.menuItem({
@@ -54,6 +55,7 @@ const Header = ({ list }: HeaderPropsType) => {
                   pathname: href.path,
                   query: href.query,
                 }}
+                shallow={shallow}
               >
                 {title}
               </Link>

@@ -2,8 +2,6 @@
 
 import type { PropsWithChildren } from 'react';
 
-import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Link from 'next/link';
 
 import useSideMenu from '@components/SideMenu/useSideMenu';
@@ -24,6 +22,7 @@ export type SideMenuListType = {
     query?: ParsedUrlQueryInput | string;
   };
   show?: boolean;
+  shallow?: boolean;
 };
 
 const SideMenu = ({
@@ -49,6 +48,7 @@ const SideMenu = ({
                 pathname: item.href.path,
                 query: item.href.query,
               }}
+              shallow={item.shallow}
             >
               {item.title}
             </Link>
