@@ -102,10 +102,11 @@ const useAccountForm = () => {
           setEditablePassword(false);
           queryClient.setQueryData<UserVO>(userKeys.getDetail(), previous => {
             if (!previous) return myInfo;
+            const { password, ...updatedData } = requestData;
 
             return {
               ...previous,
-              ...requestData,
+              ...updatedData,
             };
           });
         },

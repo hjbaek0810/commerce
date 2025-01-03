@@ -21,6 +21,7 @@ const Admin = async () => {
         searchParams: {
           startDate: undefined,
           endDate: undefined,
+          dateRangeType: DashboardDateRangeType.MONTHLY,
         },
         headers: headers(),
       }),
