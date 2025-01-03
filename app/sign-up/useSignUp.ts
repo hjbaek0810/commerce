@@ -4,10 +4,10 @@ import { toast } from 'react-toastify';
 
 import { useRouter } from 'next/navigation';
 
+import { UserErrorException } from '@api/exception';
 import FindPostCodeModal from '@components/Modal/templates/FindPostCodeModal';
 import { useSignUpMutation } from '@services/queries/user';
 import { isApiError } from '@services/utils/error';
-import { UserExceptionCode } from '@services/utils/types/exception';
 import { UserRoleType } from '@utils/constants/user';
 import useModals from '@utils/hooks/useModals';
 import { PATH } from '@utils/path';
@@ -58,7 +58,7 @@ const useSignUp = () => {
       },
       onError: error => {
         if (isApiError(error)) {
-          if (error.code === UserExceptionCode.USER_ALREADY_EXISTS) {
+          if (error.code === UserErrorException.USER_ALREADY_EXISTS.code) {
             toast.error('이미 존재하는 아이디입니다.');
             setError(
               'loginId',

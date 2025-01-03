@@ -1,4 +1,4 @@
-import { revalidatePath } from 'next/cache';
+import { CommonErrorException } from '@api/exception';
 
 import { ApiError } from './error';
 
@@ -58,8 +58,8 @@ export async function fetchData<T, U = unknown>(
     // }
 
     const error = new ApiError(
-      errorData.message || '서버 요청 실패',
-      errorData.code || 'UNKNOWN_ERROR',
+      errorData.message || CommonErrorException.UNKNOWN_ERROR.message,
+      errorData.code || CommonErrorException.UNKNOWN_ERROR.code,
       errorData.data,
     );
 

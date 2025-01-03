@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 
 import { authOptions } from '@api/auth/[...nextauth]/route';
 import connectDB from '@api/config/connectDB';
+import { CommonErrorException } from '@api/exception';
 import { checkSession } from '@api/helper/session';
 import ProductModel from '@api/models/product';
 import WishListModel from '@api/models/wishList';
@@ -9,10 +10,6 @@ import WishListModel from '@api/models/wishList';
 import type { WishListModelType } from '@api/models/wishList';
 import type { DeleteWishItem, UpdateWishItem } from '@api/wish-list/types/dto';
 import type { NextRequest } from 'next/server';
-
-enum WishListErrorType {
-  WISH_LIST_NOT_FOUND = 'WI-001',
-}
 
 export async function GET() {
   try {
@@ -147,8 +144,8 @@ export async function DELETE(req: NextRequest) {
     if (!wishList) {
       return NextResponse.json(
         {
-          message: 'Wish List Not Found.',
-          code: WishListErrorType.WISH_LIST_NOT_FOUND,
+          message: CommonErrorException.NOT_FOUND.message,
+          code: CommonErrorException.NOT_FOUND.code,
         },
         { status: 404 },
       );

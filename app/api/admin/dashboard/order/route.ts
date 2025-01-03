@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 
 import { authOptions } from '@api/auth/[...nextauth]/route';
 import connectDB from '@api/config/connectDB';
+import { CommonErrorException } from '@api/exception';
 import {
   isValidDateRange,
   setEndOfDay,
@@ -62,8 +63,8 @@ export async function GET(req: NextRequest) {
       if (!isValidDateRange(startDate, endDate)) {
         return NextResponse.json(
           {
-            message: 'Start date cannot be greater than end date.',
-            code: AdminDashboardOrderErrorType.DATE_RANGE_INVALID,
+            message: CommonErrorException.DATE_RANGE_INVALID.message,
+            code: CommonErrorException.DATE_RANGE_INVALID.code,
           },
           { status: 400 },
         );

@@ -1,13 +1,10 @@
 import { NextResponse } from 'next/server';
 
 import connectDB from '@api/config/connectDB';
+import { CommonErrorException } from '@api/exception';
 import ProductModel from '@api/models/product';
 
 import type { NextRequest } from 'next/server';
-
-enum ProductErrorType {
-  PRODUCT_NOT_FOUND = 'PD-001',
-}
 
 export async function GET(
   _: NextRequest,
@@ -21,8 +18,8 @@ export async function GET(
     if (!product) {
       return NextResponse.json(
         {
-          message: 'Product not found',
-          code: ProductErrorType.PRODUCT_NOT_FOUND,
+          message: CommonErrorException.NOT_FOUND.message,
+          code: CommonErrorException.NOT_FOUND.code,
         },
         { status: 404 },
       );

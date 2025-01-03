@@ -7,6 +7,8 @@ import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 
 import cloudinary from '@api/config/cloudinaryConfig';
+import { CloudinaryError, GeneralError } from '@services/upload/exception';
+import { handleError } from '@services/utils/error';
 
 type NewFilesType = {
   fileName: string;
@@ -31,35 +33,41 @@ async function uploadImagesToCloudinary(newFiles: NewFilesType) {
 }
 
 async function saveImagesToLocal(data: FormData) {
-  const files = data.getAll('images') as File[];
+  try {
+    const files = data.getAll('images') as File[];
 
-  const multipleBuffersImages = files.map(file => {
-    return file.arrayBuffer().then(item => {
-      const buffer = Buffer.from(item);
-      const name = uuidv4();
+    const multipleBuffersImages = files.map(file => {
+      return file.arrayBuffer().then(item => {
+        const buffer = Buffer.from(item);
+        const name = uuidv4();
 
-      const [, ext] = file.type.split('/');
+        const [, ext] = file.type.split('/');
 
-      // Doesn't work in vercel
-      // const uploadDir = path.join(process.cwd(), 'public/images');
-      // if (!fs.existsSync(uploadDir)) {
-      //   fs.mkdirSync(uploadDir);
-      // }
+        // Doesn't work in vercel
+        // const uploadDir = path.join(process.cwd(), 'public/images');
+        // if (!fs.existsSync(uploadDir)) {
+        //   fs.mkdirSync(uploadDir);
+        // }
 
-      const tempDir = os.tmpdir();
+        const tempDir = os.tmpdir();
 
-      const uploadDir = path.join(tempDir, `/${name}.${ext}`); // work in vercel
+        const uploadDir = path.join(tempDir, `/${name}.${ext}`); // work in vercel
 
-      fs.writeFileSync(uploadDir, buffer);
+        fs.writeFileSync(uploadDir, buffer);
 
-      return {
-        filePath: uploadDir,
-        fileName: Buffer.from(file.name, 'ascii').toString('utf8'),
-      };
+        return {
+          filePath: uploadDir,
+          fileName: Buffer.from(file.name, 'ascii').toString('utf8'),
+        };
+      });
     });
-  });
 
-  return await Promise.all(multipleBuffersImages);
+    return await Promise.all(multipleBuffersImages);
+  } catch (error) {
+    console.log(error);
+
+    throw new Error(handleError(error) || GeneralError.UNKNOWN_ERROR.message);
+  }
 }
 
 export async function uploadImages(files: FormData) {
@@ -71,7 +79,7 @@ export async function uploadImages(files: FormData) {
       fs.unlink(file.filePath, err => {
         if (err) {
           console.error(err);
-          throw new Error('Failed to upload the images.');
+          throw new Error(CloudinaryError.UPLOAD_FAILED.message);
         }
       }),
     );
@@ -80,7 +88,7 @@ export async function uploadImages(files: FormData) {
   } catch (error) {
     console.error(error);
 
-    throw new Error('Failed to upload the images.');
+    throw new Error(CloudinaryError.UPLOAD_FAILED.message);
   }
 }
 
@@ -96,7 +104,7 @@ export async function getAllImages() {
   } catch (error) {
     console.error(error);
 
-    throw new Error('Failed to retrieve the uploaded images.');
+    throw new Error(CloudinaryError.RETRIEVE_FAILED.message);
   }
 }
 
@@ -106,6 +114,6 @@ export async function deleteImages(publicId: string) {
   } catch (error) {
     console.error(error);
 
-    throw new Error('Failed to delete the uploaded image.');
+    throw new Error(CloudinaryError.DELETE_FAILED.message);
   }
 }

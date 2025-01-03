@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 
 import { authOptions } from '@api/auth/[...nextauth]/route';
 import connectDB from '@api/config/connectDB';
+import { CommonErrorException, OrderErrorException } from '@api/exception';
 import { checkSession } from '@api/helper/session';
 import CartModel from '@api/models/cart';
 import OrderModel from '@api/models/order';
@@ -17,12 +18,6 @@ import { ProductStatusType } from '@utils/constants/product';
 import type { OrderModelType } from '@api/models/order';
 import type { CreateOrder, UpdateOrder } from '@api/order/types/dto';
 import type { NextRequest } from 'next/server';
-
-enum OrderListErrorType {
-  ORDER_LIST_NOT_FOUND = 'OI-001',
-  ORDER_PRODUCT_LIST_NOT_FOUND = 'OI-002',
-  ORDER_EXCEED_QUANTITY = 'OI-003',
-}
 
 export async function GET(req: NextRequest) {
   try {
@@ -144,8 +139,8 @@ export async function POST(req: NextRequest) {
       if (!product) {
         return NextResponse.json(
           {
-            message: 'Product not found',
-            code: OrderListErrorType.ORDER_PRODUCT_LIST_NOT_FOUND,
+            message: CommonErrorException.NOT_FOUND.message,
+            code: CommonErrorException.NOT_FOUND.code,
           },
           { status: 404 },
         );
@@ -154,8 +149,8 @@ export async function POST(req: NextRequest) {
       if (product.quantity < item.quantity) {
         return NextResponse.json(
           {
-            message: 'The requested quantity exceeds the available stock.',
-            code: OrderListErrorType.ORDER_EXCEED_QUANTITY,
+            message: OrderErrorException.EXCEED_QUANTITY.message,
+            code: OrderErrorException.EXCEED_QUANTITY.code,
           },
           { status: 400 },
         );
@@ -233,8 +228,8 @@ export async function PUT(req: NextRequest) {
     if (!order) {
       return NextResponse.json(
         {
-          message: 'Order not found',
-          code: OrderListErrorType.ORDER_LIST_NOT_FOUND,
+          message: CommonErrorException.NOT_FOUND.message,
+          code: CommonErrorException.NOT_FOUND.code,
         },
         { status: 404 },
       );
@@ -281,8 +276,8 @@ export async function PUT(req: NextRequest) {
     if (!updateOrder) {
       return NextResponse.json(
         {
-          message: 'Order not found',
-          code: OrderListErrorType.ORDER_LIST_NOT_FOUND,
+          message: CommonErrorException.NOT_FOUND.message,
+          code: CommonErrorException.NOT_FOUND.code,
         },
         { status: 404 },
       );

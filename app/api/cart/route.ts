@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 
 import { authOptions } from '@api/auth/[...nextauth]/route';
 import connectDB from '@api/config/connectDB';
+import { CommonErrorException } from '@api/exception';
 import { checkSession } from '@api/helper/session';
 import CartModel from '@api/models/cart';
 import ProductModel from '@api/models/product';
@@ -11,11 +12,6 @@ import type { CartModelType } from '@api/models/cart';
 import type { ProductModelType } from '@api/models/product';
 import type { Schema } from 'mongoose';
 import type { NextRequest } from 'next/server';
-
-enum CartListErrorType {
-  CART_LIST_NOT_FOUND = 'CI-001',
-  CART_PRODUCT_NOT_FOUND = 'CI-002',
-}
 
 export async function GET() {
   try {
@@ -119,11 +115,12 @@ export async function POST(req: NextRequest) {
     const product = await ProductModel.findById(
       data.productId,
     ).lean<ProductModelType>();
+
     if (!product) {
       return NextResponse.json(
         {
-          message: 'Product not found.',
-          code: CartListErrorType.CART_PRODUCT_NOT_FOUND,
+          message: CommonErrorException.NOT_FOUND.message,
+          code: CommonErrorException.NOT_FOUND.code,
         },
         { status: 404 },
       );
@@ -197,8 +194,8 @@ export async function DELETE(req: NextRequest) {
     if (!cartList) {
       return NextResponse.json(
         {
-          message: 'Cart not found.',
-          code: CartListErrorType.CART_LIST_NOT_FOUND,
+          message: CommonErrorException.NOT_FOUND.message,
+          code: CommonErrorException.NOT_FOUND.code,
         },
         { status: 404 },
       );

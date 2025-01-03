@@ -72,7 +72,6 @@ export async function GET(
     return NextResponse.json(
       {
         message: 'Failed to load product.',
-        status: 500,
       },
       { status: 500 },
     );

@@ -3,7 +3,13 @@ import { NextResponse } from 'next/server';
 
 import { authOptions } from '@api/auth/[...nextauth]/route';
 import connectDB from '@api/config/connectDB';
-import { shouldFilterKey } from '@api/helper/filter';
+import { CommonErrorException } from '@api/exception';
+import {
+  isValidDateRange,
+  setEndOfDay,
+  setStartOfDay,
+  shouldFilterKey,
+} from '@api/helper/filter';
 import { checkSession } from '@api/helper/session';
 import OrderModel from '@api/models/order';
 import ProductModel from '@api/models/product';
@@ -22,10 +28,6 @@ import type { UserModelType } from '@api/models/user';
 import type { SortCriteria } from '@api/types';
 import type { FilterQuery } from 'mongoose';
 import type { NextRequest } from 'next/server';
-
-enum AdminOrderListErrorType {
-  ORDER_LIST_NOT_FOUND = 'AOI-001',
-}
 
 type CustomAdminOrderModelType = Omit<OrderModelType, 'userId'> & {
   user: UserModelType;
@@ -61,11 +63,21 @@ export async function GET(req: NextRequest) {
     const orderId = searchParams.get('_id');
     const userId = searchParams.get('userId');
     const useName = searchParams.get('username');
+    const startDate = searchParams.get('startDate');
+    const endDate = searchParams.get('endDate');
 
     const filters: FilterQuery<SearchAdminOrder> = {};
 
     searchParams.forEach((value, key) => {
-      if (shouldFilterKey(key, value, ['userId', 'username', '_id'])) {
+      if (
+        shouldFilterKey(key, value, [
+          'userId',
+          'username',
+          '_id',
+          'startDate',
+          'endDate',
+        ])
+      ) {
         switch (key) {
           case 'status':
             filters['$or'] = status?.map(status => ({ status }));
@@ -76,6 +88,31 @@ export async function GET(req: NextRequest) {
         }
       }
     });
+
+    if (startDate && endDate) {
+      if (!isValidDateRange(startDate, endDate)) {
+        return NextResponse.json(
+          {
+            message: CommonErrorException.DATE_RANGE_INVALID.message,
+            code: CommonErrorException.DATE_RANGE_INVALID.code,
+          },
+          { status: 400 },
+        );
+      }
+
+      filters.createdAt = {
+        $gte: setStartOfDay(startDate),
+        $lte: setEndOfDay(endDate),
+      };
+    } else if (startDate) {
+      filters.createdAt = {
+        $gte: setStartOfDay(startDate),
+      };
+    } else if (endDate) {
+      filters.createdAt = {
+        $lte: setEndOfDay(endDate),
+      };
+    }
 
     const sortOptions: SortCriteria = {
       createdAt: sort === OrderSortType.NEWEST ? -1 : 1,
@@ -243,8 +280,8 @@ export async function PUT(req: NextRequest) {
     if (!order) {
       return NextResponse.json(
         {
-          message: 'Order not found',
-          code: AdminOrderListErrorType.ORDER_LIST_NOT_FOUND,
+          message: CommonErrorException.NOT_FOUND.message,
+          code: CommonErrorException.NOT_FOUND.code,
         },
         { status: 404 },
       );
@@ -292,8 +329,8 @@ export async function PUT(req: NextRequest) {
     if (!updateOrder) {
       return NextResponse.json(
         {
-          message: 'Order not found',
-          code: AdminOrderListErrorType.ORDER_LIST_NOT_FOUND,
+          message: CommonErrorException.NOT_FOUND.message,
+          code: CommonErrorException.NOT_FOUND.code,
         },
         { status: 404 },
       );

@@ -4,6 +4,7 @@ import { NextResponse } from 'next/server';
 
 import { authOptions } from '@api/auth/[...nextauth]/route';
 import connectDB from '@api/config/connectDB';
+import { CommonErrorException, UserErrorException } from '@api/exception';
 import { checkSession } from '@api/helper/session';
 import UserModel from '@api/models/user';
 import { dashboardTags } from '@services/queries/dashboard/keys';
@@ -12,12 +13,6 @@ import { userTags } from '@services/queries/user/keys';
 import type { UserModelType } from '@api/models/user';
 import type { CreateUser, UpdateUser } from '@api/user/types/dto';
 import type { NextRequest } from 'next/server';
-
-enum UserErrorCode {
-  USER_ALREADY_EXISTS = 'U-001',
-  EMAIL_ALREADY_EXISTS = 'U-002',
-  USER_NOT_FOUND = 'U-003',
-}
 
 export async function GET() {
   try {
@@ -42,8 +37,8 @@ export async function GET() {
     if (!user) {
       return NextResponse.json(
         {
-          message: 'User not found',
-          code: UserErrorCode.USER_NOT_FOUND,
+          message: CommonErrorException.NOT_FOUND.message,
+          code: CommonErrorException.NOT_FOUND.code,
         },
         { status: 404 },
       );
@@ -79,8 +74,8 @@ export async function POST(req: NextRequest) {
     if (dbUserByLoginId) {
       return NextResponse.json(
         {
-          message: '이미 존재한 아이디입니다.',
-          code: UserErrorCode.USER_ALREADY_EXISTS,
+          message: UserErrorException.USER_ALREADY_EXISTS.message,
+          code: UserErrorException.USER_ALREADY_EXISTS.code,
         },
         { status: 409 },
       );
@@ -146,8 +141,8 @@ export async function PUT(req: NextRequest) {
     if (!updatedUser) {
       return NextResponse.json(
         {
-          message: 'User not found',
-          code: UserErrorCode.USER_NOT_FOUND,
+          message: CommonErrorException.NOT_FOUND.message,
+          code: CommonErrorException.NOT_FOUND.code,
         },
         { status: 404 },
       );

@@ -1,13 +1,7 @@
 import { type AuthOptions, getServerSession } from 'next-auth';
 
+import { SessionErrorException } from '@api/exception';
 import { UserRoleType } from '@utils/constants/user';
-
-enum SessionErrorType {
-  SESSION_NOT_FOUND = 'ES-001',
-  EXPIRED_SESSION = 'ES-002',
-  UNKNOWN_ERROR = 'ES-003',
-  FORBIDDEN_ACCESS = 'ES-004',
-}
 
 type CheckSessionResponse =
   | {
@@ -27,27 +21,27 @@ export const checkSession = async (
     if (!session || !session.user.id) {
       return {
         isValid: false,
-        message: 'No active session or user ID not found.',
+        message: SessionErrorException.SESSION_NOT_FOUND.message,
         status: 401, // Unauthorized
-        code: SessionErrorType.SESSION_NOT_FOUND,
+        code: SessionErrorException.SESSION_NOT_FOUND.code,
       };
     }
 
     if (!adminOnly && session.user.role !== UserRoleType.USER) {
       return {
         isValid: false,
-        message: 'Access denied. User role is required.',
+        message: SessionErrorException.FORBIDDEN_ACCESS.message,
         status: 403,
-        code: SessionErrorType.FORBIDDEN_ACCESS,
+        code: SessionErrorException.FORBIDDEN_ACCESS.code,
       };
     }
 
     if (adminOnly && session.user.role !== UserRoleType.ADMIN) {
       return {
         isValid: false,
-        message: 'Access denied. Admin role is required.',
+        message: SessionErrorException.FORBIDDEN_ACCESS.message,
         status: 403,
-        code: SessionErrorType.FORBIDDEN_ACCESS,
+        code: SessionErrorException.FORBIDDEN_ACCESS.code,
       };
     }
 
@@ -61,9 +55,9 @@ export const checkSession = async (
 
     return {
       isValid: false,
-      message: 'An error occurred while checking the session.',
+      message: SessionErrorException.UNKNOWN_ERROR.message,
       status: 500,
-      code: SessionErrorType.UNKNOWN_ERROR,
+      code: SessionErrorException.UNKNOWN_ERROR.code,
     };
   }
 };

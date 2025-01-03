@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 
 import { authOptions } from '@api/auth/[...nextauth]/route';
 import connectDB from '@api/config/connectDB';
+import { CommonErrorException } from '@api/exception';
 import {
   isValidDateRange,
   setEndOfDay,
@@ -18,10 +19,6 @@ import type { SearchAdminUserDashboard } from '@api/admin/dashboard/types/dto';
 import type { UserLoginType } from '@utils/constants/user';
 import type { FilterQuery } from 'mongoose';
 import type { NextRequest } from 'next/server';
-
-enum AdminDashboardUserErrorType {
-  DATE_RANGE_INVALID = 'A-DR-001',
-}
 
 type CustomDashboardUserType = {
   _id: string;
@@ -61,8 +58,8 @@ export async function GET(req: NextRequest) {
       if (!isValidDateRange(startDate, endDate)) {
         return NextResponse.json(
           {
-            message: 'Start date cannot be greater than end date.',
-            code: AdminDashboardUserErrorType.DATE_RANGE_INVALID,
+            message: CommonErrorException.DATE_RANGE_INVALID.message,
+            code: CommonErrorException.DATE_RANGE_INVALID.code,
           },
           { status: 400 },
         );

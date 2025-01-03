@@ -2,7 +2,13 @@ import { NextResponse } from 'next/server';
 
 import { authOptions } from '@api/auth/[...nextauth]/route';
 import connectDB from '@api/config/connectDB';
-import { shouldFilterKey } from '@api/helper/filter';
+import { CommonErrorException } from '@api/exception';
+import {
+  isValidDateRange,
+  setEndOfDay,
+  setStartOfDay,
+  shouldFilterKey,
+} from '@api/helper/filter';
 import { checkSession } from '@api/helper/session';
 import UserModel from '@api/models/user';
 import { UserRoleType, UserSortType } from '@utils/constants/user';
@@ -33,6 +39,8 @@ export async function GET(req: NextRequest) {
 
     const pageNumber = Number(searchParams.get('page'));
     const limitNumber = Number(searchParams.get('limit'));
+    const startDate = searchParams.get('startDate');
+    const endDate = searchParams.get('endDate');
 
     const sort = searchParams.get('sort') || UserSortType.NAME_ASC;
 
@@ -41,7 +49,7 @@ export async function GET(req: NextRequest) {
     };
 
     searchParams.forEach((value, key) => {
-      if (shouldFilterKey(key, value)) {
+      if (shouldFilterKey(key, value, ['startDate', 'endDate'])) {
         switch (key) {
           case 'name':
           case 'loginId':
@@ -57,6 +65,31 @@ export async function GET(req: NextRequest) {
         }
       }
     });
+
+    if (startDate && endDate) {
+      if (!isValidDateRange(startDate, endDate)) {
+        return NextResponse.json(
+          {
+            message: CommonErrorException.DATE_RANGE_INVALID.message,
+            code: CommonErrorException.DATE_RANGE_INVALID.code,
+          },
+          { status: 400 },
+        );
+      }
+
+      filters.createdAt = {
+        $gte: setStartOfDay(startDate),
+        $lte: setEndOfDay(endDate),
+      };
+    } else if (startDate) {
+      filters.createdAt = {
+        $gte: setStartOfDay(startDate),
+      };
+    } else if (endDate) {
+      filters.createdAt = {
+        $lte: setEndOfDay(endDate),
+      };
+    }
 
     let sortCriteria: SortCriteria = { name: 1 };
 

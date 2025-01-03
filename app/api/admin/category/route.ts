@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 
 import { authOptions } from '@api/auth/[...nextauth]/route';
 import connectDB from '@api/config/connectDB';
+import { CategoryErrorException } from '@api/exception';
 import { checkSession } from '@api/helper/session';
 import CategoryModel from '@api/models/category';
 import ProductModel from '@api/models/product';
@@ -11,12 +12,6 @@ import type { AdminCreateCategory } from './types/dto';
 import type { CategoryModelType } from '@api/models/category';
 import type { ProductModelType } from '@api/models/product';
 import type { NextRequest } from 'next/server';
-
-enum AdminCategoryErrorType {
-  CATEGORY_NOT_FOUND = 'A-CA-001',
-  CATEGORY_NOT_UPDATED = 'A-CA-002',
-  CATEGORY_REFERENCED = 'A-CA-003',
-}
 
 export async function GET() {
   try {
@@ -158,9 +153,8 @@ export async function PUT(req: NextRequest) {
     if (productsRelatedToDelete.length > 0) {
       return NextResponse.json(
         {
-          message:
-            '카테고리 또는 서브카테고리가 상품에 참조되어 있어 삭제할 수 없습니다.',
-          code: AdminCategoryErrorType.CATEGORY_REFERENCED,
+          message: CategoryErrorException.REFERENCED_BY_PRODUCT.message,
+          code: CategoryErrorException.REFERENCED_BY_PRODUCT.code,
         },
         { status: 400 },
       );
@@ -269,7 +263,6 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json(
       {
         message: 'Failed to update the categories.',
-        code: AdminCategoryErrorType.CATEGORY_NOT_UPDATED,
       },
       { status: 500 },
     );

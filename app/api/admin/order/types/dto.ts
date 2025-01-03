@@ -6,6 +6,8 @@ export type SearchAdminOrder = {
   username?: string;
   status?: OrderStatus[];
   sort?: OrderSortType;
+  startDate?: string;
+  endDate?: string;
 };
 
 export type UpdateAdminOrder = {

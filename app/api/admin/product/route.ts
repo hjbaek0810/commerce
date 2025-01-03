@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 
 import { authOptions } from '@api/auth/[...nextauth]/route';
 import connectDB from '@api/config/connectDB';
+import { CommonErrorException } from '@api/exception';
 import { shouldFilterKey } from '@api/helper/filter';
 import { checkSession } from '@api/helper/session';
 import CategoryModel from '@api/models/category';
@@ -22,10 +23,6 @@ import type { ProductModelType } from '@api/models/product';
 import type { SortCriteria } from '@api/types';
 import type { FilterQuery } from 'mongoose';
 import type { NextRequest } from 'next/server';
-
-enum AdminProductErrorType {
-  PRODUCT_NOT_FOUND = 'AP-001',
-}
 
 export async function POST(req: NextRequest) {
   const data: CreateAdminProduct = await req.json();
@@ -223,8 +220,8 @@ export async function DELETE(req: NextRequest) {
     if (!deletedProducts) {
       return NextResponse.json(
         {
-          message: 'Product not found.',
-          code: AdminProductErrorType.PRODUCT_NOT_FOUND,
+          message: CommonErrorException.NOT_FOUND.message,
+          code: CommonErrorException.NOT_FOUND.code,
         },
         { status: 404 },
       );

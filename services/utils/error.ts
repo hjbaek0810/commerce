@@ -17,3 +17,11 @@ export const isApiError = (error: Error | unknown): error is ApiError => {
 
   return false;
 };
+
+export function handleError(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  return String(error);
+}
