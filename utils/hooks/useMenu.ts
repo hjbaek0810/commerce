@@ -28,6 +28,7 @@ const useMenu = () => {
         path: PATH.PRODUCT.LIST,
         query: { category: main._id },
       },
+      shallow: true,
     },
     subMenus: main.subCategories.map(sub => ({
       title: sub.name,
@@ -35,6 +36,7 @@ const useMenu = () => {
         path: PATH.PRODUCT.LIST,
         query: { category: main._id, subCategory: sub._id },
       },
+      shallow: true,
     })),
   }));
 
