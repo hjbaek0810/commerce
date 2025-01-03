@@ -24,7 +24,7 @@ import {
 import { getWishListQueryOptions } from '@services/queries/wish-list/options';
 import { deleteImages, uploadImages } from '@services/upload';
 import { fetchData } from '@services/utils/fetch';
-import { removeQueries, resetQueries } from '@services/utils/helper';
+import { invalidateQueries, removeQueries } from '@services/utils/helper';
 import { API } from '@services/utils/path';
 import { ProductSortType } from '@utils/constants/product';
 import usePaginationQueryParams from '@utils/hooks/usePaginationQueryParams';
@@ -83,10 +83,7 @@ export const useAdminProductListWithCategoryQueries = () => {
         placeholderData: keepPreviousData,
         enabled: !!searchParams,
       },
-      {
-        ...getAdminCategoriesQueryOptions(),
-        gcTime: 60 * 60 * 1000,
-      },
+      getAdminCategoriesQueryOptions(),
     ],
   });
 
@@ -157,10 +154,7 @@ export const useProductListInfiniteQuery = () => {
 };
 
 export const useAdminProductDetailQuery = (id: string) =>
-  useQuery({
-    ...getAdminProductDetailQueryOptions(id),
-    enabled: !id,
-  });
+  useQuery(getAdminProductDetailQueryOptions(id));
 
 export const useAdminProductMutation = () => {
   const queryClient = useQueryClient();
@@ -255,11 +249,9 @@ export const useAdminProductDetailMutation = (id: string) => {
         deleteImagesPromise,
       ]);
     },
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: productKeys.getAdminDetail(variables._id || ''),
-      });
-      resetQueries(queryClient, [
+    onSuccess: () => {
+      invalidateQueries(queryClient, [
+        productKeys.getAdminDetail(id),
         productKeys.getAdminAll(),
         orderKeys.getAdminAll(),
       ]);
@@ -325,19 +317,15 @@ export const useAdminProductMultiDeleteMutation = () => {
         .map(({ deleteImageIds }) => deleteImageIds || [])
         .flat();
 
-      Promise.all([
-        queryClient.invalidateQueries({
-          queryKey: productKeys.getAdminAll(),
-          refetchType: 'all',
-        }),
-        queryClient.resetQueries({
-          queryKey: orderKeys.getAdminAll(),
-        }),
-        removeQueries(
-          queryClient,
-          deleteImageIds.map(id => productKeys.getAdminDetail(id)),
-        ),
+      invalidateQueries(queryClient, [
+        productKeys.getAdminAll(),
+        orderKeys.getAdminAll(),
       ]);
+
+      removeQueries(
+        queryClient,
+        deleteImageIds.map(id => productKeys.getAdminDetail(id)),
+      );
     },
     onError: () => {
       toast.error('상품 삭제에 실패하였습니다. 잠시 후 시도해주시길 바랍니다.');
@@ -347,16 +335,7 @@ export const useAdminProductMultiDeleteMutation = () => {
 
 export const useProductDetailQuery = (id: string) => {
   const [productDetail, wish] = useQueries({
-    queries: [
-      {
-        ...getProductDetailQueryOptions(id),
-        enabled: !id,
-      },
-      {
-        ...getWishListQueryOptions(),
-        enabled: !id,
-      },
-    ],
+    queries: [getProductDetailQueryOptions(id), getWishListQueryOptions()],
   });
 
   const isWished = wish.data?.items?.some(item => item._id.toString() === id);
@@ -392,5 +371,5 @@ export const useProductDetailWhenNewOrderQuery = (
         ],
       };
     },
-    enabled: !fromCart || !id,
+    enabled: !fromCart,
   });

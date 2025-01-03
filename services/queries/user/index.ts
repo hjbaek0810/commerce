@@ -22,11 +22,7 @@ import type { SignInUser } from '@api/auth/sign-in/types/dto';
 import type { CreateUser, UpdateUser } from '@api/user/types/dto';
 import type { UserVO } from '@api/user/types/vo';
 
-export const useMyAccountQuery = () =>
-  useQuery({
-    ...getMyAccountQueryOptions(),
-    gcTime: 30 * 60 * 1000,
-  });
+export const useMyAccountQuery = () => useQuery(getMyAccountQueryOptions());
 
 export const useMyAccountWhenNewOrder = (enabled: boolean) =>
   useQuery({
@@ -38,7 +34,7 @@ export const useMyAccountWhenNewOrder = (enabled: boolean) =>
       subAddress: data.subAddress,
       telephone: data.telephone,
     }),
-    gcTime: 30 * 60 * 1000,
+    refetchOnMount: false,
   });
 
 export const useSignUpMutation = () =>

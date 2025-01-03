@@ -16,7 +16,7 @@ import {
 } from '@services/queries/order/options';
 import { productKeys } from '@services/queries/product/keys';
 import { fetchData } from '@services/utils/fetch';
-import { resetQueries } from '@services/utils/helper';
+import { invalidateQueries } from '@services/utils/helper';
 import { API } from '@services/utils/path';
 import usePaginationQueryParams from '@utils/hooks/usePaginationQueryParams';
 import { parseQueryParams } from '@utils/query/helper';
@@ -69,11 +69,20 @@ export const useOrderListMutation = () => {
   return useMutation({
     mutationFn: (data: CreateOrder) =>
       fetchData<unknown, CreateOrder>(API.ORDER.BASE, 'POST', { data }),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
+    onSuccess: (_, variables) => {
+      const productQueriesToInvalidate = variables.products.flatMap(product => [
+        productKeys.getDetail(product._id),
+      ]);
+
+      queryClient.invalidateQueries({
         queryKey: orderKeys.getAll(),
-        refetchType: 'all',
       });
+
+      invalidateQueries(
+        queryClient,
+        [cartKeys.getAll(), ...productQueriesToInvalidate],
+        'none',
+      );
     },
   });
 };
@@ -88,23 +97,17 @@ export const useOrderStatusMutation = () => {
       const productQueriesToInvalidate = variables.productIds.flatMap(id => [
         productKeys.getDetail(id),
       ]);
-
-      queryClient.invalidateQueries({
-        queryKey: orderKeys.getAll(),
-      });
-      resetQueries(queryClient, [
-        ...productQueriesToInvalidate,
+      invalidateQueries(queryClient, [
+        orderKeys.getAll(),
         cartKeys.getAll(),
+        ...productQueriesToInvalidate,
       ]);
     },
   });
 };
 
 export const useAdminOrderDetailQuery = (id: string) =>
-  useQuery({
-    ...getAdminOrderDetailQueryOptions(id),
-    enabled: !id,
-  });
+  useQuery(getAdminOrderDetailQueryOptions(id));
 
 export const useAdminOrderStatusMutation = () => {
   const queryClient = useQueryClient();
@@ -119,12 +122,10 @@ export const useAdminOrderStatusMutation = () => {
         productKeys.getAdminDetail(id),
       ]);
 
-      queryClient.invalidateQueries({
-        queryKey: orderKeys.getAdminDetail(variables._id),
-      });
-      resetQueries(queryClient, [
+      invalidateQueries(queryClient, [
+        orderKeys.getAdminDetail(variables._id),
+        cartKeys.getAll(),
         ...productQueriesToInvalidate,
-        orderKeys.getAdminAll(),
       ]);
     },
   });

@@ -8,6 +8,7 @@ import {
   useAdminOrderDetailQuery,
   useAdminOrderStatusMutation,
 } from '@services/queries/order';
+import { orderKeys } from '@services/queries/order/keys';
 import { OrderStatus } from '@utils/constants/order';
 import { PATH } from '@utils/path';
 
@@ -80,29 +81,12 @@ const useAdminOrderInfo = () => {
 
   const handleOrderStatusUpdate = (data: AdminOrderStatusUseForm) => {
     if (id && data.status !== orderInfo?.status) {
-      updateOrderStatus(
-        {
-          _id: id,
-          ...data,
-          productIds:
-            orderInfo?.items?.flatMap(({ product }) => product._id) || [],
-        },
-        {
-          onSuccess: () => {
-            queryClient.setQueryData<AdminOrderVO>(
-              ['order', 'admin', { scope: 'item', id }],
-              previous => {
-                if (!previous) return orderInfo;
-
-                return {
-                  ...previous,
-                  status: data.status,
-                };
-              },
-            );
-          },
-        },
-      );
+      updateOrderStatus({
+        _id: id,
+        ...data,
+        productIds:
+          orderInfo?.items?.flatMap(({ product }) => product._id) || [],
+      });
     }
   };
 

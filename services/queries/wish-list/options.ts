@@ -12,4 +12,6 @@ export const getWishListQueryOptions = (headers?: HeadersInit) => ({
       next: { tags: [wishListTags.all, wishListTags.list] },
       cache: 'no-store',
     }),
+  staleTime: Infinity,
+  gcTime: Infinity,
 });

@@ -29,6 +29,8 @@ export const getOrderListInfiniteQueryOptions = (headers?: HeadersInit) => ({
         cache: 'no-store',
       },
     ),
+  staleTime: Infinity,
+  gcTime: Infinity,
   getNextPageParam: (lastPage: PaginatedResponse<'orders', OrderVO>) => {
     const { currentPage, totalCount } = lastPage || {};
     if (currentPage * ORDER_LIST_LIMIT_ITEM < totalCount) {

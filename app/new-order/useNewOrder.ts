@@ -133,26 +133,9 @@ const useNewOrder = () => {
       fromCart,
     };
 
-    const pushOrderList = async () => {
-      router.push(PATH.ORDER);
-    };
-
     orderRequest(requestData, {
-      onSuccess: async (_, variables) => {
-        // page 이동하고 resetQueries (페이지 이동 전 ui 변경되는 현상)
-        await pushOrderList();
-
-        variables.products.forEach(product => {
-          queryClient.resetQueries({
-            queryKey: productKeys.getDetail(product._id),
-          });
-        });
-
-        if (variables.fromCart) {
-          queryClient.resetQueries({
-            queryKey: cartKeys.getAll(),
-          });
-        }
+      onSuccess: () => {
+        router.push(PATH.ORDER);
       },
     });
   };

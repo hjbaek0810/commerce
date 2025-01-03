@@ -7,9 +7,10 @@ export function makeQueryClient() {
     defaultOptions: {
       queries: {
         retry: false,
-        staleTime: Infinity,
-        gcTime: 10 * 60 * 1000,
-        refetchOnMount: false,
+        staleTime: 10 * 60 * 1000,
+        gcTime: 30 * 60 * 1000,
+        refetchOnMount: true, // false -> invalidate 후 해당 api 호출 페이지에서 fetching 되지 않는다. (stale 상태는 업데이트, ui X)
+        refetchOnReconnect: true,
         refetchOnWindowFocus: false,
       },
       mutations: {

@@ -11,6 +11,8 @@ export const getCategoriesQueryOptions = () => ({
     fetchData<Array<CategoryVO>>(API.CATEGORY.BASE, 'GET', {
       next: { tags: [categoryTags.all, categoryTags.list] },
     }),
+  staleTime: 3 * 60 * 60 * 1000,
+  gcTime: 5 * 60 * 60 * 1000,
 });
 
 export const getAdminCategoriesQueryOptions = (headers?: HeadersInit) => ({
@@ -20,4 +22,6 @@ export const getAdminCategoriesQueryOptions = (headers?: HeadersInit) => ({
       headers,
       next: { tags: [categoryTags.all, categoryTags.adminList] },
     }),
+  staleTime: 1 * 60 * 60 * 1000,
+  gcTime: 3 * 60 * 60 * 1000,
 });
