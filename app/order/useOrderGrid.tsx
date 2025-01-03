@@ -7,6 +7,7 @@ import {
   useOrderListInfiniteQuery,
   useOrderStatusMutation,
 } from '@services/queries/order';
+import { orderKeys } from '@services/queries/order/keys';
 import { OrderStatus } from '@utils/constants/order';
 import useIntersectionObserver from '@utils/hooks/useIntersectionObserver';
 import { PATH } from '@utils/path';
@@ -45,18 +46,15 @@ const useOrderGrid = () => {
       },
       {
         onSuccess: () => {
-          queryClient.setQueryData<OrderVO[]>(
-            ['order', { scope: 'list' }],
-            previous => {
-              if (!previous) return orderInfo;
+          queryClient.setQueryData<OrderVO[]>(orderKeys.getAll(), previous => {
+            if (!previous) return orderInfo;
 
-              const updatedData = previous.map(item =>
-                item._id === orderId ? { ...item, status } : item,
-              );
+            const updatedData = previous.map(item =>
+              item._id === orderId ? { ...item, status } : item,
+            );
 
-              return updatedData;
-            },
-          );
+            return updatedData;
+          });
         },
       },
     );
@@ -75,6 +73,19 @@ const useOrderGrid = () => {
             }
           >
             취소 요청
+          </Button>
+        );
+      // 재구매
+      case OrderStatus.ORDER_CANCELLED:
+        return (
+          <Button
+            size="large"
+            fill
+            onClick={() =>
+              handleRequestStatusButton(orderId, OrderStatus.PAYMENT_PENDING)
+            }
+          >
+            재구매
           </Button>
         );
       // 결제 완료
