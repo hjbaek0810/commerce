@@ -5,6 +5,7 @@ import { isToday, parseISO } from 'date-fns';
 import { isEqual } from 'lodash-es';
 
 import { calculateRange } from '@app/admin/AdminDashboard/utils';
+import useRhfDateRange from '@components/Form/DateInput/useRhfDateRange';
 import { useAdminDashboardOrderQuery } from '@services/queries/dashboard';
 import { DashboardDateRangeType } from '@utils/constants/dashboard';
 import { createEnumObject } from '@utils/constants/helper';
@@ -35,10 +36,16 @@ const useAdminOrderDashboard = () => {
       dateRangeType: DashboardDateRangeType.MONTHLY,
     },
   });
-  const { setValue } = searchOrderForm;
+  const { setValue, reset } = searchOrderForm;
 
-  const [startDate, setStartDate] = useState<Date | undefined>();
-  const [endDate, setEndDate] = useState<Date | undefined>();
+  const {
+    startDate,
+    endDate,
+    handleStartDateChange,
+    handleEndDateChange,
+    handleResetDate,
+  } = useRhfDateRange('startDate', 'endDate', setValue);
+
   const [totalAmountMessage, setTotalAmountMessage] = useState<string>('');
 
   const [searchParams, setSearchParams] = useState<SearchAdminOrderDashboard>({
@@ -111,23 +118,13 @@ const useAdminOrderDashboard = () => {
     return isEqual(filteredSearchParams, calculateRange(filter));
   };
 
-  const handleStartDateChange = (date: Date | null) => {
-    if (date && endDate && date.getTime() > endDate.getTime()) {
-      setStartDate(date);
-      setEndDate(undefined);
-      setValue('endDate', undefined);
-    } else setStartDate(date ?? undefined);
-  };
-
-  const handleEndDateChange = (date: Date | null) => {
-    setEndDate(date ?? undefined);
-  };
-
   const handleResetButtonClick = () => {
-    setStartDate(undefined);
-    setEndDate(undefined);
-    setValue('startDate', undefined);
-    setValue('endDate', undefined);
+    reset({
+      startDate: undefined,
+      endDate: undefined,
+      dateRangeType: DashboardDateRangeType.MONTHLY,
+    });
+    handleResetDate();
 
     setSearchParams({
       startDate: undefined,

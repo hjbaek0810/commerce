@@ -3,11 +3,13 @@ import type { UseFormReturn } from 'react-hook-form';
 import Button from '@components/Button';
 import Rhf from '@components/Form';
 import { Table } from '@components/Table';
+import { sprinkles } from '@styles/sprinkles.css';
 import { OrderSortType } from '@utils/constants/order';
 
 import * as css from '../adminOrder.css';
 
 import type { SearchAdminOrder } from '@api/admin/order/types/dto';
+import type { RhfDateInputHookProps } from '@components/Form/DateInput/useRhfDateRange';
 import type { OrderStatus } from '@utils/constants/order';
 
 type AdminOrderSearchFilterPropsType = {
@@ -19,7 +21,7 @@ type AdminOrderSearchFilterPropsType = {
   handleSearchOrder: (data: SearchAdminOrder) => void;
   handleFilterResetButtonClick: () => void;
   handleSortChange: () => void;
-};
+} & RhfDateInputHookProps;
 
 const AdminOrderSearchFilter = ({
   searchForm,
@@ -27,6 +29,10 @@ const AdminOrderSearchFilter = ({
   handleSearchOrder,
   handleFilterResetButtonClick,
   handleSortChange,
+  startDate,
+  endDate,
+  handleStartDateChange,
+  handleEndDateChange,
 }: AdminOrderSearchFilterPropsType) => {
   return (
     <Rhf.Form
@@ -77,6 +83,32 @@ const AdminOrderSearchFilter = ({
               </Table.Th>
               <Table.Td>
                 <Rhf.Input name="username" />
+              </Table.Td>
+            </Table.Tr>
+            <Table.Tr>
+              <Table.Th scope="row">
+                <Rhf.Label name="startDate">주문 일자</Rhf.Label>
+              </Table.Th>
+              <Table.Td>
+                <div
+                  className={sprinkles({ display: 'flex', gap: 'spacing-004' })}
+                >
+                  <Rhf.DateInput
+                    name="startDate"
+                    selectsStart
+                    onChange={handleStartDateChange}
+                    startDate={startDate}
+                    endDate={endDate}
+                  />
+                  <Rhf.DateInput
+                    name="endDate"
+                    selectsEnd
+                    onChange={handleEndDateChange}
+                    startDate={startDate}
+                    endDate={endDate}
+                    minDate={startDate}
+                  />
+                </div>
               </Table.Td>
             </Table.Tr>
           </Table.Body>

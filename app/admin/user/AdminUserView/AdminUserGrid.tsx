@@ -1,6 +1,7 @@
 import Pagination from '@components/Pagination';
 import { Table, TableBadge } from '@components/Table';
 import { sprinkles } from '@styles/sprinkles.css';
+import { formatDateTime } from '@utils/formatter/datetime';
 import { formatNumber } from '@utils/formatter/number';
 
 import type { AdminUserVO } from '@api/admin/user/types/vo';
@@ -23,13 +24,14 @@ const AdminUserGrid = ({ users, paginationProps }: AdminUserGridPropsType) => {
             <Table.Th>이메일</Table.Th>
             <Table.Th>연락처</Table.Th>
             <Table.Th>주소</Table.Th>
+            <Table.Th>가입일자</Table.Th>
           </Table.Tr>
         </Table.Header>
         <Table.Body>
           {users.length === 0 && (
             <Table.Tr>
               <Table.Td
-                colSpan={5}
+                colSpan={6}
                 className={sprinkles({ textAlign: 'center' })}
               >
                 no data available
@@ -46,6 +48,7 @@ const AdminUserGrid = ({ users, paginationProps }: AdminUserGridPropsType) => {
               postCode,
               address,
               subAddress,
+              createdAt,
             }) => (
               <Table.Tr key={_id}>
                 <Table.Td>{name}</Table.Td>
@@ -53,6 +56,7 @@ const AdminUserGrid = ({ users, paginationProps }: AdminUserGridPropsType) => {
                 <Table.Td>{email}</Table.Td>
                 <Table.Td>{telephone}</Table.Td>
                 <Table.Td>{`${postCode} ${address} ${subAddress}`}</Table.Td>
+                <Table.Td>{formatDateTime(createdAt)}</Table.Td>
               </Table.Tr>
             ),
           )}

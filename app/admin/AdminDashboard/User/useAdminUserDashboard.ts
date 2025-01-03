@@ -7,6 +7,7 @@ import {
   type SearchDateType,
   calculateRange,
 } from '@app/admin/AdminDashboard/utils';
+import useRhfDateRange from '@components/Form/DateInput/useRhfDateRange';
 import { useAdminUserDashboardQuery } from '@services/queries/dashboard';
 import { DashboardDateRangeType } from '@utils/constants/dashboard';
 
@@ -18,10 +19,15 @@ const useAdminUserDashboard = () => {
       dateRangeType: DashboardDateRangeType.MONTHLY,
     },
   });
-  const { setValue } = searchUserForm;
+  const { setValue, reset } = searchUserForm;
 
-  const [startDate, setStartDate] = useState<Date | undefined>();
-  const [endDate, setEndDate] = useState<Date | undefined>();
+  const {
+    startDate,
+    endDate,
+    handleStartDateChange,
+    handleEndDateChange,
+    handleResetDate,
+  } = useRhfDateRange('startDate', 'endDate', setValue);
 
   const [searchParams, setSearchParams] = useState<SearchAdminUserDashboard>({
     startDate: undefined,
@@ -67,27 +73,17 @@ const useAdminUserDashboard = () => {
     });
   };
 
-  const handleStartDateChange = (date: Date | null) => {
-    if (date && endDate && date.getTime() > endDate.getTime()) {
-      setStartDate(date);
-      setEndDate(undefined);
-      setValue('endDate', undefined);
-    } else setStartDate(date ?? undefined);
-  };
-
-  const handleEndDateChange = (date: Date | null) => {
-    setEndDate(date ?? undefined);
-  };
-
   const handleSearchButtonClick = (data: SearchAdminUserDashboard) => {
     setSearchParams(data);
   };
 
   const handleResetButtonClick = () => {
-    setStartDate(undefined);
-    setEndDate(undefined);
-    setValue('startDate', undefined);
-    setValue('endDate', undefined);
+    reset({
+      startDate: undefined,
+      endDate: undefined,
+      dateRangeType: DashboardDateRangeType.MONTHLY,
+    });
+    handleResetDate();
 
     setSearchParams({
       startDate: undefined,

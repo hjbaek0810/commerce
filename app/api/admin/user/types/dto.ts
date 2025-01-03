@@ -6,4 +6,6 @@ export type AdminSearchUser = {
   email?: string;
   telephone?: string;
   sort?: UserSortType;
+  startDate?: string;
+  endDate?: string;
 };

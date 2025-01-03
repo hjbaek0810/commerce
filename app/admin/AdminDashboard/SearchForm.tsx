@@ -8,18 +8,15 @@ import { DashboardDateRangeType } from '@utils/constants/dashboard';
 import * as css from '../adminHome.css';
 
 import type { SearchDateType } from '@app/admin/AdminDashboard/utils';
+import type { RhfDateInputHookProps } from '@components/Form/DateInput/useRhfDateRange';
 
 type DashboardSearchFormPropsType<T extends FieldValues> = {
   searchForm: UseFormReturn<T>;
-  startDate?: Date;
-  endDate?: Date;
   activeButton: (filter: SearchDateType) => boolean;
   handleDateFilterSelection: (filter: SearchDateType) => void;
-  handleStartDateChange: (date: Date | null) => void;
-  handleEndDateChange: (date: Date | null) => void;
   handleSearchButtonClick: (data: T) => void;
   handleResetButtonClick: () => void;
-};
+} & RhfDateInputHookProps;
 
 const DashboardSearchForm = <T extends FieldValues>({
   searchForm,

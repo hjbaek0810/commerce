@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 
 import { useSearchParams } from 'next/navigation';
 
+import useRhfDateRange from '@components/Form/DateInput/useRhfDateRange';
 import { useAdminUsersQuery } from '@services/queries/user';
 import { UserSortType } from '@utils/constants/user';
 import { formatPhoneNumber } from '@utils/validation/telephone';
@@ -24,9 +25,19 @@ const useAdminUserView = () => {
       email: searchParams.get('email') || '',
       telephone: searchParams.get('telephone') || '',
       sort: (searchParams.get('sort') as UserSortType) || UserSortType.NAME_ASC,
+      startDate: searchParams.get('startDate') || undefined,
+      endDate: searchParams.get('endDate') || undefined,
     },
   });
   const { reset, setValue } = searchUserForm;
+
+  const {
+    startDate,
+    endDate,
+    handleStartDateChange,
+    handleEndDateChange,
+    handleResetDate,
+  } = useRhfDateRange('startDate', 'endDate', setValue);
 
   const handleTelephoneInput = (event: FormEvent<HTMLInputElement>) => {
     const formattedPhoneNumber = formatPhoneNumber(event.currentTarget.value);
@@ -39,6 +50,7 @@ const useAdminUserView = () => {
 
   const handleFilterResetButtonClick = () => {
     reset();
+    handleResetDate();
 
     handleSearchParamsChange({
       name: '',
@@ -46,6 +58,8 @@ const useAdminUserView = () => {
       email: '',
       telephone: '',
       sort: UserSortType.NAME_ASC,
+      startDate: '',
+      endDate: '',
     });
   };
 
@@ -55,6 +69,10 @@ const useAdminUserView = () => {
       handleSearchUser,
       handleTelephoneInput,
       handleFilterResetButtonClick,
+      startDate,
+      endDate,
+      handleStartDateChange,
+      handleEndDateChange,
     },
     resultProps: {
       users,

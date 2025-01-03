@@ -1,5 +1,6 @@
-import type { SyntheticEvent } from 'react';
+import { type SyntheticEvent } from 'react';
 import DatePicker from 'react-datepicker';
+import type { DatePickerProps } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import type { FieldValues, Path, PathValue } from 'react-hook-form';
 import { Controller, useFormContext } from 'react-hook-form';
@@ -7,9 +8,6 @@ import { Controller, useFormContext } from 'react-hook-form';
 import { isEmpty, isNil } from 'lodash-es';
 
 import { RHFRules } from '@components/Form';
-
-import type { DatePickerProps } from 'react-datepicker';
-
 import DateInput from '@components/Form/DateInput';
 import CalendarHeader from '@components/Form/DateInput/CalendarHeader';
 import TodayButton from '@components/Form/DateInput/TodayButton';

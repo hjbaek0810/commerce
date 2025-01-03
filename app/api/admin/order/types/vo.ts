@@ -1,3 +1,3 @@
 import type { OrderVO } from '@api/order/types/vo';
 
-export type AdminOrderVO = OrderVO;
+export type AdminOrderVO = OrderVO & { createdAt: string };

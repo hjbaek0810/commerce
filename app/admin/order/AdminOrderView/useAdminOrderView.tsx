@@ -1,10 +1,12 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import { isEmpty } from 'lodash-es';
 import { useRouter, useSearchParams } from 'next/navigation';
 
+import useRhfDateRange from '@components/Form/DateInput/useRhfDateRange';
 import { useAdminOrderListQuery } from '@services/queries/order';
+import { createEnumObject } from '@utils/constants/helper';
 import {
   OrderSortType,
   OrderStatus,
@@ -14,18 +16,9 @@ import { PATH } from '@utils/path';
 
 import type { SearchAdminOrder } from '@api/admin/order/types/dto';
 
-const INITIAL_STATUS_VALUES = [
-  OrderStatus.ORDER_CANCELLED,
-  OrderStatus.PAYMENT_COMPLETED,
-  OrderStatus.PAYMENT_PENDING,
-  OrderStatus.REFUND_COMPLETED,
-  OrderStatus.REFUND_PENDING,
-  OrderStatus.RETURN_COMPLETED,
-  OrderStatus.RETURN_PENDING,
-  OrderStatus.SHIPPING_COMPLETED,
-  OrderStatus.SHIPPING_IN_PROGRESS,
-  OrderStatus.SHIPPING_PENDING,
-];
+const INITIAL_STATUS_VALUES = Object.keys(createEnumObject(OrderStatus)).map(
+  status => status,
+) as OrderStatus[];
 
 const useAdminOrderView = () => {
   const router = useRouter();
@@ -49,6 +42,8 @@ const useAdminOrderView = () => {
       username: searchParams.get('username') || '',
       status: defaultStatusValue,
       sort: (searchParams.get('sort') as OrderSortType) || OrderSortType.NEWEST,
+      startDate: searchParams.get('startDate') || undefined,
+      endDate: searchParams.get('endDate') || undefined,
     },
   });
 
@@ -59,6 +54,14 @@ const useAdminOrderView = () => {
     control,
     defaultValue: defaultStatusValue,
   });
+
+  const {
+    startDate,
+    endDate,
+    handleStartDateChange,
+    handleEndDateChange,
+    handleResetDate,
+  } = useRhfDateRange('startDate', 'endDate', setValue);
 
   useEffect(() => {
     if (!selectedStatus || isEmpty(selectedStatus)) {
@@ -93,6 +96,7 @@ const useAdminOrderView = () => {
 
   const handleFilterResetButtonClick = () => {
     reset();
+    handleResetDate();
 
     handleSearchParamsChange({
       _id: '',
@@ -100,6 +104,8 @@ const useAdminOrderView = () => {
       username: '',
       status: '',
       sort: OrderSortType.NEWEST,
+      startDate: '',
+      endDate: '',
     });
   };
 
@@ -113,6 +119,10 @@ const useAdminOrderView = () => {
       handleSearchOrder,
       handleFilterResetButtonClick,
       handleSortChange,
+      startDate,
+      endDate,
+      handleStartDateChange,
+      handleEndDateChange,
     },
     resultProps: {
       orders,

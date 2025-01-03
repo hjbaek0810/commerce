@@ -30,7 +30,7 @@ const AdminOrderGrid = ({
             <Table.Th>주문자</Table.Th>
             <Table.Th>주문건</Table.Th>
             <Table.Th>주문상태</Table.Th>
-            <Table.Th>주문날짜</Table.Th>
+            <Table.Th>주문일자</Table.Th>
           </Table.Tr>
         </Table.Header>
         <Table.Body>
