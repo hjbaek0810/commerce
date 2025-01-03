@@ -23,6 +23,7 @@ const NewOrder = () => {
     handleFindPostCodeButtonClick,
     handleTelephoneInput,
     handleSubmitOrder,
+    handleSubAddressChange,
   } = useNewOrder();
 
   return (
@@ -95,12 +96,9 @@ const NewOrder = () => {
                 <Rhf.Label name="isSameAsUserInfo">회원정보와 동일</Rhf.Label>
               </Table.Th>
               <Table.Td colSpan={2}>
-                <Rhf.Radio name="isSameAsUserInfo">
-                  <div className={css.isSameAsUserInfoRadioWrapper}>
-                    <Rhf.RadioOption value="true">예</Rhf.RadioOption>
-                    <Rhf.RadioOption value="false">아니오</Rhf.RadioOption>
-                  </div>
-                </Rhf.Radio>
+                <Rhf.CheckboxGroup name="isSameAsUserInfo" options={['true']}>
+                  <Rhf.Checkbox label="회원정보와 동일" value="true" />
+                </Rhf.CheckboxGroup>
               </Table.Td>
             </Table.Tr>
             <Table.Tr>
@@ -132,6 +130,7 @@ const NewOrder = () => {
                     name="subAddress"
                     placeholder="상세주소"
                     required
+                    onChange={handleSubAddressChange}
                   />
                 </div>
               </Table.Td>

@@ -1,16 +1,13 @@
-import { type FormEvent, useEffect, useState } from 'react';
+import { type FormEvent, useEffect, useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import { useQueryClient } from '@tanstack/react-query';
-import { isEmpty } from 'lodash-es';
+import { isEmpty, isEqual } from 'lodash-es';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import FindPostCodeModal from '@components/Modal/templates/FindPostCodeModal';
 import { useCartListWhenNewOrderQuery } from '@services/queries/cart';
-import { cartKeys } from '@services/queries/cart/keys';
 import { useOrderListMutation } from '@services/queries/order';
 import { useProductDetailWhenNewOrderQuery } from '@services/queries/product';
-import { productKeys } from '@services/queries/product/keys';
 import { useMyAccountWhenNewOrder } from '@services/queries/user';
 import { OrderStatus, PaymentType } from '@utils/constants/order';
 import useModals from '@utils/hooks/useModals';
@@ -22,13 +19,10 @@ import type { CreateOrder } from '@api/order/types/dto';
 type NewOrderUseFormType = Omit<
   CreateOrder,
   'products' | 'status' | 'fromCart'
-> & {
-  isSameAsUserInfo: 'true' | 'false';
-};
+> & { isSameAsUserInfo: ('true' | 'false')[] };
 
 const useNewOrder = () => {
   const searchParams = useSearchParams();
-  const queryClient = useQueryClient();
 
   const fromCart = searchParams.get('fromCart') === 'true' ? true : false;
 
@@ -43,8 +37,7 @@ const useNewOrder = () => {
     fromCart,
   );
 
-  const [isFetchUser, setIsFetchUser] = useState<boolean>(false);
-  const { data: userInfo } = useMyAccountWhenNewOrder(isFetchUser);
+  const { data: userInfo } = useMyAccountWhenNewOrder();
 
   const { mutate: orderRequest } = useOrderListMutation();
 
@@ -52,55 +45,40 @@ const useNewOrder = () => {
 
   const router = useRouter();
 
-  const orderForm = useForm<NewOrderUseFormType>({
-    defaultValues: {
+  const defaultValues: NewOrderUseFormType = useMemo(
+    () => ({
       paymentType: PaymentType.BANK_TRANSFER,
-      isSameAsUserInfo: 'false',
-    },
+      postCode: userInfo?.postCode || '',
+      address: userInfo?.address || '',
+      subAddress: userInfo?.subAddress || '',
+      telephone: userInfo?.telephone || '',
+      isSameAsUserInfo: ['true'],
+    }),
+    [userInfo],
+  );
+
+  const orderForm = useForm<NewOrderUseFormType>({
+    values: defaultValues,
   });
 
-  const { setValue, control } = orderForm;
+  const { setValue, control, reset, getValues } = orderForm;
 
   const isSameAsUserInfoValue = useWatch({
     name: 'isSameAsUserInfo',
     control,
-    defaultValue: 'false',
+    defaultValue: ['true'],
   });
 
   const { openModal } = useModals();
 
   useEffect(() => {
-    if (!isSameAsUserInfoValue) return;
-
-    const fields = ['postCode', 'address', 'subAddress', 'telephone'] as const;
-
-    const updateFields = (
-      values: Partial<Record<(typeof fields)[number], string>>,
-    ) => {
-      fields.forEach(field => {
-        setValue(field, values[field] || '');
-      });
-    };
-
-    if (isSameAsUserInfoValue === 'true') {
-      setIsFetchUser(true);
-      updateFields({
-        postCode: userInfo?.postCode,
-        address: userInfo?.address,
-        subAddress: userInfo?.subAddress,
-        telephone: userInfo?.telephone,
-      });
-    } else {
-      updateFields({});
+    if (
+      isSameAsUserInfoValue?.[0] === 'true' &&
+      !isEqual(defaultValues, getValues())
+    ) {
+      reset(defaultValues);
     }
-  }, [
-    isSameAsUserInfoValue,
-    setValue,
-    userInfo?.address,
-    userInfo?.postCode,
-    userInfo?.subAddress,
-    userInfo?.telephone,
-  ]);
+  }, [defaultValues, getValues, isSameAsUserInfoValue, reset]);
 
   const handleFindPostCodeButtonClick = () => {
     openModal(FindPostCodeModal, {
@@ -108,13 +86,19 @@ const useNewOrder = () => {
         setValue('postCode', data.zonecode);
         setValue('address', data.address);
         setValue('subAddress', '');
+        setValue('isSameAsUserInfo', ['false']);
       },
     });
+  };
+
+  const handleSubAddressChange = () => {
+    setValue('isSameAsUserInfo', ['false']);
   };
 
   const handleTelephoneInput = (event: FormEvent<HTMLInputElement>) => {
     const formattedPhoneNumber = formatPhoneNumber(event.currentTarget.value);
     setValue('telephone', formattedPhoneNumber);
+    setValue('isSameAsUserInfo', ['false']);
   };
 
   const handleSubmitOrder = (data: NewOrderUseFormType) => {
@@ -145,6 +129,7 @@ const useNewOrder = () => {
     orderForm,
     handleFindPostCodeButtonClick,
     handleTelephoneInput,
+    handleSubAddressChange,
     handleSubmitOrder,
   };
 };

@@ -24,10 +24,22 @@ import type { UserVO } from '@api/user/types/vo';
 
 export const useMyAccountQuery = () => useQuery(getMyAccountQueryOptions());
 
-export const useMyAccountWhenNewOrder = (enabled: boolean) =>
-  useQuery({
+export const useMyAccountWhenNewOrder = () => {
+  const queryClient = useQueryClient();
+
+  const cachedData = queryClient.getQueryData<UserVO>(userKeys.getDetail());
+
+  const selectedData = cachedData
+    ? {
+        postCode: cachedData.postCode,
+        address: cachedData.address,
+        subAddress: cachedData.subAddress,
+        telephone: cachedData.telephone,
+      }
+    : null;
+
+  const { data, ...query } = useQuery({
     ...getMyAccountQueryOptions(),
-    enabled,
     select: data => ({
       postCode: data.postCode,
       address: data.address,
@@ -35,7 +47,14 @@ export const useMyAccountWhenNewOrder = (enabled: boolean) =>
       telephone: data.telephone,
     }),
     refetchOnMount: false,
+    enabled: !cachedData,
   });
+
+  return {
+    data: selectedData || data,
+    ...query,
+  };
+};
 
 export const useSignUpMutation = () =>
   useMutation({
