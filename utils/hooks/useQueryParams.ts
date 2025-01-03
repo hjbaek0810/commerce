@@ -1,11 +1,10 @@
 import { useCallback } from 'react';
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 
 import { type NewObject } from '@utils/types/utility';
 
 const useQueryParams = () => {
-  const { replace } = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
 
@@ -21,9 +20,9 @@ const useQueryParams = () => {
         }
       });
 
-      replace(`${pathname}?${params.toString()}`);
+      window.history.replaceState(null, '', `${pathname}?${params.toString()}`);
     },
-    [pathname, replace, searchParams],
+    [pathname, searchParams],
   );
 
   return {

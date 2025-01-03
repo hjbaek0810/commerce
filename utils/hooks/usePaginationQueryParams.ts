@@ -1,7 +1,7 @@
 import type { SetStateAction } from 'react';
 import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 
 import useQueryParams from '@utils/hooks/useQueryParams';
 import { type NewObject } from '@utils/types/utility';
@@ -15,7 +15,6 @@ const getDefaultParams = () => ({
 });
 
 const usePaginationQueryParams = () => {
-  const { replace } = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { changeSearchParams } = useQueryParams();
@@ -60,9 +59,9 @@ const usePaginationQueryParams = () => {
       if (!pageParam) params.set('page', String(page));
       if (!limitParam) params.set('limit', String(limit));
 
-      replace(`${pathname}?${params.toString()}`);
+      window.history.replaceState(null, '', `${pathname}?${params.toString()}`);
     }
-  }, [getQueryParams, limit, page, pathname, replace, searchParams]);
+  }, [getQueryParams, limit, page, pathname, searchParams]);
 
   const handlePageChange = (pageNumber: SetStateAction<number>) => {
     changeSearchParams({
