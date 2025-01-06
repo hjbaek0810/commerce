@@ -1,6 +1,5 @@
 import { useForm } from 'react-hook-form';
 
-import { useQueryClient } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
 
 import Rhf from '@components/Form';
@@ -8,12 +7,10 @@ import {
   useAdminOrderDetailQuery,
   useAdminOrderStatusMutation,
 } from '@services/queries/order';
-import { orderKeys } from '@services/queries/order/keys';
 import { OrderStatus } from '@utils/constants/order';
 import { PATH } from '@utils/path';
 
 import type { UpdateAdminOrder } from '@api/admin/order/types/dto';
-import type { AdminOrderVO } from '@api/admin/order/types/vo';
 
 type AdminOrderStatusUseForm = Pick<UpdateAdminOrder, 'status'>;
 
@@ -21,7 +18,6 @@ const useAdminOrderInfo = () => {
   const params = useParams();
   const id = params.slug as string;
   const router = useRouter();
-  const queryClient = useQueryClient();
 
   const { data: orderInfo } = useAdminOrderDetailQuery(id);
   const { mutate: updateOrderStatus } = useAdminOrderStatusMutation();
