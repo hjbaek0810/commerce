@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
       {
         message: `Failed to register product.`,
       },
-      { status: 500 },
+      { status: CommonErrorException.UNKNOWN_ERROR.status },
     );
   }
 }
@@ -188,7 +188,7 @@ export async function GET(req: NextRequest) {
       {
         message: 'Failed to load products.',
       },
-      { status: 500 },
+      { status: CommonErrorException.UNKNOWN_ERROR.status },
     );
   }
 }
@@ -223,7 +223,7 @@ export async function DELETE(req: NextRequest) {
           message: CommonErrorException.NOT_FOUND.message,
           code: CommonErrorException.NOT_FOUND.code,
         },
-        { status: 404 },
+        { status: CommonErrorException.NOT_FOUND.status },
       );
     }
 
@@ -245,7 +245,7 @@ export async function DELETE(req: NextRequest) {
       {
         message: 'Failed to delete admin product list.',
       },
-      { status: 500 },
+      { status: CommonErrorException.UNKNOWN_ERROR.status },
     );
   }
 }

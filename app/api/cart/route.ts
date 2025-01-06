@@ -78,7 +78,7 @@ export async function GET() {
       {
         message: 'Failed to load cart list.',
       },
-      { status: 500 },
+      { status: CommonErrorException.UNKNOWN_ERROR.status },
     );
   }
 }
@@ -122,7 +122,7 @@ export async function POST(req: NextRequest) {
           message: CommonErrorException.NOT_FOUND.message,
           code: CommonErrorException.NOT_FOUND.code,
         },
-        { status: 404 },
+        { status: CommonErrorException.NOT_FOUND.status },
       );
     }
 
@@ -161,7 +161,7 @@ export async function POST(req: NextRequest) {
       {
         message: 'Failed to update cart list.',
       },
-      { status: 500 },
+      { status: CommonErrorException.UNKNOWN_ERROR.status },
     );
   }
 }
@@ -197,7 +197,7 @@ export async function DELETE(req: NextRequest) {
           message: CommonErrorException.NOT_FOUND.message,
           code: CommonErrorException.NOT_FOUND.code,
         },
-        { status: 404 },
+        { status: CommonErrorException.NOT_FOUND.status },
       );
     }
 
@@ -212,7 +212,7 @@ export async function DELETE(req: NextRequest) {
       {
         message: 'Failed to delete cart list.',
       },
-      { status: 500 },
+      { status: CommonErrorException.UNKNOWN_ERROR.status },
     );
   }
 }

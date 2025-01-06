@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb';
 import { revalidateTag } from 'next/cache';
 import { NextResponse } from 'next/server';
 
@@ -31,6 +32,16 @@ export async function GET(
 
     await connectDB();
 
+    if (!ObjectId.isValid(params.productId)) {
+      return NextResponse.json(
+        {
+          message: CommonErrorException.NOT_FOUND.message,
+          code: CommonErrorException.NOT_FOUND.code,
+        },
+        { status: CommonErrorException.NOT_FOUND.status },
+      );
+    }
+
     const product = await ProductModel.findById(params.productId);
 
     if (!product) {
@@ -39,7 +50,7 @@ export async function GET(
           message: CommonErrorException.NOT_FOUND.message,
           code: CommonErrorException.NOT_FOUND.code,
         },
-        { status: 404 },
+        { status: CommonErrorException.NOT_FOUND.status },
       );
     }
 
@@ -53,7 +64,7 @@ export async function GET(
       {
         message: 'Failed to load product.',
       },
-      { status: 500 },
+      { status: CommonErrorException.UNKNOWN_ERROR.status },
     );
   }
 }
@@ -125,7 +136,7 @@ export async function PUT(req: NextRequest) {
       {
         message: `Failed to update product.`,
       },
-      { status: 500 },
+      { status: CommonErrorException.UNKNOWN_ERROR.status },
     );
   }
 }
@@ -159,7 +170,7 @@ export async function DELETE(
           message: CommonErrorException.NOT_FOUND.message,
           code: CommonErrorException.NOT_FOUND.code,
         },
-        { status: 404 },
+        { status: CommonErrorException.NOT_FOUND.status },
       );
     }
 
@@ -178,7 +189,7 @@ export async function DELETE(
       {
         message: `Failed to delete product.`,
       },
-      { status: 500 },
+      { status: CommonErrorException.UNKNOWN_ERROR.status },
     );
   }
 }

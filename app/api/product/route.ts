@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import { NextResponse } from 'next/server';
 
 import connectDB from '@api/config/connectDB';
+import { CommonErrorException } from '@api/exception';
 import { shouldFilterKey } from '@api/helper/filter';
 import ProductModel from '@api/models/product';
 import { ProductSortType, ProductStatusType } from '@utils/constants/product';
@@ -136,7 +137,7 @@ export async function GET(req: NextRequest) {
       {
         message: 'Failed to load products.',
       },
-      { status: 500 },
+      { status: CommonErrorException.UNKNOWN_ERROR.status },
     );
   }
 }

@@ -24,7 +24,7 @@ export async function GET() {
       {
         message: 'Failed to load categories.',
       },
-      { status: 500 },
+      { status: CommonErrorException.UNKNOWN_ERROR.status },
     );
   }
 }

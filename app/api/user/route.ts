@@ -40,7 +40,7 @@ export async function GET() {
           message: CommonErrorException.NOT_FOUND.message,
           code: CommonErrorException.NOT_FOUND.code,
         },
-        { status: 404 },
+        { status: CommonErrorException.NOT_FOUND.status },
       );
     }
 
@@ -59,7 +59,7 @@ export async function GET() {
       {
         message: 'Failed to load user.',
       },
-      { status: 500 },
+      { status: CommonErrorException.UNKNOWN_ERROR.status },
     );
   }
 }
@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
           message: UserErrorException.USER_ALREADY_EXISTS.message,
           code: UserErrorException.USER_ALREADY_EXISTS.code,
         },
-        { status: 409 },
+        { status: UserErrorException.USER_ALREADY_EXISTS.status },
       );
     }
 
@@ -110,7 +110,7 @@ export async function POST(req: NextRequest) {
       {
         message: 'Failed to sign-up.',
       },
-      { status: 500 },
+      { status: CommonErrorException.UNKNOWN_ERROR.status },
     );
   }
 }
@@ -144,7 +144,7 @@ export async function PUT(req: NextRequest) {
           message: CommonErrorException.NOT_FOUND.message,
           code: CommonErrorException.NOT_FOUND.code,
         },
-        { status: 404 },
+        { status: CommonErrorException.NOT_FOUND.status },
       );
     }
 
@@ -162,7 +162,7 @@ export async function PUT(req: NextRequest) {
       {
         message: 'Failed to sign-up.',
       },
-      { status: 500 },
+      { status: CommonErrorException.UNKNOWN_ERROR.status },
     );
   }
 }

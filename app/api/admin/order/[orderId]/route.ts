@@ -1,7 +1,9 @@
+import { ObjectId } from 'mongodb';
 import { NextResponse } from 'next/server';
 
 import { authOptions } from '@api/auth/[...nextauth]/route';
 import connectDB from '@api/config/connectDB';
+import { CommonErrorException } from '@api/exception';
 import { checkSession } from '@api/helper/session';
 import OrderModel from '@api/models/order';
 import ProductModel from '@api/models/product';
@@ -28,6 +30,16 @@ export async function GET(
     }
 
     await connectDB();
+
+    if (!ObjectId.isValid(params.orderId)) {
+      return NextResponse.json(
+        {
+          message: CommonErrorException.NOT_FOUND.message,
+          code: CommonErrorException.NOT_FOUND.code,
+        },
+        { status: CommonErrorException.NOT_FOUND.status },
+      );
+    }
 
     const populateOptions = [
       {
@@ -73,7 +85,7 @@ export async function GET(
       {
         message: 'Failed to load product.',
       },
-      { status: 500 },
+      { status: CommonErrorException.UNKNOWN_ERROR.status },
     );
   }
 }

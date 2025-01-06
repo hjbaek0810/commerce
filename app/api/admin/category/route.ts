@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 import { authOptions } from '@api/auth/[...nextauth]/route';
 import connectDB from '@api/config/connectDB';
-import { CategoryErrorException } from '@api/exception';
+import { CategoryErrorException, CommonErrorException } from '@api/exception';
 import { checkSession } from '@api/helper/session';
 import CategoryModel from '@api/models/category';
 import ProductModel from '@api/models/product';
@@ -92,7 +92,7 @@ export async function GET() {
       {
         message: 'Failed to load admin categories.',
       },
-      { status: 500 },
+      { status: CommonErrorException.UNKNOWN_ERROR.status },
     );
   }
 }
@@ -156,7 +156,7 @@ export async function PUT(req: NextRequest) {
           message: CategoryErrorException.REFERENCED_BY_PRODUCT.message,
           code: CategoryErrorException.REFERENCED_BY_PRODUCT.code,
         },
-        { status: 400 },
+        { status: CategoryErrorException.REFERENCED_BY_PRODUCT.status },
       );
     }
 
@@ -264,7 +264,7 @@ export async function PUT(req: NextRequest) {
       {
         message: 'Failed to update the categories.',
       },
-      { status: 500 },
+      { status: CommonErrorException.UNKNOWN_ERROR.status },
     );
   }
 }

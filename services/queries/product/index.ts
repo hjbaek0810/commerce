@@ -23,6 +23,8 @@ import {
 } from '@services/queries/product/options';
 import { getWishListQueryOptions } from '@services/queries/wish-list/options';
 import { deleteImages, uploadImages } from '@services/upload';
+import { CloudinaryError } from '@services/upload/exception';
+import { FileUploadError, isFileUploadError } from '@services/utils/error';
 import { fetchData } from '@services/utils/fetch';
 import { invalidateQueries, removeQueries } from '@services/utils/helper';
 import { API } from '@services/utils/path';
@@ -56,13 +58,16 @@ async function uploadImagesAndGetUrls(
     const imageResponse = await uploadImages(formData);
     if (imageResponse.images) {
       return imageResponse.images;
-    } else {
-      throw new Error('Image upload failed: No images returned.');
     }
+
+    throw new FileUploadError(
+      CloudinaryError.UPLOAD_FAILED.message,
+      CloudinaryError.UPLOAD_FAILED.code,
+    );
   } catch (error) {
     console.error(error);
 
-    throw new Error('Failed to upload images and get URLs.');
+    throw error;
   }
 }
 
@@ -191,14 +196,17 @@ export const useAdminProductMutation = () => {
         },
       );
     },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
+    onSuccess: () => {
+      queryClient.invalidateQueries({
         queryKey: productKeys.getAdminAll(),
-        refetchType: 'all',
       });
     },
-    onError: () => {
-      toast.error('상품 등록에 실패하였습니다. 잠시 후 시도해주시길 바랍니다.');
+    onError: error => {
+      if (isFileUploadError(error)) {
+        toast.error(
+          '이미지 업로드에 실패했습니다. 이미지 형식과 크기를 확인한 후 다시 시도해주세요.',
+        );
+      }
     },
   });
 };
@@ -256,8 +264,12 @@ export const useAdminProductDetailMutation = (id: string) => {
         orderKeys.getAdminAll(),
       ]);
     },
-    onError: () => {
-      toast.error('상품 수정에 실패하였습니다. 잠시 후 시도해주시길 바랍니다.');
+    onError: error => {
+      if (isFileUploadError(error)) {
+        toast.error(
+          '이미지 업로드에 실패했습니다. 이미지 형식과 크기를 확인한 후 다시 시도해주세요.',
+        );
+      }
     },
   });
 };
@@ -288,8 +300,12 @@ export const useAdminProductDeleteMutation = () => {
         }),
       ]);
     },
-    onError: () => {
-      toast.error('상품 삭제에 실패하였습니다. 잠시 후 시도해주시길 바랍니다.');
+    onError: error => {
+      if (isFileUploadError(error)) {
+        toast.error(
+          '상품 삭제 요청이 실패했습니다. 다시 시도해주시기 바랍니다.',
+        );
+      }
     },
   });
 };
@@ -327,18 +343,27 @@ export const useAdminProductMultiDeleteMutation = () => {
         deleteImageIds.map(id => productKeys.getAdminDetail(id)),
       );
     },
-    onError: () => {
-      toast.error('상품 삭제에 실패하였습니다. 잠시 후 시도해주시길 바랍니다.');
+    onError: error => {
+      if (isFileUploadError(error)) {
+        toast.error(
+          '상품 삭제 요청이 실패했습니다. 다시 시도해주시기 바랍니다.',
+        );
+      }
     },
   });
 };
 
-export const useProductDetailQuery = (id: string) => {
+export const useProductDetailQuery = (id: string, isAuthenticated: boolean) => {
   const [productDetail, wish] = useQueries({
-    queries: [getProductDetailQueryOptions(id), getWishListQueryOptions()],
+    queries: [
+      getProductDetailQueryOptions(id),
+      { ...getWishListQueryOptions(), enabled: isAuthenticated },
+    ],
   });
 
-  const isWished = wish.data?.items?.some(item => item._id.toString() === id);
+  const isWished =
+    (wish && wish.data?.items?.some(item => item._id.toString() === id)) ||
+    false;
 
   return {
     ...productDetail,

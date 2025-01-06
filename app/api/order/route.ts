@@ -93,7 +93,7 @@ export async function GET(req: NextRequest) {
       {
         message: 'Failed to load order list.',
       },
-      { status: 500 },
+      { status: CommonErrorException.UNKNOWN_ERROR.status },
     );
   }
 }
@@ -142,7 +142,7 @@ export async function POST(req: NextRequest) {
             message: CommonErrorException.NOT_FOUND.message,
             code: CommonErrorException.NOT_FOUND.code,
           },
-          { status: 404 },
+          { status: CommonErrorException.NOT_FOUND.status },
         );
       }
 
@@ -152,7 +152,7 @@ export async function POST(req: NextRequest) {
             message: OrderErrorException.EXCEED_QUANTITY.message,
             code: OrderErrorException.EXCEED_QUANTITY.code,
           },
-          { status: 400 },
+          { status: OrderErrorException.EXCEED_QUANTITY.status },
         );
       }
 
@@ -190,7 +190,7 @@ export async function POST(req: NextRequest) {
       {
         message: `Failed to upload order list.`,
       },
-      { status: 500 },
+      { status: CommonErrorException.UNKNOWN_ERROR.status },
     );
   }
 }
@@ -231,7 +231,7 @@ export async function PUT(req: NextRequest) {
           message: CommonErrorException.NOT_FOUND.message,
           code: CommonErrorException.NOT_FOUND.code,
         },
-        { status: 404 },
+        { status: CommonErrorException.NOT_FOUND.status },
       );
     }
 
@@ -279,7 +279,7 @@ export async function PUT(req: NextRequest) {
           message: CommonErrorException.NOT_FOUND.message,
           code: CommonErrorException.NOT_FOUND.code,
         },
-        { status: 404 },
+        { status: CommonErrorException.NOT_FOUND.status },
       );
     }
 
@@ -298,7 +298,7 @@ export async function PUT(req: NextRequest) {
       {
         message: `Failed to update order list.`,
       },
-      { status: 500 },
+      { status: CommonErrorException.UNKNOWN_ERROR.status },
     );
   }
 }

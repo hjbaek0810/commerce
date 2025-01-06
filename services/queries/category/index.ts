@@ -66,14 +66,8 @@ export const useAdminCategoriesMutation = () => {
           toast.error(
             '삭제하려는 카테고리 중 일부가 등록된 상품에 포함되어 있어 삭제할 수 없습니다. 관련 상품을 먼저 수정하거나 삭제해주세요.',
           );
-
-          return;
         }
       }
-
-      toast.error(
-        '카테고리 업데이트에 실패했습니다. 잠시 후 시도해주시길 바랍니다.',
-      );
     },
   });
 };

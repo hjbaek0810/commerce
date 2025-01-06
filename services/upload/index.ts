@@ -7,8 +7,8 @@ import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 
 import cloudinary from '@api/config/cloudinaryConfig';
-import { CloudinaryError, GeneralError } from '@services/upload/exception';
-import { handleError } from '@services/utils/error';
+import { CloudinaryError, FileSystemError } from '@services/upload/exception';
+import { FileUploadError } from '@services/utils/error';
 
 type NewFilesType = {
   fileName: string;
@@ -64,9 +64,12 @@ async function saveImagesToLocal(data: FormData) {
 
     return await Promise.all(multipleBuffersImages);
   } catch (error) {
-    console.log(error);
+    console.error(error);
 
-    throw new Error(handleError(error) || GeneralError.UNKNOWN_ERROR.message);
+    throw new FileUploadError(
+      FileSystemError.FILE_WRITE_FAILED.message,
+      FileSystemError.FILE_WRITE_FAILED.code,
+    );
   }
 }
 
@@ -79,7 +82,10 @@ export async function uploadImages(files: FormData) {
       fs.unlink(file.filePath, err => {
         if (err) {
           console.error(err);
-          throw new Error(CloudinaryError.UPLOAD_FAILED.message);
+          throw new FileUploadError(
+            CloudinaryError.UPLOAD_FAILED.message,
+            CloudinaryError.UPLOAD_FAILED.code,
+          );
         }
       }),
     );
@@ -88,7 +94,10 @@ export async function uploadImages(files: FormData) {
   } catch (error) {
     console.error(error);
 
-    throw new Error(CloudinaryError.UPLOAD_FAILED.message);
+    throw new FileUploadError(
+      CloudinaryError.UPLOAD_FAILED.message,
+      CloudinaryError.UPLOAD_FAILED.code,
+    );
   }
 }
 
@@ -104,7 +113,10 @@ export async function getAllImages() {
   } catch (error) {
     console.error(error);
 
-    throw new Error(CloudinaryError.RETRIEVE_FAILED.message);
+    throw new FileUploadError(
+      CloudinaryError.RETRIEVE_FAILED.message,
+      CloudinaryError.RETRIEVE_FAILED.code,
+    );
   }
 }
 
@@ -114,6 +126,9 @@ export async function deleteImages(publicId: string) {
   } catch (error) {
     console.error(error);
 
-    throw new Error(CloudinaryError.DELETE_FAILED.message);
+    throw new FileUploadError(
+      CloudinaryError.DELETE_FAILED.message,
+      CloudinaryError.DELETE_FAILED.code,
+    );
   }
 }

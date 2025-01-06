@@ -73,7 +73,7 @@ export async function GET(req: NextRequest) {
             message: CommonErrorException.DATE_RANGE_INVALID.message,
             code: CommonErrorException.DATE_RANGE_INVALID.code,
           },
-          { status: 400 },
+          { status: CommonErrorException.DATE_RANGE_INVALID.status },
         );
       }
 
@@ -133,7 +133,7 @@ export async function GET(req: NextRequest) {
       {
         message: 'Failed to load users.',
       },
-      { status: 500 },
+      { status: CommonErrorException.UNKNOWN_ERROR.status },
     );
   }
 }

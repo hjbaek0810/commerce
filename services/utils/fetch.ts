@@ -53,14 +53,11 @@ export async function fetchData<T, U = unknown>(
   if (!response.ok) {
     const errorData = await response.json();
 
-    // if (response.status === 401 || response.status === 403) {
-    //   revalidatePath('/');
-    // }
-
     const error = new ApiError(
       errorData.message || CommonErrorException.UNKNOWN_ERROR.message,
       errorData.code || CommonErrorException.UNKNOWN_ERROR.code,
       errorData.data,
+      response.status,
     );
 
     throw error;

@@ -96,7 +96,7 @@ export async function GET(req: NextRequest) {
             message: CommonErrorException.DATE_RANGE_INVALID.message,
             code: CommonErrorException.DATE_RANGE_INVALID.code,
           },
-          { status: 400 },
+          { status: CommonErrorException.DATE_RANGE_INVALID.status },
         );
       }
 
@@ -250,7 +250,7 @@ export async function GET(req: NextRequest) {
       {
         message: 'Failed to load order list.',
       },
-      { status: 500 },
+      { status: CommonErrorException.UNKNOWN_ERROR.status },
     );
   }
 }
@@ -283,7 +283,7 @@ export async function PUT(req: NextRequest) {
           message: CommonErrorException.NOT_FOUND.message,
           code: CommonErrorException.NOT_FOUND.code,
         },
-        { status: 404 },
+        { status: CommonErrorException.NOT_FOUND.status },
       );
     }
 
@@ -332,7 +332,7 @@ export async function PUT(req: NextRequest) {
           message: CommonErrorException.NOT_FOUND.message,
           code: CommonErrorException.NOT_FOUND.code,
         },
-        { status: 404 },
+        { status: CommonErrorException.NOT_FOUND.status },
       );
     }
 
@@ -350,7 +350,7 @@ export async function PUT(req: NextRequest) {
       {
         message: `Failed to update order list.`,
       },
-      { status: 500 },
+      { status: CommonErrorException.UNKNOWN_ERROR.status },
     );
   }
 }

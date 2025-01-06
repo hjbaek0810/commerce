@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
       {
         message: 'Failed to load categories.',
       },
-      { status: 500 },
+      { status: CommonErrorException.UNKNOWN_ERROR.status },
     );
   }
 }

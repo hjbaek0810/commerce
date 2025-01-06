@@ -22,7 +22,7 @@ export const checkSession = async (
       return {
         isValid: false,
         message: SessionErrorException.SESSION_NOT_FOUND.message,
-        status: 401, // Unauthorized
+        status: SessionErrorException.SESSION_NOT_FOUND.status, // Unauthorized
         code: SessionErrorException.SESSION_NOT_FOUND.code,
       };
     }
@@ -31,7 +31,7 @@ export const checkSession = async (
       return {
         isValid: false,
         message: SessionErrorException.FORBIDDEN_ACCESS.message,
-        status: 403,
+        status: SessionErrorException.FORBIDDEN_ACCESS.status,
         code: SessionErrorException.FORBIDDEN_ACCESS.code,
       };
     }
@@ -40,7 +40,7 @@ export const checkSession = async (
       return {
         isValid: false,
         message: SessionErrorException.FORBIDDEN_ACCESS.message,
-        status: 403,
+        status: SessionErrorException.FORBIDDEN_ACCESS.status,
         code: SessionErrorException.FORBIDDEN_ACCESS.code,
       };
     }
