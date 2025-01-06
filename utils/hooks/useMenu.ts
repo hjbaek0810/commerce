@@ -64,6 +64,7 @@ const useMenu = () => {
         path: PATH.PRODUCT.LIST,
         query: { category: activeCategory },
       },
+      shallow: true,
     };
 
     return activeCategory === selectedCategory
