@@ -7,11 +7,12 @@ import { PATH } from '@utils/path';
 
 const useSessionHandler = () => {
   const { data: session } = useSession();
+  const isAuthenticated = !!session;
   const router = useRouter();
 
   const checkSession = () => {
     if (!session) {
-      toast('세션이 만료되었습니다. 다시 로그인해주세요.');
+      toast('로그인 세션이 만료되었거나 로그인이 필요합니다.');
       router.push(PATH.SIGN_IN);
 
       return false;
@@ -20,7 +21,7 @@ const useSessionHandler = () => {
     return true;
   };
 
-  return { checkSession };
+  return { isAuthenticated, checkSession };
 };
 
 export default useSessionHandler;

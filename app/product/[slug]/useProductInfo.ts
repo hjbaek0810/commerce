@@ -18,10 +18,13 @@ import type { WishListVO } from '@api/wish-list/types/vo';
 export const SHOW_REMAINING_QUANTITY_COUNT = 10;
 
 const useProductInfo = (id: string) => {
-  const { checkSession } = useSessionHandler();
+  const { checkSession, isAuthenticated } = useSessionHandler();
 
   const queryClient = useQueryClient();
-  const { data: product, isWished } = useProductDetailQuery(id);
+  const { data: product, isWished } = useProductDetailQuery(
+    id,
+    isAuthenticated,
+  );
   const { mutate: updateWish } = useWishListMutation();
   const { mutate: updateCart } = useCartListMutation(true);
 
