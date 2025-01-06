@@ -3,6 +3,11 @@
 import { createVanillaExtractPlugin } from '@vanilla-extract/next-plugin';
 
 const withVanillaExtract = createVanillaExtractPlugin();
+const withVanillaExtract = createVanillaExtractPlugin({
+  experimental: {
+    optimizeCss: true,
+  },
+});
 
 const nextConfig = {
   reactStrictMode: true,
