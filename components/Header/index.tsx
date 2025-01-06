@@ -76,6 +76,7 @@ const Header = ({ list }: HeaderPropsType) => {
                     height={24}
                     src={session.user.image}
                     alt="avatar"
+                    priority
                   />
                 ) : (
                   session.user.name

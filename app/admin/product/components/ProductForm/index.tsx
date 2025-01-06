@@ -203,6 +203,7 @@ const ProductForm = ({ savedImages, editable = true }: ProductFormType) => {
                         alt={file.name}
                         width={200}
                         height={150}
+                        priority
                       />
                     ))}
                   </div>
