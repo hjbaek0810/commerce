@@ -54,7 +54,7 @@ const AdminOrderSearchFilter = ({
                 <Rhf.Input name="_id" />
               </Table.Td>
               <Table.Th scope="row">
-                <Rhf.Label name="status">주문상태</Rhf.Label>
+                <Rhf.Label isLegend>주문상태</Rhf.Label>
               </Table.Th>
               <Table.Td>
                 <Rhf.CheckboxGroup
@@ -87,7 +87,7 @@ const AdminOrderSearchFilter = ({
             </Table.Tr>
             <Table.Tr>
               <Table.Th scope="row">
-                <Rhf.Label name="startDate">주문 일자</Rhf.Label>
+                <Rhf.Label isLegend>주문 일자</Rhf.Label>
               </Table.Th>
               <Table.Td>
                 <div

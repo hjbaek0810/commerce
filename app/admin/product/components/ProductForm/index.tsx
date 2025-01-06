@@ -146,7 +146,7 @@ const ProductForm = ({ savedImages, editable = true }: ProductFormType) => {
         </Table.Tr>
         <Table.Tr>
           <Table.Th scope="row">
-            <Rhf.Label name="status">상품상태</Rhf.Label>
+            <Rhf.Label isLegend>상품상태</Rhf.Label>
           </Table.Th>
           <Table.Td colSpan={3}>
             <Rhf.Radio
@@ -217,7 +217,7 @@ const ProductForm = ({ savedImages, editable = true }: ProductFormType) => {
         {!isEmpty(savedImages) && (
           <Table.Tr>
             <Table.Th scope="row">
-              <Rhf.Label name="images">기존 이미지</Rhf.Label>
+              <Rhf.Label isLegend>기존 이미지</Rhf.Label>
             </Table.Th>
             <Table.Td colSpan={3}>
               <Rhf.Input name="deleteImageIds" hidden />

@@ -39,7 +39,7 @@ const SignUp = () => {
           <Table.Body>
             <Table.Tr>
               <Table.Th scope="row">
-                <Rhf.Label name="role">가입 유형</Rhf.Label>
+                <Rhf.Label isLegend>가입 유형</Rhf.Label>
               </Table.Th>
               <Table.Td colSpan={2}>
                 <Rhf.Radio name="role">

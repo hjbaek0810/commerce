@@ -61,6 +61,7 @@ const FileUpload = forwardRef(
           type="file"
           hidden
           name={name}
+          id={name}
           onChange={handleFileChange}
           ref={fileRef}
           multiple={multiple}

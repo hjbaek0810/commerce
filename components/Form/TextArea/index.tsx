@@ -35,6 +35,7 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaPropsType>(
       maxLength = 400,
       curLength,
       disabled,
+      name,
       onChange,
       ...restProps
     },
@@ -71,6 +72,8 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaPropsType>(
         <div className={inputCss.inputWrapper({ hidden })}>
           <textarea
             {...restProps}
+            id={name}
+            name={name}
             style={assignInlineVars({
               [textareaHeightVar]:
                 textAreaInputRef.current?.scrollHeight + 'px',

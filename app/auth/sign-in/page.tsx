@@ -25,7 +25,7 @@ const GoogleAuthSignIn = () => {
         onSubmit={handleSignInSubmit}
       >
         <div>
-          <Rhf.Label>ID</Rhf.Label>
+          <Rhf.Label name="loginId">ID</Rhf.Label>
           <Rhf.Input
             name="loginId"
             required
@@ -33,7 +33,7 @@ const GoogleAuthSignIn = () => {
           />
         </div>
         <div>
-          <Rhf.Label>Password</Rhf.Label>
+          <Rhf.Label name="password">Password</Rhf.Label>
           <Rhf.Input
             name="password"
             type="password"

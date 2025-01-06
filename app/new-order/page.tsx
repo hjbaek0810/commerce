@@ -93,7 +93,7 @@ const NewOrder = () => {
           <Table.Body>
             <Table.Tr>
               <Table.Th scope="row">
-                <Rhf.Label name="isSameAsUserInfo">회원정보와 동일</Rhf.Label>
+                <Rhf.Label isLegend>회원정보와 동일</Rhf.Label>
               </Table.Th>
               <Table.Td colSpan={2}>
                 <Rhf.CheckboxGroup name="isSameAsUserInfo" options={['true']}>
@@ -155,7 +155,9 @@ const NewOrder = () => {
             </Table.Tr>
             <Table.Tr>
               <Table.Th scope="row">
-                <Rhf.Label required>결제 방법</Rhf.Label>
+                <Rhf.Label required isLegend>
+                  결제 방법
+                </Rhf.Label>
               </Table.Th>
               <Table.Td colSpan={2}>
                 <Rhf.Radio name="paymentType">

@@ -47,7 +47,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxPropsType>(
     },
     ref,
   ) => {
-    const labelId = `${name}-${label}`;
+    const labelId = `${name}-${value}`;
 
     const handleLabelClick = (event: MouseEvent<HTMLDivElement>) => {
       if (disabled) return;
@@ -77,7 +77,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxPropsType>(
         <div className={css.checkbox({ checked, error })}>
           <input
             className={css.input}
-            id={id || `${name}-${value}`}
+            id={id || labelId}
             name={name}
             type="checkbox"
             tabIndex={-1}

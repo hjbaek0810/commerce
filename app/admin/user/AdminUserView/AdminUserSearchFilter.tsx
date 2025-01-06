@@ -76,7 +76,7 @@ const AdminUserSearchFilter = ({
             </Table.Tr>
             <Table.Tr>
               <Table.Th scope="row">
-                <Rhf.Label name="startDate">가입 일자</Rhf.Label>
+                <Rhf.Label isLegend>가입 일자</Rhf.Label>
               </Table.Th>
               <Table.Td>
                 <div

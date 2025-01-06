@@ -4,11 +4,11 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
-  Legend,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
+  isLegend,
 } from 'recharts';
 
 import DashboardSearchForm from '@app/admin/AdminDashboard/SearchForm';
@@ -57,7 +57,7 @@ const AdminUserDashboard = () => {
               <XAxis dataKey="name" fontSize="1.4rem" />
               <YAxis fontSize="1.4rem" />
               <Tooltip />
-              <Legend wrapperStyle={{ fontSize: '1.2rem' }} />
+              <isLegend wrapperStyle={{ fontSize: '1.2rem' }} />
               <Bar dataKey="google" stackId="a" fill="#8884d8" />
               <Bar dataKey="credentials" stackId="a" fill="#82ca9d" />
             </BarChart>

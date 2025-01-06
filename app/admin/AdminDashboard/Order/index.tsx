@@ -7,13 +7,13 @@ import {
   BarChart,
   CartesianGrid,
   Cell,
-  Legend,
   Pie,
   PieChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
+  isLegend,
 } from 'recharts';
 
 import useAdminOrderDashboard from '@app/admin/AdminDashboard/Order/useAdminOrderDashboard';
@@ -102,7 +102,7 @@ const AdminOrderDashboard = () => {
           >
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
-                <Legend
+                <isLegend
                   wrapperStyle={{ fontSize: '1.2rem' }}
                   layout="vertical"
                   verticalAlign="top"

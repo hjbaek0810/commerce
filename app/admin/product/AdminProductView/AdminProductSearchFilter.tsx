@@ -94,7 +94,7 @@ const AdminProductSearchFilter = ({
                 <Rhf.Input name="name" />
               </Table.Td>
               <Table.Th scope="row">
-                <Rhf.Label name="status">상품상태</Rhf.Label>
+                <Rhf.Label isLegend>상품상태</Rhf.Label>
               </Table.Th>
               <Table.Td>
                 <Rhf.CheckboxGroup

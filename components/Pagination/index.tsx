@@ -61,6 +61,7 @@ const Pagination = (props: PaginationProsType) => {
       <div className={css.sizeSelectorWrapper}>
         <p className={css.sizeTitle}>Rows per page:</p>
         <Select
+          name="limit"
           defaultValue={currentLimit}
           className={css.sizeSelector}
           onChange={event => handleSizeChange(Number(event.target.value))}
