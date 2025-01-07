@@ -30,6 +30,9 @@ const nextConfig = {
       },
     ],
   },
+  compiler: {
+    removeConsole: true,
+  },
 };
 
 export default withVanillaExtract(nextConfig);
