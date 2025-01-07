@@ -1,4 +1,5 @@
-import ReactModal from 'react-modal';
+import type { ComponentType } from 'react';
+import Modal from 'react-modal';
 
 import { sprinkles } from '@styles/sprinkles.css';
 import { tokens } from '@styles/token.css';
@@ -6,6 +7,11 @@ import {
   useModalsDispatchContext,
   useModalsStateContext,
 } from '@utils/modals/context';
+
+// 'ReactModal' cannot be used as a JSX component
+const ModalSafeForReact18 = Modal as unknown as ComponentType<
+  ReactModal['props']
+>;
 
 const Modals = () => {
   const openedModals = useModalsStateContext();
@@ -34,7 +40,7 @@ const Modals = () => {
     };
 
     return (
-      <ReactModal
+      <ModalSafeForReact18
         key={id}
         isOpen={!!isOpen}
         onRequestClose={handleClose}
@@ -63,7 +69,7 @@ const Modals = () => {
           onClose={handleClose}
           onSubmit={handleSubmit}
         />
-      </ReactModal>
+      </ModalSafeForReact18>
     );
   });
 };
