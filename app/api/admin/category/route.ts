@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-import { authOptions } from '@api/auth/[...nextauth]/route';
+import { authOptions } from '@api/auth/[...nextauth]/authOptions';
 import connectDB from '@api/config/connectDB';
 import { CategoryErrorException, CommonErrorException } from '@api/exception';
 import { checkSession } from '@api/helper/session';
