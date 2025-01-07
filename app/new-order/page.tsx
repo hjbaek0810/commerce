@@ -1,5 +1,3 @@
-'use client';
-
 import NewOrderForm from '@app/new-order/NewOrderForm';
 
 import type { Metadata } from 'next/types';
