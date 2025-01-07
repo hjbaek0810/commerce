@@ -44,7 +44,6 @@ export async function fetchData<T, U = unknown>(
     }
   }
 
-  // FIXME: 배포환경 url
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/${url}`,
     fetchOptions,
