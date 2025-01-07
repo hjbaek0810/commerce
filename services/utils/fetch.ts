@@ -45,7 +45,7 @@ export async function fetchData<T, U = unknown>(
   }
 
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_VERCEL_URL}/api/${url}`,
+    `${window.location.origin}/api/${url}`,
     fetchOptions,
   );
 

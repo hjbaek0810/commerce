@@ -55,14 +55,14 @@ const nextConfig = {
       },
     ];
   },
-  async rewrites() {
-    return [
-      {
-        source: '/api/:path*',
-        destination: `${process.env.NEXT_PUBLIC_VERCEL_URL}/api/:path*`,
-      },
-    ];
-  },
+  // async rewrites() {
+  //   return [
+  //     {
+  //       source: '/api/:path*',
+  //       destination: `${process.env.NEXT_PUBLIC_VERCEL_URL}/api/:path*`,
+  //     },
+  //   ];
+  // },
 };
 
 export default withVanillaExtract(nextConfig);
