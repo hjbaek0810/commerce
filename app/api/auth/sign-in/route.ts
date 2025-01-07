@@ -2,6 +2,7 @@ import * as bcrypt from 'bcryptjs';
 import { NextResponse } from 'next/server';
 
 import connectDB from '@api/config/connectDB';
+import { CommonErrorException } from '@api/exception';
 import UserModel from '@api/models/user';
 
 import type { SignInUser } from '@api/auth/sign-in/types/dto';

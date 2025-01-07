@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 
 import connectDB from '@api/config/connectDB';
+import { CommonErrorException } from '@api/exception';
 import CategoryModel from '@api/models/category';
 import SubCategoryModel from '@api/models/subCategory';
 
