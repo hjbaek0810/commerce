@@ -36,9 +36,8 @@ const Header = ({ list }: HeaderPropsType) => {
 
   return (
     <header className={css.header}>
-      {/* TODO : logo img */}
       <h1 className={css.logo}>
-        <Link href="/">Logo</Link>
+        <Link href="/">MiniMall</Link>
       </h1>
 
       <nav className={css.bar}>
