@@ -40,13 +40,13 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: 'website',
-    url: process.env.NEXT_PUBLIC_BASE_URL,
+    url: process.env.NEXT_PUBLIC_VERCEL_URL,
     title: 'MiniMall - Simplify Product Management',
     description:
       'Manage your products and categories effortlessly with MiniMall. A powerful, yet simple admin dashboard.',
     images: [
       {
-        url: `${process.env.NEXT_PUBLIC_BASE_URL}/assets/banner3.png`,
+        url: `${process.env.NEXT_PUBLIC_VERCEL_URL}/assets/banner3.png`,
         width: 1920,
         height: 960,
         alt: 'Minimal Yet Powerful',

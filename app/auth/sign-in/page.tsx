@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   robots: 'noindex, nofollow',
   openGraph: {
     title: '로그인 | MiniMall',
-    url: `${process.env.NEXT_PUBLIC_BASE_URL}/sign-in`,
+    url: `${process.env.NEXT_PUBLIC_VERCEL_URL}/sign-in`,
     description: '로그인하여 MiniMall 서비스를 이용하세요.',
   },
 };

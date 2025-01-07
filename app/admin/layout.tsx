@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Admin Dashboard | MiniMall',
     description: 'Access the admin dashboard to manage your MiniMall store.',
-    url: `${process.env.NEXT_PUBLIC_BASE_URL}/admin`,
+    url: `${process.env.NEXT_PUBLIC_VERCEL_URL}/admin`,
     type: 'website',
   },
 };

@@ -34,7 +34,7 @@ export async function generateMetadata({
     openGraph: {
       title: `${name || '상품 상세'} | MiniMall`,
       description: description || 'MiniMall에서 원하는 상품을 찾아보세요!',
-      url: `${process.env.NEXT_PUBLIC_BASE_URL}/product/${id}`,
+      url: `${process.env.NEXT_PUBLIC_VERCEL_URL}/product/${id}`,
       images: [
         {
           url: images?.[0]?.publicId || NOT_FOUND_IMAGE,
