@@ -1,7 +1,6 @@
 import type { ReactDatePickerCustomHeaderProps } from 'react-datepicker';
 
 import {
-  faArrowLeft,
   faChevronLeft,
   faChevronRight,
 } from '@fortawesome/free-solid-svg-icons';
