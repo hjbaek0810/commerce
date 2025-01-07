@@ -17,13 +17,49 @@ import type { Metadata } from 'next';
 config.autoAddCss = false;
 
 export const metadata: Metadata = {
-  title: 'hj Commerce',
-  description: 'manage product',
+  title: 'MiniMall',
+  description:
+    'MiniMall is a simple platform to manage products, categories, and more with an intuitive interface.',
+  keywords: [
+    'MiniMall',
+    'Product Management',
+    'Admin Dashboard',
+    'E-commerce Management',
+  ],
+  applicationName: 'MiniMall',
+  authors: [
+    {
+      name: 'hjbaek',
+      url: 'https://www.notion.so/doolgi/a327d11f549a49ad9099248ac97cfcf5',
+    },
+  ],
+  generator: 'Next.js',
+  robots: 'index, follow',
+  icons: {
+    icon: '/favicon.ico',
+  },
+  openGraph: {
+    type: 'website',
+    url: process.env.NEXT_PUBLIC_BASE_URL,
+    title: 'MiniMall - Simplify Product Management',
+    description:
+      'Manage your products and categories effortlessly with MiniMall. A powerful, yet simple admin dashboard.',
+    images: [
+      {
+        url: `${process.env.NEXT_PUBLIC_BASE_URL}/assets/banner3.png`,
+        width: 1920,
+        height: 960,
+        alt: 'Minimal Yet Powerful',
+      },
+    ],
+  },
   other: {
     'http-equiv': 'Cross-Origin-Opener-Policy',
     content: 'same-origin-allow-popups',
   },
 };
+
+export const viewport = 'width=device-width, initial-scale=1.0';
 
 const RootLayout = ({
   children,

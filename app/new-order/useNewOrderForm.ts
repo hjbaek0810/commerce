@@ -21,7 +21,7 @@ type NewOrderUseFormType = Omit<
   'products' | 'status' | 'fromCart'
 > & { isSameAsUserInfo: ('true' | 'false')[] };
 
-const useNewOrder = () => {
+const useNewOrderForm = () => {
   const searchParams = useSearchParams();
 
   const fromCart = searchParams.get('fromCart') === 'true' ? true : false;
@@ -134,4 +134,4 @@ const useNewOrder = () => {
   };
 };
 
-export default useNewOrder;
+export default useNewOrderForm;

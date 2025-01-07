@@ -17,7 +17,7 @@ import type { CreateUser } from '@api/user/types/dto';
 
 type SignUpUseFormType = CreateUser & { confirmPassword: string };
 
-const useSignUp = () => {
+const useSignUpForm = () => {
   const { mutate: signUp } = useSignUpMutation();
   const router = useRouter();
   const signUpForm = useForm<SignUpUseFormType>({
@@ -82,4 +82,4 @@ const useSignUp = () => {
   };
 };
 
-export default useSignUp;
+export default useSignUpForm;

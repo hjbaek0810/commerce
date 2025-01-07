@@ -40,7 +40,7 @@ type SliderItemPropsType = {
 type SliderClickableImagePropsType = {
   src: string;
   alt?: string;
-  redirectTo: string;
+  redirectTo?: string;
   sizes?: string;
   className?: string;
 };
@@ -62,7 +62,7 @@ const SliderRoot = ({
       type,
       height,
     }),
-    [autoPlay, hideDot, showIndex, type],
+    [autoPlay, height, hideDot, showIndex, type],
   );
 
   const actions = useMemo(
@@ -188,7 +188,7 @@ const SliderClickableImage = ({
   className,
 }: SliderClickableImagePropsType) => {
   return (
-    <Link className={clsx(css.sliderLink, className)} href={redirectTo}>
+    <Link className={clsx(css.sliderLink, className)} href={redirectTo || '/'}>
       <Image
         src={src}
         alt={alt || src}

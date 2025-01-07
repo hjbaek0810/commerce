@@ -9,7 +9,7 @@ import { UserRoleType } from '@utils/constants/user';
 
 import type { SignInUser } from '@api/auth/sign-in/types/dto';
 
-const useSignIn = () => {
+const useSignInForm = () => {
   const signInForm = useForm<SignInUser>();
   const { mutate: signIn } = useSignInMutation();
   const router = useRouter();
@@ -37,4 +37,4 @@ const useSignIn = () => {
   return { signInForm, handleSignInSubmit };
 };
 
-export default useSignIn;
+export default useSignInForm;
