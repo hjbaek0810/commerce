@@ -84,7 +84,7 @@ export const sliderDotList = style({
   left: '50%',
   transform: 'translateX(-50%)',
   display: 'flex',
-  gap: tokens.spacing['spacing-008'],
+  gap: tokens.spacing['spacing-012'],
 });
 
 export const sliderDotItem = recipe({

@@ -26,7 +26,6 @@ import { passPropsToSingleChild } from '@utils/render';
 import * as css from './slider.css';
 import { heightVar, itemIndexVar } from './slider.css';
 
-// TODO: dot, arrow button type
 type SliderRootPropsType = Pick<
   SliderValueContextType,
   'hideDot' | 'autoPlay' | 'type' | 'height'
@@ -149,6 +148,7 @@ const SliderList = ({ children }: PropsWithChildren) => {
             return (
               <li key={`dot-${index}`}>
                 <button
+                  aria-label={`move slider-${index}`}
                   className={css.sliderDotItem({ active: index === showIndex })}
                   onClick={() => handleDotClick(index)}
                 />
@@ -193,12 +193,12 @@ const SliderClickableImage = ({
         src={src}
         alt={alt || src}
         fill
-        height={0}
         priority
         style={{
           objectFit: 'cover',
         }}
         sizes={sizes}
+        quality={75}
       />
     </Link>
   );

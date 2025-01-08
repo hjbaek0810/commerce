@@ -8,7 +8,7 @@ import { tokens } from '@styles/token.css';
 export const subTitle = style({
   display: 'block',
   marginBottom: tokens.spacing['spacing-008'],
-  color: ColorPalettes.Grey['40'],
+  color: ColorPalettes.Grey['30'],
   fontSize: tokens.fontSize['font-size-014'],
   textAlign: 'center',
   fontWeight: 400,

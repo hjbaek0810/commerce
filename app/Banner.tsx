@@ -22,7 +22,11 @@ const Banner = () => (
     <Slider.List>
       {imgInfo.map((item, index) => (
         <Slider.Item key={index}>
-          <Slider.ClickableImage src={item.src} alt={item.alt} />
+          <Slider.ClickableImage
+            src={item.src}
+            alt={item.alt}
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 1200px"
+          />
         </Slider.Item>
       ))}
     </Slider.List>

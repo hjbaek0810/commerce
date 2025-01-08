@@ -1,4 +1,5 @@
 'use client';
+
 import {
   faCartShopping,
   faHeart,
@@ -90,7 +91,7 @@ const Header = ({ list }: HeaderPropsType) => {
           )}
           {!session && (
             <li>
-              <Link href={PATH.SIGN_IN}>
+              <Link href={PATH.SIGN_IN} aria-label="Go to Login">
                 <FontAwesomeIcon icon={faRightToBracket} />
               </Link>
             </li>
