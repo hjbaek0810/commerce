@@ -7,14 +7,16 @@ const useSideMenu = () => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const removeParams = (paramsToRemove: string[]) => {
-    const params = new URLSearchParams(searchParams.toString());
-    paramsToRemove.forEach(param => {
-      params.delete(param);
-    });
+  const filterKeys = ['category', 'subCategory'];
 
-    return Object.fromEntries(params.entries());
-  };
+  const newParams: Record<string, string> = {};
+
+  filterKeys.forEach(key => {
+    const value = searchParams.get(key);
+    if (value) {
+      newParams[key] = value;
+    }
+  });
 
   const selected = (menuPath: string, query?: ParsedUrlQueryInput | string) => {
     if (!query) {
@@ -23,8 +25,6 @@ const useSideMenu = () => {
 
       return pathname.startsWith(menuPath);
     }
-
-    const newParams = removeParams(['page', 'limit', 'sort']);
 
     return pathname.startsWith(menuPath) && isEqual(newParams, query);
   };
