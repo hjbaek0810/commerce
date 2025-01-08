@@ -30,11 +30,11 @@ export const createAccountLink = recipe({
   },
   variants: {
     disabled: {
-      true: {},
-      false: {
+      true: {
         opacity: 0.4,
         pointerEvents: 'none',
       },
+      false: {},
     },
   },
   defaultVariants: {
