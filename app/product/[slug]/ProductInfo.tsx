@@ -31,6 +31,7 @@ const ProductInfo = ({ id }: { id: string }) => {
     showRemainingQuantity,
     handleWishButtonClick,
     handleCartButtonClick,
+    handleBuyButtonClick,
     handleAddQuantityClick,
     handleMinusQuantityClick,
   } = useProductInfo(id);
@@ -116,14 +117,7 @@ const ProductInfo = ({ id }: { id: string }) => {
             fill
             fullWidth
             disabled={soldOut}
-            href={{
-              pathname: PATH.NEW_ORDER,
-              query: {
-                productId: id,
-                quantity: addedQuantity,
-                fromCart: false,
-              },
-            }}
+            onClick={handleBuyButtonClick}
           >
             {soldOut ? 'SOLD OUT' : '구매하기'}
           </Button>

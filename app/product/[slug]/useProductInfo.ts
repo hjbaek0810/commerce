@@ -12,6 +12,7 @@ import { ProductStatusType } from '@utils/constants/product';
 import useModals from '@utils/hooks/useModals';
 import useSessionHandler from '@utils/hooks/useSessionHandler';
 import { PATH } from '@utils/path';
+import { createQueryString } from '@utils/query/helper';
 
 import type { WishListVO } from '@api/wish-list/types/vo';
 
@@ -84,6 +85,18 @@ const useProductInfo = (id: string) => {
     }
   };
 
+  const handleBuyButtonClick = () => {
+    if (checkSession()) {
+      router.push(
+        createQueryString(PATH.NEW_ORDER, {
+          productId: id,
+          quantity,
+          fromCart: false,
+        }),
+      );
+    }
+  };
+
   const handleCartButtonClick = () => {
     if (checkSession()) {
       updateCart(
@@ -116,6 +129,7 @@ const useProductInfo = (id: string) => {
     showRemainingQuantity,
     handleWishButtonClick,
     handleCartButtonClick,
+    handleBuyButtonClick,
     handleAddQuantityClick,
     handleMinusQuantityClick,
   };
