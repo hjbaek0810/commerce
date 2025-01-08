@@ -52,12 +52,16 @@ export async function GET(req: NextRequest) {
       if (shouldFilterKey(key, value, ['startDate', 'endDate'])) {
         switch (key) {
           case 'name':
+            filters[key] = { $regex: `.*${value}.*`, $options: 'i' };
+            break;
           case 'loginId':
-          case 'telephone':
-            filters[key] = { $regex: `^${value}`, $options: 'i' };
+            filters[key] = { $regex: `.*${value}.*` };
             break;
           case 'email':
-            filters['contactEmail'] = { $regex: `^${value}`, $options: 'i' };
+            filters['contactEmail'] = { $regex: `.*${value}.*` };
+            break;
+          case 'telephone':
+            filters[key] = { $regex: `^${value}` };
             break;
           default:
             filters[key] = value;

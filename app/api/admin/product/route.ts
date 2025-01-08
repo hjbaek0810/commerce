@@ -119,7 +119,7 @@ export async function GET(req: NextRequest) {
             }));
             break;
           case 'name':
-            filters[key] = { $regex: `^${value}`, $options: 'i' };
+            filters[key] = { $regex: `.*${value}.*`, $options: 'i' };
             break;
           case 'status':
             filters['$or'] = status?.map(status => ({ status }));

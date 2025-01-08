@@ -58,7 +58,7 @@ export async function GET(req: NextRequest) {
             );
             break;
           case 'name':
-            filters[key] = { $regex: `^${value}`, $options: 'i' }; // 이름으로 시작하는 항목, 대소문자 구분 없음
+            filters[key] = { $regex: `.*${value}.*`, $options: 'i' };
             break;
           default:
             filters[key] = value;
