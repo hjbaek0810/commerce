@@ -13,7 +13,7 @@ import { PATH } from '@utils/path';
 import * as css from './signIn.css';
 
 const SignInForm = () => {
-  const { signInForm, handleSignInSubmit } = useSignInForm();
+  const { signInForm, handleSignInSubmit, isWaiting } = useSignInForm();
 
   return (
     <div className={css.signInWrapper}>
@@ -42,15 +42,22 @@ const SignInForm = () => {
             onChange={() => signInForm.clearErrors('password')}
           />
         </div>
-        <Button size="large" fill type="submit">
+        <Button size="large" fill type="submit" disabled={isWaiting}>
           Sign in
         </Button>
-        <Link className={css.createAccountLink} href={PATH.SIGN_UP}>
+        <Link
+          className={css.createAccountLink({ disabled: isWaiting })}
+          href={PATH.SIGN_UP}
+        >
           Create Account
         </Link>
       </Rhf.Form>
 
-      <Button size="large" onClick={() => signIn('google')}>
+      <Button
+        size="large"
+        onClick={() => signIn('google')}
+        disabled={isWaiting}
+      >
         <Image
           width={24}
           height={24}
