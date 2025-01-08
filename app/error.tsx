@@ -3,6 +3,7 @@
 import { useCallback, useEffect } from 'react';
 import { toast } from 'react-toastify';
 
+import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 
 import { CommonErrorException, SessionErrorException } from '@api/exception';
@@ -19,15 +20,17 @@ type ErrorBoundaryPropsType = {
 
 const ErrorBoundary = ({ error, reset }: ErrorBoundaryPropsType) => {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const handleSessionError = useCallback(() => {
+    queryClient.removeQueries();
     toast.info('세션이 만료되었습니다. 다시 로그인 해주시기 바랍니다.', {
       pauseOnFocusLoss: false,
       pauseOnHover: false,
       toastId: 'retry-login',
     });
     router.push(PATH.SIGN_IN);
-  }, [router]);
+  }, [queryClient, router]);
 
   useEffect(() => {
     if (isApiError(error)) {
