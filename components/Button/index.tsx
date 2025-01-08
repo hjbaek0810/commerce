@@ -6,13 +6,14 @@ import Link from 'next/link';
 import * as css from './button.css';
 
 import type { ButtonVariants } from './button.css';
-import type { ParsedUrlQuery, ParsedUrlQueryInput } from 'querystring';
+import type { ParsedUrlQueryInput } from 'querystring';
 
 type ButtonPropsType = ButtonHTMLAttributes<HTMLButtonElement> &
   ButtonVariants & {
     href?: {
       pathname: string;
       query?: ParsedUrlQueryInput | string;
+      prefetch?: boolean;
     };
   };
 
@@ -29,9 +30,12 @@ const Button = ({
   ...restProps
 }: PropsWithChildren<ButtonPropsType>) => {
   if (href) {
+    const { prefetch, ...restHref } = href;
+
     return (
       <Link
-        href={href}
+        href={restHref}
+        prefetch={prefetch}
         className={clsx(
           css.button({ size, color, fill, fullWidth, disabled }),
           className,
