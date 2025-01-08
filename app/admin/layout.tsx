@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from 'react';
 
+import AdminSideMenu from '@app/admin/AdminSideMenu';
 import Outlet from '@components/Layout/Outlet';
-import AdminSideMenu from '@components/SideMenu/AdminSideMenu';
 import { sprinkles } from '@styles/sprinkles.css';
 
 import type { Metadata } from 'next';
