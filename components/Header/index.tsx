@@ -96,21 +96,25 @@ const Header = ({ list }: HeaderPropsType) => {
             </li>
           )}
 
-          <li>
-            <Link href={PATH.MY_ACCOUNT}>
-              <FontAwesomeIcon icon={faUser} />
-            </Link>
-          </li>
-          <li>
-            <Link href={PATH.CART}>
-              <FontAwesomeIcon icon={faCartShopping} />
-            </Link>
-          </li>
-          <li>
-            <Link href={PATH.WISH_LIST}>
-              <FontAwesomeIcon icon={faHeart} />
-            </Link>
-          </li>
+          {session && (
+            <>
+              <li>
+                <Link href={PATH.MY_ACCOUNT} prefetch={false}>
+                  <FontAwesomeIcon icon={faUser} />
+                </Link>
+              </li>
+              <li>
+                <Link href={PATH.CART} prefetch={false}>
+                  <FontAwesomeIcon icon={faCartShopping} />
+                </Link>
+              </li>
+              <li>
+                <Link href={PATH.WISH_LIST} prefetch={false}>
+                  <FontAwesomeIcon icon={faHeart} />
+                </Link>
+              </li>
+            </>
+          )}
         </ul>
       </nav>
     </header>
