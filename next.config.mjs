@@ -40,7 +40,7 @@ const nextConfig = {
         headers: [
           {
             key: 'Access-Control-Allow-Origin',
-            value: '*',
+            value: process.env.NEXT_PUBLIC_VERCEL_URL || '*',
           },
           {
             key: 'Access-Control-Allow-Methods',
@@ -48,21 +48,60 @@ const nextConfig = {
           },
           {
             key: 'Access-Control-Allow-Headers',
-            value:
-              'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version',
+            value: 'Content-Type, X-CSRF-Token, X-Requested-With',
           },
         ],
       },
     ];
   },
-  // async rewrites() {
-  //   return [
-  //     {
-  //       source: '/api/:path*',
-  //       destination: `${process.env.NEXT_PUBLIC_VERCEL_URL}/api/:path*`,
-  //     },
-  //   ];
-  // },
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [
+          {
+            type: 'host',
+            value: process.env.APP_URL_NAME,
+          },
+        ],
+        destination: `${process.env.NEXT_PUBLIC_VERCEL_URL}/:path*`,
+        permanent: true,
+      },
+      {
+        source: '/:path*',
+        has: [
+          {
+            type: 'host',
+            value: `http://${process.env.APP_URL_NAME}`,
+          },
+        ],
+        destination: `${process.env.NEXT_PUBLIC_VERCEL_URL}/:path*`,
+        permanent: true,
+      },
+      {
+        source: '/:path*',
+        has: [
+          {
+            type: 'host',
+            value: `www.${process.env.APP_URL_NAME}`,
+          },
+        ],
+        destination: `${process.env.NEXT_PUBLIC_VERCEL_URL}/:path*`,
+        permanent: true,
+      },
+      {
+        source: '/:path*',
+        has: [
+          {
+            type: 'host',
+            value: `http://www.${process.env.APP_URL_NAME}`,
+          },
+        ],
+        destination: `${process.env.NEXT_PUBLIC_VERCEL_URL}/:path*`,
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default withVanillaExtract(nextConfig);
