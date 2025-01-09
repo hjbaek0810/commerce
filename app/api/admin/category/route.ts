@@ -1,3 +1,4 @@
+import { revalidateTag } from 'next/cache';
 import { NextResponse } from 'next/server';
 
 import { authOptions } from '@api/auth/[...nextauth]/authOptions';
@@ -7,6 +8,7 @@ import { checkSession } from '@api/helper/session';
 import CategoryModel from '@api/models/category';
 import ProductModel from '@api/models/product';
 import SubCategoryModel from '@api/models/subCategory';
+import { categoryTags } from '@services/queries/category/keys';
 
 import type { AdminCreateCategory } from './types/dto';
 import type { CategoryModelType } from '@api/models/category';
@@ -252,6 +254,8 @@ export async function PUT(req: NextRequest) {
         await SubCategoryModel.bulkWrite(bulkSubCategoryOps);
       }
     }
+
+    revalidateTag(categoryTags.list);
 
     return NextResponse.json({
       status: 200,
