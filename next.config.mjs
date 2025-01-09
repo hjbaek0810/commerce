@@ -77,40 +77,7 @@ const nextConfig = {
         has: [
           {
             type: 'host',
-            value: process.env.APP_URL_NAME,
-          },
-        ],
-        destination: `${process.env.NEXT_PUBLIC_VERCEL_URL}/:path*`,
-        permanent: true,
-      },
-      {
-        source: '/:path*',
-        has: [
-          {
-            type: 'host',
-            value: `http://${process.env.APP_URL_NAME}`,
-          },
-        ],
-        destination: `${process.env.NEXT_PUBLIC_VERCEL_URL}/:path*`,
-        permanent: true,
-      },
-      {
-        source: '/:path*',
-        has: [
-          {
-            type: 'host',
             value: `www.${process.env.APP_URL_NAME}`,
-          },
-        ],
-        destination: `${process.env.NEXT_PUBLIC_VERCEL_URL}/:path*`,
-        permanent: true,
-      },
-      {
-        source: '/:path*',
-        has: [
-          {
-            type: 'host',
-            value: `http://www.${process.env.APP_URL_NAME}`,
           },
         ],
         destination: `${process.env.NEXT_PUBLIC_VERCEL_URL}/:path*`,
