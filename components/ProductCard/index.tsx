@@ -91,6 +91,7 @@ const ProductCardItem = ({
         pathname: PATH.PRODUCT.DETAIL(productId),
         query: productDetailQuery,
       }}
+      prefetch={false}
     >
       {children}
     </Link>

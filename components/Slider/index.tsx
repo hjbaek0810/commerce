@@ -188,7 +188,11 @@ const SliderClickableImage = ({
   className,
 }: SliderClickableImagePropsType) => {
   return (
-    <Link className={clsx(css.sliderLink, className)} href={redirectTo || '/'}>
+    <Link
+      className={clsx(css.sliderLink, className)}
+      href={redirectTo || '/'}
+      prefetch={false}
+    >
       <Image
         src={src}
         alt={alt || src}
