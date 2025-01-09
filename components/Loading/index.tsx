@@ -3,7 +3,7 @@ import type { PropsWithChildren } from 'react';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import * as css from '@styles/loading.css';
+import * as css from '@components/Loading/loading.css';
 
 const Backdrop = ({ children }: PropsWithChildren) => (
   <div className={css.backdropWrapper}>{children}</div>

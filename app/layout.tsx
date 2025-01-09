@@ -1,13 +1,10 @@
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
+/* eslint-disable import/order */
 import { config } from '@fortawesome/fontawesome-svg-core';
-import '@fortawesome/fontawesome-svg-core/styles.css';
-
-import Layout from '@components/Layout';
-import '@styles/error.css';
 import '@styles/global.css';
-import '@styles/loading.css';
+import '@fortawesome/fontawesome-svg-core/styles.css';
+import 'react-toastify/dist/ReactToastify.css';
+import Layout from '@components/Layout';
+import { ToastContainer } from 'react-toastify';
 import AuthProvider from '@utils/auth/provider';
 import ModalsProvider from '@utils/modals/provider';
 import QueryProvider from '@utils/query/provider';
@@ -47,8 +44,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: `${process.env.NEXT_PUBLIC_VERCEL_URL}/assets/banner3.png`,
-        width: 1920,
-        height: 960,
+        width: 1200,
+        height: 630,
         alt: 'Minimal Yet Powerful',
       },
     ],

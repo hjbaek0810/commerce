@@ -3,7 +3,7 @@ import type { PropsWithChildren } from 'react';
 import { faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import * as css from '@styles/error.css';
+import * as css from '@components/Error/error.css';
 
 import type { IconProp } from '@fortawesome/fontawesome-svg-core';
 

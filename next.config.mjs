@@ -1,15 +1,31 @@
 /** @type {import('next').NextConfig} */
 
 import { createVanillaExtractPlugin } from '@vanilla-extract/next-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
-const withVanillaExtract = createVanillaExtractPlugin({
-  experimental: {
-    optimizeCss: true,
-  },
-});
+const withVanillaExtract = createVanillaExtractPlugin({});
 
 const nextConfig = {
   reactStrictMode: true,
+  webpack: (config, { isServer }) => {
+    config.plugins.push(
+      new MiniCssExtractPlugin({
+        ignoreOrder: true,
+        experimentalUseImportModule: true,
+        filename: 'static/css/[contenthash].css',
+        chunkFilename: 'static/css/[contenthash].css',
+      }),
+    );
+
+    config.module.rules.push({
+      test: /\.vanilla\.css$/i,
+      use: isServer
+        ? [MiniCssExtractPlugin.loader, 'css-loader']
+        : ['style-loader', 'css-loader'],
+    });
+
+    return config;
+  },
   images: {
     remotePatterns: [
       {
