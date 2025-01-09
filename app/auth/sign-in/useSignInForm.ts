@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
@@ -13,19 +12,16 @@ import type { SignInUser } from '@api/auth/sign-in/types/dto';
 
 const useSignInForm = () => {
   const signInForm = useForm<SignInUser>();
-  const { mutate: signIn } = useSignInMutation();
+  const { mutate: signIn, isPending, isSuccess } = useSignInMutation();
   const router = useRouter();
-  const [isWaiting, setIsWaiting] = useState(false);
 
   const handleSignInSubmit = (data: SignInUser) => {
     if (!data.loginId || !data.password) return;
 
-    setIsWaiting(true);
     signIn(data, {
       onSuccess: async credential => {
         if (credential?.error || !credential?.ok) {
           toast.error('아이디 또는 패스워드가 일치하지 않습니다.');
-          setIsWaiting(false);
         } else {
           const session = await getSession();
 
@@ -38,13 +34,10 @@ const useSignInForm = () => {
           }
         }
       },
-      onError: () => {
-        setIsWaiting(false);
-      },
     });
   };
 
-  return { signInForm, handleSignInSubmit, isWaiting };
+  return { signInForm, handleSignInSubmit, isPending: isPending || isSuccess };
 };
 
 export default useSignInForm;
