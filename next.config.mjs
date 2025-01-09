@@ -70,21 +70,6 @@ const nextConfig = {
       },
     ];
   },
-  async redirects() {
-    return [
-      {
-        source: '/:path*',
-        has: [
-          {
-            type: 'host',
-            value: `www.${process.env.APP_URL_NAME}`,
-          },
-        ],
-        destination: `${process.env.NEXT_PUBLIC_VERCEL_URL}/:path*`,
-        permanent: true,
-      },
-    ];
-  },
 };
 
 export default withVanillaExtract(nextConfig);
