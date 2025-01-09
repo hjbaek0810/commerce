@@ -16,7 +16,6 @@ import { sprinkles } from '@styles/sprinkles.css';
 import { NOT_FOUND_IMAGE } from '@utils/constants/image';
 import { formatNumber } from '@utils/formatter/number';
 import { calculateSaleRate } from '@utils/math/rate';
-import { PATH } from '@utils/path';
 
 import * as css from './productDetail.css';
 

@@ -64,7 +64,7 @@ const Header = ({ list }: HeaderPropsType) => {
         </ul>
 
         <ul className={css.menu}>
-          {session && (
+          {session ? (
             <>
               <li>
                 {session.user.image ? (
@@ -88,8 +88,7 @@ const Header = ({ list }: HeaderPropsType) => {
                 </button>
               </li>
             </>
-          )}
-          {!session && (
+          ) : (
             <li>
               <Link href={PATH.SIGN_IN} aria-label="Go to Login">
                 <FontAwesomeIcon icon={faRightToBracket} />

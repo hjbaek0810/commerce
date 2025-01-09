@@ -11,7 +11,11 @@ import type { ProductUseFormType } from '../components/ProductForm/useProductFor
 const useProductRegister = () => {
   const router = useRouter();
 
-  const { mutate: registerProduct, isPending } = useAdminProductMutation();
+  const {
+    mutate: registerProduct,
+    isPending,
+    isSuccess,
+  } = useAdminProductMutation();
 
   const productForm = useForm<ProductUseFormType>({
     reValidateMode: 'onChange',
@@ -31,7 +35,7 @@ const useProductRegister = () => {
   return {
     productForm,
     handleSubmit,
-    isPending,
+    isPending: isPending || isSuccess,
   };
 };
 

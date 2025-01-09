@@ -1,5 +1,3 @@
-import { QueryOptions } from '@tanstack/react-query';
-
 import { productKeys, productTags } from '@services/queries/product/keys';
 import { fetchData } from '@services/utils/fetch';
 import { API } from '@services/utils/path';

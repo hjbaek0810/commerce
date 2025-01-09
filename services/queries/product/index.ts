@@ -77,20 +77,17 @@ export const useAdminProductListWithCategoryQueries = () => {
   const { paginationProps, handleSearchParamsChange } =
     usePaginationQueryParams();
 
-  const [products, categories] = useQueries({
-    queries: [
-      {
-        ...getAdminProductListQueryOptions({
-          searchParams: queryParams,
-          page: paginationProps.currentPage,
-          limit: paginationProps.currentLimit,
-        }),
-        placeholderData: keepPreviousData,
-        enabled: !!searchParams,
-      },
-      getAdminCategoriesQueryOptions(),
-    ],
+  const products = useQuery({
+    ...getAdminProductListQueryOptions({
+      searchParams: queryParams,
+      page: paginationProps.currentPage,
+      limit: paginationProps.currentLimit,
+    }),
+    placeholderData: keepPreviousData, // useQueries X
+    enabled: !!searchParams,
   });
+
+  const categories = useQuery(getAdminCategoriesQueryOptions());
 
   return {
     products: {
@@ -124,13 +121,11 @@ export const useSortedProductListQueries = () => {
             return productDate >= sixtyDaysAgo; // 60일 이내의 상품만 필터링
           });
         },
-        placeholderData: keepPreviousData,
       },
       {
         ...getSortedProductListQueryOptions(ProductSortType.POPULARITY),
         select: (data: PaginatedResponse<'products', ProductVO>) =>
           data.products,
-        placeholderData: keepPreviousData,
       },
     ],
   });

@@ -23,12 +23,6 @@ const AdminProductView = () => {
       <Title>Product List</Title>
 
       <div className={css.wrapper}>
-        <AdminProductSearchFilter {...searchFilterProps} />
-
-        <div>
-          <AdminProductGrid {...resultProps} />
-        </div>
-
         <Button
           size="large"
           fill
@@ -36,6 +30,12 @@ const AdminProductView = () => {
         >
           <FontAwesomeIcon icon={faPlus} />
         </Button>
+
+        <AdminProductSearchFilter {...searchFilterProps} />
+
+        <div>
+          <AdminProductGrid {...resultProps} />
+        </div>
       </div>
     </>
   );
