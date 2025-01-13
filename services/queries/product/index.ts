@@ -142,9 +142,10 @@ export const useProductListInfiniteQuery = () => {
 
   const { changeSearchParams } = useQueryParams();
 
-  const { data, ...rest } = useInfiniteQuery(
-    getProductListInfiniteQueryOptions(queryParams),
-  );
+  const { data, ...rest } = useInfiniteQuery({
+    ...getProductListInfiniteQueryOptions(queryParams),
+    placeholderData: keepPreviousData,
+  });
 
   return {
     ...rest,
