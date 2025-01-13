@@ -124,6 +124,7 @@ export const useAdminOrderStatusMutation = () => {
       ]);
 
       invalidateQueries(queryClient, [
+        orderKeys.getAdminAll(),
         orderKeys.getAdminDetail(variables._id),
         cartKeys.getAll(),
         ...productQueriesToInvalidate,
