@@ -97,11 +97,12 @@ export const useOrderStatusMutation = () => {
       const productQueriesToInvalidate = variables.productIds.flatMap(id => [
         productKeys.getDetail(id),
       ]);
-      invalidateQueries(queryClient, [
-        orderKeys.getAll(),
-        cartKeys.getAll(),
-        ...productQueriesToInvalidate,
-      ]);
+
+      invalidateQueries(
+        queryClient,
+        [orderKeys.getAll(), cartKeys.getAll(), ...productQueriesToInvalidate],
+        'none',
+      );
     },
   });
 };

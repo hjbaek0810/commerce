@@ -13,6 +13,8 @@ import useIntersectionObserver from '@utils/hooks/useIntersectionObserver';
 import { PATH } from '@utils/path';
 
 import type { OrderVO } from '@api/order/types/vo';
+import type { PaginatedResponse } from '@services/utils/types/pagination';
+import type { InfiniteData } from '@tanstack/react-query';
 
 const useOrderGrid = () => {
   const queryClient = useQueryClient();
@@ -46,15 +48,21 @@ const useOrderGrid = () => {
       },
       {
         onSuccess: () => {
-          queryClient.setQueryData<OrderVO[]>(orderKeys.getAll(), previous => {
-            if (!previous) return orderInfo;
+          queryClient.setQueryData<InfiniteData<{ orders: OrderVO[] }>>(
+            orderKeys.getAll(),
+            previous => {
+              if (!previous) return undefined;
 
-            const updatedData = previous.map(item =>
-              item._id === orderId ? { ...item, status } : item,
-            );
+              const updatedData = previous.pages[0]?.orders.map(item =>
+                item._id === orderId ? { ...item, status } : item,
+              );
 
-            return updatedData;
-          });
+              return {
+                ...previous,
+                pages: [{ orders: updatedData }],
+              };
+            },
+          );
         },
       },
     );
