@@ -70,6 +70,32 @@ const nextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [
+          {
+            type: 'host',
+            value: 'commerce-hjbaek0810s-projects.vercel.app',
+          },
+        ],
+        destination: `${process.env.NEXT_PUBLIC_VERCEL_URL}/:path*`,
+        permanent: true,
+      },
+      {
+        source: '/:path*',
+        has: [
+          {
+            type: 'host',
+            value: 'commerce-git-master-hjbaek0810s-projects.vercel.app',
+          },
+        ],
+        destination: `${process.env.NEXT_PUBLIC_VERCEL_URL}/:path*`,
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default withVanillaExtract(nextConfig);
