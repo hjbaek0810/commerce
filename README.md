@@ -24,6 +24,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 **🌐 백엔드 및 API**
 - Next.js & MongoDB: 서버리스 환경에서 효율적인 API 작성
 - NextAuth: 소셜 로그인(구글) 및 커스텀 로그인 기능 지원
+- Next.js의 SSR와 React Query의 Hydration 기능을 활용해 초기 데이터 로드 최적화
 
 **🛍️ 고객 페이지**
 - 로그인 및 회원가입
