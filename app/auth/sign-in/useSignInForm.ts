@@ -31,10 +31,10 @@ const useSignInForm = () => {
 
           if (session?.user.role === UserRoleType.ADMIN) {
             // 사용자가 ADMIN 역할인 경우, 페이지를 새로고침하여 공통 레이아웃(Layout.tsx)에 관리자 전용 레이아웃만 렌더링되도록..
-            router.push(PATH.ADMIN.HOME);
+            router.replace(PATH.ADMIN.HOME);
             router.refresh();
           } else {
-            router.push('/');
+            router.replace('/');
           }
         }
       },
