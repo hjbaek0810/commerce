@@ -1,4 +1,7 @@
+import { Suspense } from 'react';
+
 import SignInForm from '@app/auth/sign-in/SignInForm';
+import LoadingSpinner from '@components/Loading';
 
 import type { Metadata } from 'next/types';
 
@@ -13,6 +16,10 @@ export const metadata: Metadata = {
   },
 };
 
-const SignIn = () => <SignInForm />;
+const SignIn = () => (
+  <Suspense fallback={<LoadingSpinner />}>
+    <SignInForm />
+  </Suspense>
+);
 
 export default SignIn;
