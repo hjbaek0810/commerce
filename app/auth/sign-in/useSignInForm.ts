@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { getSession } from 'next-auth/react';
 
 import { useSignInMutation } from '@services/queries/user';
@@ -16,6 +16,8 @@ const useSignInForm = () => {
   const [isWaiting, setIsWaiting] = useState<boolean>(false);
   const { mutate: signIn } = useSignInMutation();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectPath = searchParams.get('redirect');
 
   const handleSignInSubmit = (data: SignInUser) => {
     if (!data.loginId || !data.password) return;
@@ -33,6 +35,8 @@ const useSignInForm = () => {
             // 사용자가 ADMIN 역할인 경우, 페이지를 새로고침하여 공통 레이아웃(Layout.tsx)에 관리자 전용 레이아웃만 렌더링되도록..
             router.replace(PATH.ADMIN.HOME);
             router.refresh();
+          } else if (redirectPath && redirectPath.startsWith('/product')) {
+            router.replace(redirectPath);
           } else {
             router.replace('/');
           }

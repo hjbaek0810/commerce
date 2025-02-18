@@ -10,6 +10,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname, useSearchParams } from 'next/navigation';
 
 import useHeader from '@components/Header/useHeader';
 import { PATH } from '@utils/path';
@@ -34,6 +35,11 @@ type HeaderPropsType = {
 
 const Header = ({ list }: HeaderPropsType) => {
   const { selected, session, handleSignOutButtonClick } = useHeader();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const redirectUrl =
+    pathname + (searchParams.toString() ? `?${searchParams.toString()}` : '');
 
   return (
     <header className={css.header}>
@@ -90,7 +96,15 @@ const Header = ({ list }: HeaderPropsType) => {
             </>
           ) : (
             <li>
-              <Link href={PATH.SIGN_IN} aria-label="Go to Login">
+              <Link
+                href={{
+                  pathname: PATH.SIGN_IN,
+                  query: pathname.startsWith('/product')
+                    ? { redirect: redirectUrl }
+                    : {},
+                }}
+                aria-label="Go to Login"
+              >
                 <FontAwesomeIcon icon={faRightToBracket} />
               </Link>
             </li>
