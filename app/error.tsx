@@ -11,6 +11,7 @@ import NotFound from '@app/not-found';
 import Button from '@components/Button';
 import Error from '@components/Error';
 import { isApiError } from '@services/utils/error';
+import { sprinkles } from '@styles/sprinkles.css';
 import { PATH } from '@utils/path';
 
 type ErrorBoundaryPropsType = {
@@ -18,6 +19,7 @@ type ErrorBoundaryPropsType = {
   reset: () => void;
 };
 
+// TODO: 에러 페이지가 기존 레이아웃 밖에 생성되므로 사이드메뉴를 유지한 상태로 에러 페이지를 보이도록 수정하기..
 const ErrorBoundary = ({ error, reset }: ErrorBoundaryPropsType) => {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -65,9 +67,21 @@ const ErrorBoundary = ({ error, reset }: ErrorBoundaryPropsType) => {
           <br />
           다시 시도하거나 고객센터에 문의해주세요.
         </Error.Message>
-        <Button size="medium" fill onClick={() => reset()}>
-          Retry
-        </Button>
+        <div
+          className={sprinkles({
+            display: 'flex',
+            gap: 'spacing-008',
+            width: 'sizing-fill',
+            justifyContent: 'center',
+          })}
+        >
+          <Button size="medium" fill onClick={() => router.back()}>
+            Back
+          </Button>
+          <Button size="medium" fill onClick={() => reset()}>
+            Retry
+          </Button>
+        </div>
       </Error>
     );
   }
@@ -80,9 +94,21 @@ const ErrorBoundary = ({ error, reset }: ErrorBoundaryPropsType) => {
         <br />
         다시 시도하거나 고객센터에 문의해주세요.
       </Error.Message>
-      <Button size="medium" fill onClick={() => reset()}>
-        Retry
-      </Button>
+      <div
+        className={sprinkles({
+          display: 'flex',
+          gap: 'spacing-008',
+          width: 'sizing-fill',
+          justifyContent: 'center',
+        })}
+      >
+        <Button size="medium" fill onClick={() => router.back()}>
+          Back
+        </Button>
+        <Button size="medium" fill onClick={() => reset()}>
+          Retry
+        </Button>
+      </div>
     </Error>
   );
 };
