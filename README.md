@@ -157,3 +157,83 @@ https://github.com/user-attachments/assets/f46306a5-d5d2-4d00-994c-10ec4d8905ad
 - 결제 방식 확장
 - 이미지 최적화
 
+---
+
+## 6. 🚀트러블 슈팅
+
+### 문제 배경 1: TanStack Query의 SSR 기능에서 prefetchQuery의 실패 감지 문제
+Next.js에서 TanStack Query의 SSR 기능을 활용하여 prefetchQuery로 데이터를 미리 가져오는 과정에서 예상치 못한 문제가 발생했다.
+일반적으로 fetchQuery나 useQuery는 API 요청이 실패하면 error 상태를 반환하지만, prefetchQuery는 기본적으로 실패를 조용히 무시하기 때문에 문제가 쉽게 드러나지 않았다.
+
+이로 인해 클라이언트에서는 API가 정상적으로 호출되는 것처럼 보였지만, 실제로 서버에서는 API 요청 시 도메인을 명시적으로 포함해야 하는데 이를 누락하여 요청이 실패하고 있었다.
+처음 SSR을 적용하는 과정에서 클라이언트에서는 정상적으로 처리되는 요청이 서버에서는 실패하는 차이점을 이해하는 데 시간이 걸렸다.
+
+### 해결 방법 1: API 호출 시 절대 경로 적용
+
+api url: `/api/${url}` -> `${process.env.NEXT_PUBLIC_VERCEL_URL}/api/${url}`
+
+**수정 전: 상대 경로 이용**
+
+<img width="1616" alt="image" src="https://github.com/user-attachments/assets/5ab60598-465b-475d-9c7c-339d28447c41" />
+
+- 클라이언트에서는 정상적으로 동작하지만, 서버에서는 API 호출 시 실패
+
+- 서버에서 실패하므로 클라이언트가 API를 재호출
+
+**수정 후: 절대 경로 사용**
+<img width="1606" alt="image" src="https://github.com/user-attachments/assets/290de9e3-e2e5-4ebe-b9c4-1927cf514f4d" />
+
+- 서버에서도 API가 정상적으로 호출되므로, 클라이언트에서 추가 요청 없이 바로 캐싱된 데이터 활용
+
+++ 기본적으로 prefetchQuery는 API 요청이 실패해도 에러를 반환하지 않기 때문에, 실패 여부를 명확히 인식할 수 있도록 에러 처리 로직을 강화하였다.
+- throwOnError: true 설정 추가 → 실패 시 예외를 던지도록 설정
+- Next.js의 app/error.tsx 활용 → 예외 발생 시 사용자에게 적절한 에러 페이지 제공
+
+<img width="513" alt="image" src="https://github.com/user-attachments/assets/f0da43b6-0f94-4141-b2e4-85d419d788c7" />
+
+- 이제 API 요청이 실패하면 즉시 예외가 발생하고, 글로벌 에러 페이지에서 이를 감지하여 사용자에게 표시할 수 있도록 개선
+
+### 문제 배경 2: 클라이언트와 서버에서 headers 동작 차이로 인해 getServerSession() 호출 실패
+NextAuth의 사용자 정보를 가져오기 위해 getServerSession()을 사용했지만, 클라이언트와 서버에서 헤더(headers) 처리 방식이 다르기 때문에 인증이 정상적으로 수행되지 않았다.
+이로 인해 클라이언트에서 API 요청 시에는 정상적으로 동작했지만, 서버에서 API를 호출할 때는 인증이 누락되어 실패하고 클라이언트가 재호출하는 문제가 발생했다.
+
+### 해결 방법 2: 서버에서 API 요청 시 headers()를 명시적으로 전달
+클라이언트는 fetch()의 headers 옵션을 사용하면 브라우저가 자동으로 쿠키 및 인증 정보를 포함하지만,
+서버에서는 fetch()를 실행하는 주체가 브라우저가 아니라 Next.js의 서버 런타임(Node.js)이기 때문에, headers()를 직접 포함해야 인증 정보가 유지된다.
+
+**수정 전 (헤더 누락)**
+
+```
+fetch("/api/admin/categories", { method: "GET" }); // ❌ 서버에서 헤더 없이 요청하여 인증 실패
+```
+
+**수정 후 (헤더 명시적으로 전달)**
+
+```
+import { headers } from "next/headers";
+
+export const getAdminCategoriesQueryOptions = () => {
+  const requestHeaders = headers(); // ✅ 현재 요청의 헤더 가져오기
+
+  return {
+    queryKey: ["admin-categories"],
+    queryFn: () =>
+      fetch("/api/admin/categories", {
+        method: "GET",
+        headers: requestHeaders, // ✅ 서버에서 클라이언트의 헤더를 포함하여 요청
+      }),
+  };
+};
+
+```
+- 이제 서버에서 API 요청 시에도 인증 정보가 유지되어 getServerSession()이 정상적으로 작동
+
+### 💡배운 점
+1️⃣ SSR 환경에서 API 호출 시 클라이언트와 서버의 요청 방식이 다를 수 있음을 인지하고, 서버에서는 절대 경로 및 headers()를 명시적으로 처리해야 한다.
+
+2️⃣ TanStack Query의 prefetchQuery는 기본적으로 에러를 감추기 때문에, throwOnError: true 설정을 통해 실패를 명확히 감지하고, 에러 페이지에서 적절한 피드백을 제공해야 한다.
+
+3️⃣ 클라이언트와 서버의 fetch() 동작 차이를 이해하고, Next.js의 서버 런타임 환경에서 headers()를 명시적으로 전달해야 인증이 정상적으로 수행된다.
+
+
+***이 경험을 통해, SSR 환경에서 API 호출 시 서버와 클라이언트의 요청 방식이 다를 수 있음을 이해하게 되었다.***
