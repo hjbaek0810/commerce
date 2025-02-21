@@ -174,7 +174,8 @@ api url: `/api/${url}` -> `${process.env.NEXT_PUBLIC_VERCEL_URL}/api/${url}`
 
 **수정 전: 상대 경로 이용**
 
-<img width="1616" alt="image" src="https://github.com/user-attachments/assets/5ab60598-465b-475d-9c7c-339d28447c41" />
+<img width="1266" alt="image" src="https://github.com/user-attachments/assets/337399cf-7b1a-4b4e-9228-9fb117617413" />
+
 
 - 클라이언트에서는 정상적으로 동작하지만, 서버에서는 API 호출 시 실패
 
@@ -204,7 +205,7 @@ NextAuth의 사용자 정보를 가져오기 위해 getServerSession()을 사용
 **수정 전 (헤더 누락)**
 
 ```
-fetch("/api/admin/categories", { method: "GET" }); // ❌ 서버에서 헤더 없이 요청하여 인증 실패
+fetch("~/api/admin/categories", { method: "GET" }); // ❌ 서버에서 헤더 없이 요청하여 인증 실패
 ```
 
 **수정 후 (헤더 명시적으로 전달)**
@@ -218,7 +219,7 @@ export const getAdminCategoriesQueryOptions = () => {
   return {
     queryKey: ["admin-categories"],
     queryFn: () =>
-      fetch("/api/admin/categories", {
+      fetch("~/api/admin/categories", {
         method: "GET",
         headers: requestHeaders, // ✅ 서버에서 클라이언트의 헤더를 포함하여 요청
       }),
