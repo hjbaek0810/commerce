@@ -56,7 +56,7 @@ export const authOptions: NextAuthOptions = {
   ],
   session: {
     strategy: 'jwt',
-    maxAge: 60 * 60 * 24, // 1day
+    maxAge: 60 * 60 * 24, // 1day. 설정 시 지속 쿠키, 0이면 세션 쿠키
   },
   callbacks: {
     async signIn({ user, account }) {
