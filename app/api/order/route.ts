@@ -164,8 +164,8 @@ export async function POST(req: NextRequest) {
 
       await product.save();
 
-      productTags.detail(item._id);
-      productTags.adminDetail(item._id);
+      revalidateTag(productTags.detail(item._id));
+      revalidateTag(productTags.adminDetail(item._id));
     }
 
     revalidateTag(productTags.list);
