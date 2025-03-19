@@ -88,6 +88,7 @@ export const useMyAccountMutation = () => {
         queryKey: userKeys.getDetail(),
         refetchType: 'none',
       });
+      // TODO: nextAuth updateSession?
     },
   });
 };
