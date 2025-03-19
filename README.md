@@ -156,6 +156,7 @@ https://github.com/user-attachments/assets/f46306a5-d5d2-4d00-994c-10ec4d8905ad
 - 후기 작성
 - 결제 방식 확장
 - 이미지 최적화
+- refreshToken을 활용하여 jwt 갱신하기
 
 ---
 
