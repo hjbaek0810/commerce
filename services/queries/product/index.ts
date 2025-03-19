@@ -112,13 +112,15 @@ export const useSortedProductListQueries = () => {
       {
         ...getSortedProductListQueryOptions(ProductSortType.NEWEST),
         select: (data: PaginatedResponse<'products', ProductVO>) => {
-          const sixtyDaysAgo = new Date();
-          sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
+          // const sixtyDaysAgo = new Date();
+          const sixMonthsAgo = new Date();
+          // sixtyDaysAgo.setDate(sixMonthsAgo.getDate() - 60);
+          sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
 
           return data.products.filter(product => {
             const productDate = new Date(product.createdAt);
 
-            return productDate >= sixtyDaysAgo; // 60일 이내의 상품만 필터링
+            return productDate >= sixMonthsAgo; // 6개월 이내의 상품만 필터링
           });
         },
       },

@@ -89,6 +89,8 @@ export const useMyAccountMutation = () => {
         refetchType: 'none',
       });
       // TODO: nextAuth updateSession?
+      // https://www.heropy.dev/p/MI1Khc
+      // 나중에 refresh token, access token을 통해 api 호출을 유연하게 사용하도록 해보자
     },
   });
 };
