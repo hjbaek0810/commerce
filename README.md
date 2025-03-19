@@ -61,7 +61,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ### 유저
 #### 1. 홈
    - 슬라이드 배너
-   - 60일 이내에 등록된 신상품
+   - 60일 이내에 등록된 신상품 (FIX: 임시로 6개월 처리)
    - 조회 높은 순으로 나열한 인기상품
 
 https://github.com/user-attachments/assets/e9d9a43c-1a2e-4ce3-845b-fdab784b6ab8
